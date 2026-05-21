@@ -271,8 +271,7 @@ export default function Home() {
                   onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>Check My Score</button>
               </>
             )}
-            <button type="button" style={{ display: "none" }}
-              style={{ background: "none", border: "none", cursor: "pointer" }}
+            <button type="button" style={{ display: "none", background: "none", border: "none", cursor: "pointer" }}
               onClick={() => setMenuOpen(!menuOpen)}>
               <div className="w-5 h-0.5 bg-white mb-1" /><div className="w-5 h-0.5 bg-white mb-1" /><div className="w-5 h-0.5 bg-white" />
             </button>
