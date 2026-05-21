@@ -1,8 +1,11 @@
-@layer base;
-@import 'tailwindcss/utilities';
+@import 'tailwindcss';
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..60,400;12..60,500;12..60,600;12..60,700;12..60,800&display=swap');
 
 html, body { overflow-x: hidden; }
+body { background: #070A12; color: #fff; font-family: 'Bricolage Grotesque', sans-serif; font-size: 14px; line-height: 1.6; }
 ::-webkit-scrollbar { width: 0px; background: transparent; }
 * { scrollbar-width: none; }
 a { text-decoration: none; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+.fade-up { animation: fadeUp 0.7s ease both; }
