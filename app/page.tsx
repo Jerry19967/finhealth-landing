@@ -233,7 +233,7 @@ export default function Home() {
       {/* ── Navbar ─────────────────────────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50"
         style={{ background: "rgba(7,10,18,0.9)", backdropFilter: "blur(8px)", borderBottom: `1px solid ${T.border}` }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div style={{ maxWidth: "100%", padding: "0 4vw", height: "64px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
 
           {/* Logo - identical to AppLayout sidebar */}
           <button type="button" onClick={() => window.location.href = '/'}
@@ -472,7 +472,7 @@ export default function Home() {
 
       {/* ── Problems ───────────────────────────────────────────────────────── */}
       <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
+        <div style={{ width: "100%", padding: "0 4vw" }}>
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4"
               style={{ background: `rgba(255,80,80,0.08)`, border: `1px solid rgba(255,80,80,0.2)` }}>
@@ -500,7 +500,7 @@ export default function Home() {
 
       {/* ── Old Way vs Agent ───────────────────────────────────────────────── */}
       <section className="py-20 px-4">
-        <div className="max-w-5xl mx-auto">
+        <div style={{ width: "100%", padding: "0 4vw" }}>
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-white mb-3" style={{ fontFamily: T.fontDisplay, letterSpacing: "-0.03em" }}>
               Tools React. <span style={{ background: T.gradPrimary, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Agents Act.</span>
@@ -558,7 +558,7 @@ export default function Home() {
 
       {/* ── How It Works ───────────────────────────────────────────────────── */}
       <section id="tools" className="py-20 px-4">
-        <div className="max-w-5xl mx-auto">
+        <div style={{ width: "100%", padding: "0 4vw" }}>
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-white mb-3" style={{ fontFamily: T.fontDisplay, letterSpacing: "-0.03em" }}>How Your Agent Works</h2>
             <p style={{ color: T.textSecondary }}>Set it up once. Your Agent handles the rest.</p>
@@ -583,7 +583,7 @@ export default function Home() {
 
       {/* ── Features ───────────────────────────────────────────────────────── */}
       <section id="features" className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
+        <div style={{ width: "100%", padding: "0 4vw" }}>
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-white mb-3" style={{ fontFamily: T.fontDisplay, letterSpacing: "-0.03em" }}>What Your Agent Does</h2>
             <p style={{ color: T.textSecondary }}>A fully-fledged AI Agent - not a tool you operate, but an agent that works for you.</p>
@@ -606,7 +606,7 @@ export default function Home() {
 
       {/* ── Pricing ────────────────────────────────────────────────────────── */}
       <section id="pricing" className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
+        <div style={{ width: "100%", padding: "0 4vw" }}>
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4"
               style={{ background: `rgba(49,233,129,0.1)`, border: `1px solid rgba(49,233,129,0.25)` }}>
@@ -621,7 +621,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start max-w-6xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start" style={{ width: "100%", padding: "0 4vw" }}>
             {/* FREE */}
             <div className="pricing-card p-7 rounded-2xl flex flex-col"
               style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${T.border}`, backdropFilter: "blur(8px)", minHeight: 480 }}>
@@ -732,7 +732,7 @@ export default function Home() {
 
       {/* ── Market Reality ─────────────────────────────────────────────── */}
       <section className="py-20 px-4">
-        <div className="max-w-5xl mx-auto">
+        <div style={{ width: "100%", padding: "0 4vw" }}>
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4"
               style={{ background: "rgba(29,158,117,0.08)", border: "1px solid rgba(29,158,117,0.22)" }}>
@@ -777,7 +777,7 @@ export default function Home() {
 
       {/* ── Testimonials ───────────────────────────────────────────────────── */}
       <section className="py-20 px-4">
-        <div className="max-w-5xl mx-auto">
+        <div style={{ width: "100%", padding: "0 4vw" }}>
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4"
               style={{ background: "rgba(47,230,255,0.06)", border: "1px solid rgba(47,230,255,0.18)" }}>
@@ -839,7 +839,7 @@ export default function Home() {
 
       {/* ── Security & Trust ───────────────────────────────────────────────── */}
       <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto">
+        <div style={{ width: "100%", padding: "0 4vw" }}>
           <div style={{ background: "rgba(47,230,255,0.03)", border: "1px solid rgba(47,230,255,0.12)", borderRadius: 24, padding: "40px 36px" }}>
             <div className="text-center mb-10">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4"
@@ -888,7 +888,7 @@ export default function Home() {
       <section className="py-24 px-4 text-center relative overflow-hidden">
         <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at center, rgba(47,230,255,0.07) 0%, transparent 60%)` }} />
         <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`, backgroundSize: "60px 60px" }} />
-        <div className="relative z-10 max-w-2xl mx-auto">
+        <div className="relative z-10" style={{ width: "100%", padding: "0 4vw", textAlign: "center" }}>
           <h2 className="text-3xl font-bold text-white mb-4" style={{ fontFamily: T.fontDisplay, letterSpacing: "-0.03em" }}>
             88% of Indians expect more financial uncertainty.<br />Be the one who actually does something about it.
           </h2>
@@ -912,7 +912,7 @@ export default function Home() {
 
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
       <footer className="py-12 px-4" style={{ borderTop: `1px solid ${T.border}` }}>
-        <div className="max-w-6xl mx-auto">
+        <div style={{ width: "100%", padding: "0 4vw" }}>
           <div className="grid sm:grid-cols-3 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2 mb-3">
