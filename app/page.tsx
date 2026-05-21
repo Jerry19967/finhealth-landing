@@ -239,6 +239,7 @@ export default function Home() {
           <button type="button" onClick={() => window.location.href = '/'}
             style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center", gap: "8px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <img src="/logo-icon.svg" alt="" style={{ height: "38px", width: "38px", objectFit: "contain" }} />
               <img src="/logo-icon.svg" alt="" style={{ height: "38px", width: "38px", objectFit: "contain", flexShrink: 0 }} />
               <span style={{ fontSize: "22px", fontWeight: 800, letterSpacing: "-0.5px", lineHeight: 1 }}>
                 <span style={{ color: "#60D0FF" }}>FinHealth</span><span style={{ color: "#FF2020" }}>360</span>
