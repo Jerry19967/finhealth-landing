@@ -239,7 +239,6 @@ export default function Home() {
           <button type="button" onClick={() => window.location.href = '/'}
             style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center", gap: "8px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <img src="/logo-icon.svg" alt="" style={{ height: "38px", width: "38px", objectFit: "contain" }} />
               <img src="/logo-icon.svg" alt="" style={{ height: "38px", width: "38px", objectFit: "contain", flexShrink: 0 }} />
               <span style={{ fontSize: "22px", fontWeight: 800, letterSpacing: "-0.5px", lineHeight: 1 }}>
                 <span style={{ color: "#60D0FF" }}>FinHealth</span><span style={{ color: "#FF2020" }}>360</span>
@@ -247,7 +246,7 @@ export default function Home() {
             </div>
           </button>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
             {(["Features", "Tools", "Pricing"] as const).map((l) => (
               <button type="button" key={l}
                 className="text-sm font-medium transition-colors hover:text-white"
@@ -266,13 +265,13 @@ export default function Home() {
               </button>
             ) : (
               <>
-                <button type="button" className="hidden md:block btn-ghost px-4 py-2 rounded-lg text-sm"
+                <button type="button" className="btn-ghost" style={{ padding: "8px 16px", borderRadius: "8px", fontSize: "14px" }}
                   onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/login'}>Login</button>
                 <button type="button" className="btn-primary px-4 py-2 rounded-lg text-sm"
                   onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>Check My Score</button>
               </>
             )}
-            <button type="button" className="md:hidden"
+            <button type="button" style={{ display: "none" }}
               style={{ background: "none", border: "none", cursor: "pointer" }}
               onClick={() => setMenuOpen(!menuOpen)}>
               <div className="w-5 h-0.5 bg-white mb-1" /><div className="w-5 h-0.5 bg-white mb-1" /><div className="w-5 h-0.5 bg-white" />
