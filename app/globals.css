@@ -1,3 +1,4 @@
+@import 'tailwindcss';
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #070A12; color: #fff; font-family: 'Bricolage Grotesque', sans-serif; }
 @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
