@@ -1,5 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..60,400;12..60,500;12..60,600;12..60,700;12..60,800&display=swap');
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..60,400;12..60,500;12..60,600;12..60,700;12..60,800&display=swap');
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #070A12; color: #fff; font-family: 'Bricolage Grotesque', sans-serif; }
 @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
