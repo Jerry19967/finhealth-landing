@@ -10,3 +10,4 @@ body { background: #070A12; color: #fff; font-family: 'Bricolage Grotesque', san
 .fade-up-2 { animation: fadeUp 0.7s 0.15s ease both; }
 .fade-up-3 { animation: fadeUp 0.7s 0.3s ease both; }
 a { text-decoration: none; }
+html, body { overflow-x: hidden; }
