@@ -1,27 +1,8 @@
-@import 'tailwindcss';
+@layer base;
+@import 'tailwindcss/utilities';
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..60,400;12..60,500;12..60,600;12..60,700;12..60,800&display=swap');
 
-body { background: #070A12; color: #fff; font-family: 'Bricolage Grotesque', sans-serif; }
-@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-@keyframes spin { to{transform:rotate(360deg)} }
-.fade-up { animation: fadeUp 0.7s ease both; }
-.fade-up-2 { animation: fadeUp 0.7s 0.15s ease both; }
-.fade-up-3 { animation: fadeUp 0.7s 0.3s ease both; }
-a { text-decoration: none; }
 html, body { overflow-x: hidden; }
-
-/* Match original React app font sizes exactly */
-h1, h2, h3, h4, h5, h6 { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; }
-.text-xs { font-size: 12px; }
-.text-sm { font-size: 14px; }
-.text-base { font-size: 16px; }
-.text-lg { font-size: 18px; }
-.text-2xl { font-size: 24px; }
-.text-3xl { font-size: 30px; }
-.text-4xl { font-size: 36px; }
-
-/* Hide scrollbar like original */
 ::-webkit-scrollbar { width: 0px; background: transparent; }
 * { scrollbar-width: none; }
+a { text-decoration: none; }
