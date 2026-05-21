@@ -21,3 +21,7 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Bricolage Grotesque', sans-serif; font-we
 .text-2xl { font-size: 24px; }
 .text-3xl { font-size: 30px; }
 .text-4xl { font-size: 36px; }
+
+/* Hide scrollbar like original */
+::-webkit-scrollbar { width: 0px; background: transparent; }
+* { scrollbar-width: none; }
