@@ -1,5 +1,5 @@
-@import 'tailwindcss';
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..60,400;12..60,500;12..60,600;12..60,700;12..60,800&display=swap');
+@import 'tailwindcss';
 
 html, body { overflow-x: hidden; }
 body { background: #070A12; color: #fff; font-family: 'Bricolage Grotesque', sans-serif; font-size: 14px; line-height: 1.6; }
