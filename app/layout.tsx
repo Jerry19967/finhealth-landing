@@ -15,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="/logo.png" type="image/png" />
         <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
       </head>
       <body style={{ margin: 0, padding: 0 }}>{children}</body>
