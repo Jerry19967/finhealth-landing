@@ -218,6 +218,12 @@ export default function Home() {
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         @keyframes insightPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        @keyframes pulseRing { 0%{transform:scale(0.85);opacity:0.6} 100%{transform:scale(2.2);opacity:0} }
+        @keyframes orbitSpin { 0%{transform:rotate(0deg) translateX(80px) rotate(0deg)} 100%{transform:rotate(360deg) translateX(80px) rotate(-360deg)} }
+        @keyframes orbitSpin2 { 0%{transform:rotate(0deg) translateX(55px) rotate(0deg)} 100%{transform:rotate(-360deg) translateX(55px) rotate(360deg)} }
+        @keyframes floatChip { 0%,100%{transform:translateY(0px) translateX(0px)} 33%{transform:translateY(-12px) translateX(5px)} 66%{transform:translateY(-6px) translateX(-4px)} }
+        @keyframes scanBeam { 0%{top:0%;opacity:0.6} 100%{top:100%;opacity:0} }
+        .float-chip { animation: floatChip 5s ease-in-out infinite; }
         .btn-primary { background: linear-gradient(135deg, #2FE6FF 0%, #7A3CFF 100%); color:#fff; border:none; padding:14px 30px; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:opacity 0.2s, transform 0.2s, box-shadow 0.2s; }
         .btn-primary:hover { opacity:0.88; transform:translateY(-2px); box-shadow: 0 0 28px rgba(47,230,255,0.3); }
         .btn-secondary { background:transparent; color:${T.textSecondary}; border:1px solid ${T.border}; padding:14px 30px; border-radius:12px; font-size:15px; font-weight:500; cursor:pointer; transition:all 0.2s; }
@@ -319,45 +325,37 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Right — Hero card (Financial Intelligence Score) */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }}
-            style={{ flex: '1 1 300px', maxWidth: 460, position: 'relative' }}>
+          {/* Right — Hero card (advanced) */}
+          <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.3 }}
+            style={{ flex: '1 1 300px', maxWidth: 440, position: 'relative' }}>
+
+            {/* Floating Net Worth chip */}
+            <div className="float-chip" style={{ position: 'absolute', top: -18, left: -14, zIndex: 10, background: T.cardBg, border: `1px solid rgba(47,230,255,0.25)`, borderRadius: 12, padding: '8px 14px', boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}>
+              <div style={{ fontSize: 10, color: T.textSecondary, fontWeight: 600, marginBottom: 2 }}>Net Worth</div>
+              <div style={{ fontFamily: T.fontDisplay, fontSize: 17, fontWeight: 800, color: T.green }}>₹24.6L</div>
+            </div>
+
+            {/* Floating Tax Saved chip */}
+            <div className="float-chip" style={{ position: 'absolute', top: 190, right: -18, zIndex: 10, background: T.cardBg, border: `1px solid rgba(122,60,255,0.3)`, borderRadius: 12, padding: '8px 14px', boxShadow: '0 4px 24px rgba(0,0,0,0.5)', animationDelay: '1.6s' }}>
+              <div style={{ fontSize: 10, color: T.textSecondary, fontWeight: 600, marginBottom: 2 }}>Tax Saved</div>
+              <div style={{ fontFamily: T.fontDisplay, fontSize: 17, fontWeight: 800, color: T.purple }}>₹18K</div>
+            </div>
+
+            {/* Floating Monthly SIP chip */}
+            <div className="float-chip" style={{ position: 'absolute', bottom: 72, right: -18, zIndex: 10, background: T.cardBg, border: `1px solid rgba(239,159,39,0.3)`, borderRadius: 12, padding: '8px 14px', boxShadow: '0 4px 24px rgba(0,0,0,0.5)', animationDelay: '0.8s' }}>
+              <div style={{ fontSize: 10, color: T.textSecondary, fontWeight: 600, marginBottom: 2 }}>Monthly SIP</div>
+              <div style={{ fontFamily: T.fontDisplay, fontSize: 15, fontWeight: 800, color: T.amber, display: 'flex', alignItems: 'center', gap: 5 }}>₹0 <span>⚠️</span></div>
+            </div>
+
+            {/* Main card */}
             <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}>
+              <div style={{ borderRadius: 20, border: `1px solid rgba(47,230,255,0.18)`, background: 'rgba(7,10,18,0.85)', backdropFilter: 'blur(12px)', padding: 24, position: 'relative', overflow: 'hidden' }}>
 
-              {/* Floating Net Worth badge — top left, overlaps card edge */}
-              <motion.div
-                initial={{ opacity: 0, x: -16, y: 10 }} animate={{ opacity: 1, x: 0, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.8 }}
-                style={{ position: 'absolute', top: -18, left: -18, zIndex: 10, background: '#0D1526', border: `1px solid rgba(47,230,255,0.25)`, borderRadius: 12, padding: '8px 14px', boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}>
-                <div style={{ fontSize: 10, color: T.textSecondary, fontWeight: 600, marginBottom: 2 }}>Net Worth</div>
-                <div style={{ fontFamily: T.fontDisplay, fontSize: 18, fontWeight: 800, color: T.green }}>₹24.6L</div>
-              </motion.div>
-
-              {/* Floating Tax Saved badge — right side */}
-              <motion.div
-                initial={{ opacity: 0, x: 16, y: 10 }} animate={{ opacity: 1, x: 0, y: 0 }}
-                transition={{ duration: 0.5, delay: 1.0 }}
-                style={{ position: 'absolute', top: 180, right: -20, zIndex: 10, background: '#0D1526', border: `1px solid rgba(122,60,255,0.3)`, borderRadius: 12, padding: '8px 14px', boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}>
-                <div style={{ fontSize: 10, color: T.textSecondary, fontWeight: 600, marginBottom: 2 }}>Tax Saved</div>
-                <div style={{ fontFamily: T.fontDisplay, fontSize: 18, fontWeight: 800, color: T.purple }}>₹18K</div>
-              </motion.div>
-
-              {/* Floating Monthly SIP badge — bottom right */}
-              <motion.div
-                initial={{ opacity: 0, x: 16, y: 10 }} animate={{ opacity: 1, x: 0, y: 0 }}
-                transition={{ duration: 0.5, delay: 1.2 }}
-                style={{ position: 'absolute', bottom: 60, right: -20, zIndex: 10, background: '#0D1526', border: `1px solid rgba(239,159,39,0.3)`, borderRadius: 12, padding: '8px 14px', boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}>
-                <div style={{ fontSize: 10, color: T.textSecondary, fontWeight: 600, marginBottom: 2 }}>Monthly SIP</div>
-                <div style={{ fontFamily: T.fontDisplay, fontSize: 16, fontWeight: 800, color: T.amber, display: 'flex', alignItems: 'center', gap: 5 }}>
-                  ₹0 <span style={{ fontSize: 14 }}>⚠️</span>
-                </div>
-              </motion.div>
-
-              {/* Main card */}
-              <div style={{ borderRadius: 20, border: `1px solid rgba(47,230,255,0.18)`, background: 'rgba(7,10,18,0.85)', backdropFilter: 'blur(12px)', padding: '24px 24px 20px', position: 'relative', overflow: 'hidden' }}>
                 {/* Top gradient line */}
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${T.cyan}, ${T.purple})` }} />
+
+                {/* Scan beam */}
+                <div style={{ position: 'absolute', left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, rgba(47,230,255,0.18), transparent)', animation: 'scanBeam 3s linear infinite', pointerEvents: 'none' }} />
 
                 {/* Header */}
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 18 }}>
@@ -365,65 +363,55 @@ export default function Home() {
                     <div style={{ fontSize: 13, fontWeight: 700, color: T.textPrimary, marginBottom: 3 }}>Financial Intelligence Score</div>
                     <div style={{ fontSize: 11, color: T.textMuted }}>Live · Updated now</div>
                   </div>
-                  <motion.div
-                    animate={{ boxShadow: [`0 0 0px ${T.green}`, `0 0 10px ${T.green}66`, `0 0 0px ${T.green}`] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 11px', borderRadius: 999, background: 'rgba(49,233,129,0.1)', border: `1px solid rgba(49,233,129,0.3)` }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 11px', borderRadius: 999, background: 'rgba(49,233,129,0.1)', border: `1px solid rgba(49,233,129,0.3)` }}>
                     <span style={{ width: 6, height: 6, borderRadius: '50%', background: T.green, animation: 'insightPulse 1.5s ease-in-out infinite' }} />
                     <span style={{ fontSize: 10, fontWeight: 700, color: T.green, letterSpacing: '0.06em' }}>INTELLIGENCE ACTIVE</span>
-                  </motion.div>
+                  </div>
                 </div>
 
-                {/* Score gauge */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 22, position: 'relative' }}>
-                  <div style={{ position: 'relative', width: 140, height: 140 }}>
-                    {/* Outer glow ring */}
-                    <motion.div
-                      animate={{ opacity: [0.3, 0.7, 0.3], scale: [1, 1.04, 1] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                      style={{ position: 'absolute', inset: -8, borderRadius: '50%', background: `radial-gradient(circle, rgba(47,230,255,0.08) 0%, transparent 70%)`, pointerEvents: 'none' }} />
-                    {/* Orbital dots */}
-                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-                      style={{ position: 'absolute', inset: 0, borderRadius: '50%' }}>
-                      <div style={{ position: 'absolute', top: 4, left: '50%', width: 6, height: 6, borderRadius: '50%', background: T.cyan, transform: 'translateX(-50%)', boxShadow: `0 0 8px ${T.cyan}` }} />
-                    </motion.div>
-                    <motion.div animate={{ rotate: -360 }} transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
-                      style={{ position: 'absolute', inset: 8, borderRadius: '50%' }}>
-                      <div style={{ position: 'absolute', bottom: 2, left: '50%', width: 5, height: 5, borderRadius: '50%', background: T.purple, transform: 'translateX(-50%)', boxShadow: `0 0 8px ${T.purple}` }} />
-                    </motion.div>
+                {/* Score gauge — exact from commit 366d115 */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+                  <div style={{ position: 'relative', width: 134, height: 134, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {/* Pulse rings */}
+                    <div style={{ position: 'absolute', width: 134, height: 134, borderRadius: '50%', border: '1px solid rgba(47,230,255,0.2)', animation: 'pulseRing 3s ease-out infinite' }} />
+                    <div style={{ position: 'absolute', width: 134, height: 134, borderRadius: '50%', border: '1px solid rgba(122,60,255,0.15)', animation: 'pulseRing 3s 1.2s ease-out infinite' }} />
+                    {/* Orbit container 1 — cyan dot */}
+                    <div style={{ position: 'absolute', width: 134, height: 134, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ position: 'absolute', width: 8, height: 8, borderRadius: '50%', background: '#2FE6FF', top: '50%', left: '50%', marginTop: -4, marginLeft: -4, animation: 'orbitSpin 4s linear infinite', boxShadow: '0 0 8px #2FE6FF' }} />
+                    </div>
+                    {/* Orbit container 2 — purple dot */}
+                    <div style={{ position: 'absolute', width: 134, height: 134, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ position: 'absolute', width: 6, height: 6, borderRadius: '50%', background: '#7A3CFF', top: '50%', left: '50%', marginTop: -3, marginLeft: -3, animation: 'orbitSpin2 3s linear infinite', boxShadow: '0 0 6px #7A3CFF' }} />
+                    </div>
                     {/* SVG arc */}
-                    <svg width="140" height="140" style={{ transform: 'rotate(-90deg)', position: 'absolute', top: 0, left: 0 }}>
-                      <circle cx="70" cy="70" r="56" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="9" />
-                      <circle cx="70" cy="70" r="56" fill="none" stroke="url(#scoreGrad2)" strokeWidth="9"
-                        strokeDasharray={`${2 * Math.PI * 56 * 0.72} ${2 * Math.PI * 56 * 0.28}`} strokeLinecap="round" />
+                    <svg width="120" height="120" style={{ transform: 'rotate(-90deg)', position: 'absolute' }}>
+                      <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
+                      <circle cx="60" cy="60" r="50" fill="none" stroke="url(#scoreGrad)" strokeWidth="8"
+                        strokeDasharray={`${2 * Math.PI * 50 * 0.72} ${2 * Math.PI * 50 * 0.28}`} strokeLinecap="round" />
                       <defs>
-                        <linearGradient id="scoreGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                           <stop offset="0%" stopColor={T.cyan} />
                           <stop offset="100%" stopColor={T.purple} />
                         </linearGradient>
                       </defs>
                     </svg>
                     {/* Score number */}
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                      <div style={{ fontFamily: T.fontDisplay, fontSize: 36, fontWeight: 900, color: T.textPrimary, lineHeight: 1 }}>72</div>
+                    <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <div style={{ fontFamily: T.fontDisplay, fontSize: 34, fontWeight: 900, color: T.textPrimary, lineHeight: 1 }}>72</div>
                       <div style={{ fontSize: 11, color: T.textSecondary, marginTop: 3 }}>/100</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Progress bars */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 18 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginBottom: 18 }}>
                   {[['Cash Flow', 78, T.green], ['Investments', 65, T.cyan], ['Insurance', 55, T.amber], ['Debt', 82, T.green]].map(([label, pct, color]) => (
                     <div key={String(label)}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
-                        <span style={{ color: T.textSecondary }}>{label}</span>
-                        <span style={{ color: String(color), fontWeight: 600 }}>{pct}%</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: T.textSecondary, marginBottom: 4 }}>
+                        <span>{label}</span><span style={{ color: String(color), fontWeight: 600 }}>{pct}%</span>
                       </div>
-                      <div style={{ height: 5, borderRadius: 3, background: 'rgba(255,255,255,0.05)' }}>
-                        <motion.div
-                          initial={{ width: 0 }} animate={{ width: `${pct}%` }}
-                          transition={{ duration: 1.2, delay: 0.6, ease: 'easeOut' }}
-                          style={{ height: '100%', borderRadius: 3, background: String(color), boxShadow: `0 0 8px ${String(color)}66` }} />
+                      <div style={{ height: 5, borderRadius: 3, background: 'rgba(255,255,255,0.06)' }}>
+                        <div style={{ height: '100%', width: `${pct}%`, borderRadius: 3, background: String(color), opacity: 0.9, boxShadow: `0 0 6px ${String(color)}66` }} />
                       </div>
                     </div>
                   ))}
