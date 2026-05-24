@@ -792,4 +792,10 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 22, textAlign: 'center', fontSize: 11, color
+        <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 22, textAlign: 'center', fontSize: 11, color: T.textSecondary }}>
+          © 2026 FinHealth360. For informational purposes only. Not financial advice.
+        </div>
+      </footer>
+    </div>
+  );
+}
