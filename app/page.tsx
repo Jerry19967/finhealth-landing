@@ -1,1053 +1,779 @@
 'use client';
-import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
-import { AlertTriangle, ArrowRight, BarChart3, Bot, Calculator, CheckCircle, ChevronRight, Compass, Heart, Lightbulb, PieChart, Search, Shield, ShieldCheck, Sparkles, Star, Award, TrendingUp, Zap } from 'lucide-react';
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Shield, Zap, TrendingUp, Bot, Calculator, PieChart, Heart, ChevronRight, Star, ShieldCheck, Award, BarChart3, Compass, Target, Wallet, AlertTriangle, CheckCircle, X, Sparkles, Lock, Globe, Trash2, FileText, Menu } from 'lucide-react';
 
+const C = {
+  bg:     "#050816",
+  card:   "#0B1020",
+  border: "rgba(255,255,255,0.08)",
+  blue:   "#00D4FF",
+  purple: "#7B61FF",
+  green:  "#00E676",
+  red:    "#FF4D6D",
+  amber:  "#FFB547",
+  text:   "#F0F4FF",
+  muted:  "#8B95B0",
+  grad1:  "linear-gradient(135deg, #00D4FF 0%, #7B61FF 100%)",
+  grad2:  "linear-gradient(135deg, #00E676 0%, #00D4FF 100%)",
+};
 
-// ─── Unified tokens - matches AppLayout exactly ───────────────────────────────
-const T = {
-  cyan:         "#2FE6FF",
-  purple:       "#7A3CFF",
-  green:        "#31E981",
-  amber:        "#EF9F27",
-  red:          "#FF5050",
-  pageBg:       "#070A12",
-  textPrimary:  "#F2F5FF",
-  textSecondary:"#9AA6BF",
-  textMuted:    "rgba(255,255,255,0.3)",
-  border:       "rgba(255,255,255,0.06)",
-  borderMid:    "rgba(255,255,255,0.08)",
-  fontDisplay:  "Bricolage Grotesque, sans-serif",
-  gradPrimary:  "linear-gradient(135deg, #2FE6FF 0%, #7A3CFF 100%)",
-  gradSuccess:  "linear-gradient(135deg, #31E981 0%, #2FE6FF 100%)",
-} as const;
+const fadeUp = { hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] } } };
+const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
+const scaleIn = { hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: "backOut" } } };
 
-const capabilities = [
-  { icon: Heart,      color: T.cyan,   title: "Financial Health Score",  desc: "Your Agent scores every dimension of your finances - and monitors changes automatically." },
-  { icon: TrendingUp, color: "#2D7BFF", title: "Investment Analysis",    desc: "Your Agent detects underperforming SIPs, missing investments, and portfolio gaps." },
-  { icon: Shield,     color: T.purple,  title: "Insurance Analyzer",     desc: "Your Agent uncovers hidden charges and flags policies draining your returns." },
-  { icon: Calculator, color: T.cyan,   title: "Tax Optimization",        desc: "Your Agent compares regimes, finds deductions you missed, and tells you exactly what to claim." },
-  { icon: BarChart3,  color: "#2D7BFF", title: "Loan Planning",          desc: "Your Agent flags when your EMI burden is too high and tells you the optimal prepayment move." },
-  { icon: Bot,        color: T.purple,  title: "Talk to Your Agent",     desc: "Ask anything. Your Agent already knows your numbers - answers are specific to you, not generic." },
-];
-
-const problems = [
-  { icon: AlertTriangle, color: T.red,    title: "Sold products, not advice",      desc: "35% of Indians have never reviewed their finances - not once. The system profits from that confusion." },
-  { icon: Search,        color: T.amber,  title: "Hidden charges drain your wealth",        desc: "India's net household savings are at a 50-year low. Fees buried in fine print are a silent contributor." },
-  { icon: Compass,       color: T.purple, title: "88% expect things to get worse",           desc: "88% of salaried Indians anticipate greater financial uncertainty in the next 5 years. Most are guessing what to do." },
-];
-
-const steps = [
-  { n: "01", title: "Tell your Agent your numbers",    desc: "Enter basic info securely - no documents, no bank access required." },
-  { n: "02", title: "Your Agent runs a full analysis", desc: "Your Agent scans every dimension of your finances and scores them - instantly, automatically." },
-  { n: "03", title: "Agent tells you what to do next", desc: "No guessing. Your Agent gives you a clear action plan - specific to your numbers." },
-];
-
-// ─── Ticker items - no unverifiable claims ────────────────────────────────────
-// Removed "10,000+ users" and "₹2.4Cr saved" - unverifiable claims damage trust
-// for Indian users who are skeptical of fintech. Replaced with process-based trust.
-const tickerItems = [
-  { icon: ShieldCheck, color: T.green,  text: "No bank access required" },
-  { icon: Shield,      color: T.purple, text: "Your data is never sold" },
-  { icon: Award,       color: T.cyan,   text: "No commissions - ever" },
-  { icon: Zap,         color: T.amber,  text: "Score ready in 60 seconds" },
-  { icon: Star,        color: T.green,  text: "Built for India" },
-  { icon: ShieldCheck, color: T.cyan,   text: "Cancel anytime, no lock-in" },
-  { icon: Shield,      color: T.green,  text: "No bank access required" },
-  { icon: Award,       color: T.purple, text: "Your data is never sold" },
-  { icon: Zap,         color: T.cyan,   text: "No commissions - ever" },
-  { icon: Star,        color: T.amber,  text: "Score ready in 60 seconds" },
-  { icon: ShieldCheck, color: T.green,  text: "Built for India" },
-  { icon: Shield,      color: T.cyan,   text: "Cancel anytime, no lock-in" },
-];
-
-
-const COMPETITORS = [
-  { id: "ca",       label: "CA / RIA",      abbr: "CA", cx: 19, cy: 22, desc: "5,000/session. Inaccessible to most." },
-  { id: "scripbox", label: "Scripbox",       abbr: "S",  cx: 25, cy: 35, desc: "MF advice - needs account login." },
-  { id: "fi",       label: "Fi / Jupiter",   abbr: "Fi", cx: 20, cy: 68, desc: "Neobank - shows balance, not a plan." },
-  { id: "groww",    label: "Groww",          abbr: "G",  cx: 28, cy: 78, desc: "Tracks SIPs. Doesn't score your health." },
-  { id: "cleartax", label: "ClearTax",       abbr: "CT", cx: 68, cy: 75, desc: "Tax filing only - one-time, not ongoing." },
-  { id: "chatgpt",  label: "Generic AI",     abbr: "AI", cx: 76, cy: 64, desc: "No India salary, EMI or SIP context." },
-  { id: "excel",    label: "Excel / manual", abbr: "XL", cx: 60, cy: 82, desc: "Effort with no output - no score, no plan." },
-];
-
-
-function useInView(threshold?: number) {
-  threshold = threshold ?? 0.15;
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
-  useEffect(function() {
-    const obs = new IntersectionObserver(function(entries) {
-      if (entries[0].isIntersecting) { setInView(true); obs.disconnect(); }
-    }, { threshold: threshold });
-    if (ref.current) obs.observe(ref.current);
-    return function() { obs.disconnect(); };
+function CursorGlow() {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    const h = (e: MouseEvent) => setPos({ x: e.clientX, y: e.clientY });
+    window.addEventListener('mousemove', h);
+    return () => window.removeEventListener('mousemove', h);
   }, []);
-  return { ref, inView };
+  return (
+    <div style={{ position: 'fixed', left: pos.x - 200, top: pos.y - 200, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,212,255,0.06) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 1, transition: 'left 0.15s ease, top 0.15s ease' }} />
+  );
 }
 
-function ParticleField() {
-  const pts = Array.from({ length: 50 }, function(_, i) {
-    return {
-      id: i, x: (i * 17.3) % 100, y: (i * 23.7) % 100,
-      size: (i % 3) + 0.8, dur: 15 + (i % 12), delay: (i * 0.3) % 8,
-      color: i % 3 === 0 ? '#2FE6FF' : i % 3 === 1 ? '#7A3CFF' : '#31E981',
-      opacity: 0.07 + (i % 5) * 0.04,
-    };
-  });
+function Particles() {
+  const pts = Array.from({ length: 60 }, (_, i) => ({
+    id: i, x: (i * 17.3) % 100, y: (i * 23.7) % 100,
+    size: (i % 4) * 0.6 + 0.6,
+    dur: 12 + (i % 15),
+    delay: (i * 0.4) % 10,
+    color: i % 3 === 0 ? C.blue : i % 3 === 1 ? C.purple : C.green,
+    opacity: 0.06 + (i % 6) * 0.03,
+  }));
   return (
     <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
-      {pts.map(function(p) {
-        return (
-          <div key={p.id} style={{
-            position: 'absolute', left: p.x + '%', top: p.y + '%',
-            width: p.size, height: p.size, borderRadius: '50%',
-            background: p.color, opacity: p.opacity,
-            animation: 'particleDrift ' + p.dur + 's ' + p.delay + 's ease-in-out infinite alternate',
-          }} />
-        );
-      })}
+      {pts.map(p => (
+        <motion.div key={p.id}
+          style={{ position: 'absolute', left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size, borderRadius: '50%', background: p.color, opacity: p.opacity }}
+          animate={{ y: [0, -30, 0], x: [0, 15, 0], opacity: [p.opacity, p.opacity * 2.5, p.opacity] }}
+          transition={{ duration: p.dur, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      ))}
     </div>
   );
 }
 
-function PositioningMap() {
-  const [hovered, setHovered] = useState(null as string | null);
-  const [tooltip, setTooltip] = useState(null as {x:number;y:number;text:string;label:string}|null);
-  const [pulse, setPulse] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setPulse(p => p + 1), 2000);
-    return () => clearInterval(t);
-  }, []);
+function Background() {
   return (
-    <div style={{ marginTop: 32, borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.07)", background: "rgba(7,10,18,0.6)", maxWidth: 900, margin: "32px auto 0" }}>
-      <div style={{ padding: "20px 24px 0", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8 }}>
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#F2F5FF", marginBottom: 4 }}>Where every finance app sits and where we don't</div>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>Hover any dot to see what they actually do</div>
-        </div>
-        <div style={{ display: "flex", gap: 16, fontSize: 12, color: "rgba(255,255,255,0.3)", alignItems: "center" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 5 }}><span style={{ width: 8, height: 8, borderRadius: "50%", background: "#1D9E75", display: "inline-block" }} />FinHealth360</span>
-          <span style={{ display: "flex", alignItems: "center", gap: 5 }}><span style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "inline-block" }} />Competitors</span>
-        </div>
-      </div>
-      <div style={{ position: "relative", width: "100%", paddingTop: "56%", margin: "12px 0 0" }}>
-        <svg viewBox="0 0 500 280" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }} xmlns="http://www.w3.org/2000/svg">
-          <rect x="0" y="0" width="250" height="140" fill="rgba(255,255,255,0.008)" />
-          <rect x="250" y="0" width="250" height="140" fill="rgba(47,230,255,0.025)" />
-          <rect x="0" y="140" width="250" height="140" fill="rgba(255,255,255,0.004)" />
-          <rect x="250" y="140" width="250" height="140" fill="rgba(255,255,255,0.008)" />
-          <line x1="250" y1="0" x2="250" y2="280" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
-          <line x1="0" y1="140" x2="500" y2="140" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
-          <rect x="256" y="6" width="238" height="128" rx="6" fill="none" stroke="rgba(47,230,255,0.15)" strokeWidth="1" strokeDasharray="4 3" />
-          <text x="375" y="20" textAnchor="middle" fill="rgba(47,230,255,0.4)" fontSize="8" letterSpacing="1">OPEN TERRITORY</text>
-          <text x="250" y="12" textAnchor="middle" fill="rgba(255,255,255,0.22)" fontSize="8">gives clear action plan</text>
-          <text x="250" y="276" textAnchor="middle" fill="rgba(255,255,255,0.22)" fontSize="8">shows data only</text>
-          <text x="4" y="136" fill="rgba(255,255,255,0.22)" fontSize="8">needs bank login</text>
-          <text x="496" y="136" textAnchor="end" fill="rgba(255,255,255,0.22)" fontSize="8">works from any document</text>
-          <circle cx="355" cy="62" r={18 + (pulse % 2) * 4} fill="none" stroke="#1D9E75" strokeWidth="0.5" opacity={0.15 + (pulse % 2) * 0.1} />
-          <circle cx="355" cy="62" r="16" fill="#1D9E75" opacity={hovered && hovered !== "fh" ? 0.4 : 1} style={{ transition: "opacity 0.3s" }} />
-          <text x="355" y="58" textAnchor="middle" fill="white" fontSize="6" fontWeight="700">FIN</text>
-          <text x="355" y="68" textAnchor="middle" fill="white" fontSize="6" fontWeight="700">HEALTH</text>
-          <text x="382" y="52" fill="#1D9E75" fontSize="9" fontWeight="700">FinHealth360</text>
-          <text x="382" y="64" fill="rgba(47,230,255,0.7)" fontSize="7.5">any doc - score - action plan</text>
-          <text x="382" y="75" fill="rgba(255,255,255,0.25)" fontSize="7">only one in this quadrant</text>
-          {COMPETITORS.map((c) => {
-            const cx = (c.cx / 100) * 500;
-            const cy = (c.cy / 100) * 280;
-            const isHov = hovered === c.id;
-            const isDimmed = hovered !== null && hovered !== c.id;
-            return (
-              <g key={c.id} style={{ cursor: "pointer" }}
-                onMouseEnter={() => { setHovered(c.id); setTooltip({ x: c.cx, y: c.cy, text: c.desc, label: c.label }); }}
-                onMouseLeave={() => { setHovered(null); setTooltip(null); }}>
-                <circle cx={cx} cy={cy} r={isHov ? 11 : 8}
-                  fill={isHov ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.1)"}
-                  stroke={isHov ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.2)"}
-                  strokeWidth="1" opacity={isDimmed ? 0.3 : 1}
-                  style={{ transition: "opacity 0.2s, transform 0.2s, background 0.2s, color 0.2s" }} />
-                <text x={cx} y={cy + 3.5} textAnchor="middle"
-                  fill={isDimmed ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.7)"}
-                  fontSize="6" fontWeight="600" style={{ pointerEvents: "none" }}>{c.abbr}</text>
-                <text x={cx + 13} y={cy - 2}
-                  fill={isDimmed ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.45)"}
-                  fontSize="7.5" style={{ pointerEvents: "none" }}>{c.label}</text>
-              </g>
-            );
-          })}
-          {tooltip && (
-            <g>
-              <rect x={Math.min((tooltip.x / 100) * 500, 330)} y={Math.max((tooltip.y / 100) * 280 - 50, 8)} width={155} height={34} rx="5" fill="rgba(10,15,30,0.97)" stroke="rgba(47,230,255,0.3)" strokeWidth="0.8" />
-              <text x={Math.min((tooltip.x / 100) * 500, 330) + 8} y={Math.max((tooltip.y / 100) * 280 - 50, 8) + 13} fill="#2FE6FF" fontSize="8" fontWeight="700">{tooltip.label}</text>
-              <text x={Math.min((tooltip.x / 100) * 500, 330) + 8} y={Math.max((tooltip.y / 100) * 280 - 50, 8) + 26} fill="rgba(255,255,255,0.5)" fontSize="7.5">{tooltip.text}</text>
-            </g>
-          )}
-        </svg>
-      </div>
-      <div style={{ padding: "14px 24px 20px", borderTop: "1px solid rgba(255,255,255,0.05)", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
-        {[["Any document", "Salary slip, bank statement, tax return"], ["Instant score", "0-100 FinHealth Score in 60 seconds"], ["Clear action plan", "Exactly what to fix first - not generic advice"]].map(([t, d]) => (
-          <div key={t} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#1D9E75", marginTop: 4, flexShrink: 0 }} />
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "#F2F5FF" }}>{t}</div>
-              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", marginTop: 1 }}>{d}</div>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+      <motion.div animate={{ borderRadius: ['60% 40% 30% 70%/60% 30% 70% 40%', '30% 60% 70% 40%/50% 60% 30% 60%', '60% 40% 30% 70%/60% 30% 70% 40%'] }} transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ position: 'absolute', top: '-10%', left: '-10%', width: '55vw', height: '55vw', background: 'radial-gradient(ellipse, rgba(0,212,255,0.07) 0%, transparent 65%)' }} />
+      <motion.div animate={{ borderRadius: ['40% 60% 60% 40%/40% 60% 40% 60%', '60% 40% 40% 60%/60% 40% 60% 40%', '40% 60% 60% 40%/40% 60% 40% 60%'] }} transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ position: 'absolute', top: '30%', right: '-10%', width: '50vw', height: '50vw', background: 'radial-gradient(ellipse, rgba(123,97,255,0.08) 0%, transparent 65%)' }} />
+      <motion.div animate={{ borderRadius: ['50% 50% 30% 70%/60% 40% 60% 40%', '70% 30% 60% 40%/40% 60% 40% 60%', '50% 50% 30% 70%/60% 40% 60% 40%'] }} transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ position: 'absolute', bottom: '-5%', left: '20%', width: '40vw', height: '40vw', background: 'radial-gradient(ellipse, rgba(0,230,118,0.05) 0%, transparent 65%)' }} />
+      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
     </div>
   );
 }
 
-export default function Home() {
-  
-  const isLoggedIn = false;
-  const [menuOpen, setMenuOpen] = useState(false);
+function Section({ children, id, style }: { children: React.ReactNode; id?: string; style?: React.CSSProperties }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+  return (
+    <motion.section id={id} ref={ref} initial="hidden" animate={inView ? "visible" : "hidden"} variants={stagger}
+      style={{ position: 'relative', zIndex: 2, padding: '100px 4vw', ...style }}>
+      {children}
+    </motion.section>
+  );
+}
 
-  // ── FIX: No server warmup on landing page ─────────────────────────────────
-  // The original "Warming up servers..." disabled CTA is the single worst trust
-  // signal for a financial product. A new user's first interaction is a broken
-  // button telling them the product is asleep. We remove the server status check
-  // entirely from the landing page - just navigate directly. The backend check
-  // (if needed) should happen silently in the background, never blocking the CTA.
-  const handleCTA = () => {
-    window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score';
-  };
+function Badge({ children, color = C.blue }: { children: React.ReactNode; color?: string }) {
+  return (
+    <motion.div variants={fadeUp} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 999, background: `${color}12`, border: `1px solid ${color}30`, marginBottom: 20 }}>
+      <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }} style={{ width: 6, height: 6, borderRadius: '50%', background: color, display: 'inline-block' }} />
+      <span style={{ fontSize: 12, fontWeight: 600, color, letterSpacing: '0.05em' }}>{children}</span>
+    </motion.div>
+  );
+}
 
+function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollYProgress } = useScroll();
+  useEffect(() => {
+    const u = scrollYProgress.on('change', v => setScrolled(v > 0.01));
+    return u;
+  }, [scrollYProgress]);
   return (
     <>
-      
-    <div className="min-h-screen" style={{ background: T.pageBg }}>
-      <ParticleField />
-      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
-        <div style={{ position: 'absolute', top: '5%', left: '-5%', width: '45vw', height: '45vw', background: 'radial-gradient(ellipse, rgba(47,230,255,0.07) 0%, transparent 65%)', animation: 'morphBlob1 18s ease-in-out infinite, float1 22s ease-in-out infinite', animationFillMode: 'both' }} />
-        <div style={{ position: 'absolute', top: '35%', right: '-8%', width: '40vw', height: '40vw', background: 'radial-gradient(ellipse, rgba(122,60,255,0.08) 0%, transparent 65%)', animation: 'morphBlob2 22s ease-in-out infinite, float2 28s ease-in-out infinite' }} />
-        <div style={{ position: 'absolute', bottom: '5%', left: '25%', width: '32vw', height: '32vw', background: 'radial-gradient(ellipse, rgba(49,233,129,0.05) 0%, transparent 65%)', animation: 'morphBlob1 26s 5s ease-in-out infinite reverse, float3 18s ease-in-out infinite' }} />
-        <div style={{ position: 'absolute', top: '60%', left: '10%', width: '20vw', height: '20vw', background: 'radial-gradient(ellipse, rgba(239,159,39,0.04) 0%, transparent 65%)', animation: 'morphBlob2 14s ease-in-out infinite, float1 16s ease-in-out infinite reverse' }} />
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.011) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.011) 1px, transparent 1px)', backgroundSize: '60px 60px', animation: 'gridMove 10s linear infinite', opacity: 0.7 }} />
-      </div>
-
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap');
-
-        @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
-        @keyframes orbDrift { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(20px,-15px) scale(1.04)} 66%{transform:translate(-15px,10px) scale(0.97)} }
-        @keyframes heroFadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes cardFloat { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-8px)} }
-        @keyframes insightPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-        @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-        @keyframes gradientShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-
-        .hero-fade-1 { animation: heroFadeUp 0.6s 0.1s ease both; }
-        .hero-fade-2 { animation: heroFadeUp 0.6s 0.2s ease both; }
-        .hero-fade-3 { animation: heroFadeUp 0.6s 0.3s ease both; }
-        .hero-fade-4 { animation: heroFadeUp 0.6s 0.4s ease both; }
-        .hero-fade-5 { animation: heroFadeUp 0.6s 0.5s ease both; }
-        .hero-card   { animation: heroFadeUp 0.7s 0.3s ease both, cardFloat 5s 1s ease-in-out infinite; }
-
-        .section-fade { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
-        .section-fade.visible { opacity: 1; transform: translateY(0); }
-        .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
-        .card-hover:hover { transform: translateY(-4px); }
-
-        .pricing-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .pricing-card:hover { transform: translateY(-6px); }
-        .pricing-popular { transform: none; }
-        .pricing-popular:hover { transform: translateY(-6px); }
-
-        .ticker-wrap { overflow: hidden; }
-        .ticker-track { display: flex; animation: ticker 32s linear infinite; width: max-content; }
-        .ticker-track:hover { animation-play-state: paused; }
-
-        /* ── Unified button classes - same as AppLayout ── */
-        .btn-primary {
-          background: linear-gradient(135deg, #2FE6FF 0%, #7A3CFF 100%);
-          color: #fff; border: none; cursor: pointer; font-weight: 600;
-          transition: opacity 0.2s ease, transform 0.2s ease;
-        }
-        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-        .btn-ghost {
-          background: transparent;
-          border: 1px solid rgba(255,255,255,0.15);
-          color: #9AA6BF; cursor: pointer;
-          transition: border-color 0.2s, color 0.2s;
-        }
-        .btn-ghost:hover { border-color: rgba(255,255,255,0.3); color: #F2F5FF; }
-
-        
-        
-        @keyframes morphBlob1 { 0%,100%{border-radius:60% 40% 30% 70%/60% 30% 70% 40%} 25%{border-radius:30% 60% 70% 40%/50% 60% 30% 60%} 50%{border-radius:50% 60% 30% 70%/40% 40% 60% 50%} 75%{border-radius:70% 30% 50% 60%/30% 70% 40% 60%} }
-        @keyframes morphBlob2 { 0%,100%{border-radius:40% 60% 60% 40%/40% 60% 40% 60%} 33%{border-radius:60% 40% 40% 60%/60% 40% 60% 40%} 66%{border-radius:50% 50% 40% 60%/40% 50% 60% 50%} }
-        @keyframes antigravity { 0%,100%{transform:translateY(0px) rotate(0deg)} 25%{transform:translateY(-18px) rotate(2deg)} 50%{transform:translateY(-8px) rotate(-1deg)} 75%{transform:translateY(-22px) rotate(1.5deg)} }
-        @keyframes antigravity2 { 0%,100%{transform:translateY(0px) rotate(0deg)} 33%{transform:translateY(-14px) rotate(-2deg)} 66%{transform:translateY(-24px) rotate(1deg)} }
-        @keyframes antigravity3 { 0%,100%{transform:translateY(0px)} 40%{transform:translateY(-10px)} 70%{transform:translateY(-20px)} }
-        @keyframes orbitSpin { 0%{transform:rotate(0deg) translateX(80px) rotate(0deg)} 100%{transform:rotate(360deg) translateX(80px) rotate(-360deg)} }
-        @keyframes orbitSpin2 { 0%{transform:rotate(0deg) translateX(55px) rotate(0deg)} 100%{transform:rotate(-360deg) translateX(55px) rotate(360deg)} }
-        @keyframes glowPulse { 0%,100%{opacity:0.5;filter:blur(20px)} 50%{opacity:1;filter:blur(30px)} }
-        @keyframes textGlow { 0%,100%{text-shadow:0 0 20px rgba(47,230,255,0.3)} 50%{text-shadow:0 0 40px rgba(47,230,255,0.7),0 0 80px rgba(122,60,255,0.3)} }
-        @keyframes borderRotate { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-        @keyframes floatChip { 0%,100%{transform:translateY(0px) translateX(0px)} 33%{transform:translateY(-12px) translateX(5px)} 66%{transform:translateY(-6px) translateX(-4px)} }
-        @keyframes scanBeam { 0%{top:0%;opacity:0.6} 100%{top:100%;opacity:0} }
-        .antigravity-1 { animation: antigravity 6s ease-in-out infinite; }
-        .antigravity-2 { animation: antigravity2 8s ease-in-out infinite; }
-        .antigravity-3 { animation: antigravity3 7s ease-in-out infinite; }
-        .float-chip { animation: floatChip 5s ease-in-out infinite; }
-        .text-glow { animation: textGlow 3s ease-in-out infinite; }
-        @keyframes particleDrift { 0%{transform:translate(0,0)} 100%{transform:translate(30px,-40px)} }
-        @keyframes float1 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(40px,-30px) scale(1.08)} 66%{transform:translate(-20px,20px) scale(0.95)} }
-        @keyframes float2 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-30px,20px) scale(1.05)} 66%{transform:translate(25px,-15px) scale(0.97)} }
-        @keyframes float3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(15px,25px)} }
-        @keyframes pulseRing { 0%{transform:scale(0.85);opacity:0.6} 100%{transform:scale(2.2);opacity:0} }
-        @keyframes gridMove { 0%{background-position:0 0} 100%{background-position:60px 60px} }
-        .glow-on-hover { transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.2s ease; }
-        .glow-on-hover:hover { box-shadow: 0 0 28px rgba(47,230,255,0.13); transform: translateY(-4px); }
-        .step-connector { background: linear-gradient(90deg, rgba(47,230,255,0.2), rgba(122,60,255,0.2)); }
-      `}</style>
-
-      {/* ── Navbar ─────────────────────────────────────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 z-50"
-        style={{ background: "rgba(7,10,18,0.9)", backdropFilter: "blur(8px)", borderBottom: `1px solid ${T.border}` }}>
-        <div style={{ maxWidth: "100%", padding: "0 4vw", height: "64px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-
-          {/* Logo - identical to AppLayout sidebar */}
-          <button type="button" onClick={() => window.location.href = '/'}
-            style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center", gap: "8px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <img src="/logo-icon.svg" alt="" style={{ height: "38px", width: "38px", objectFit: "contain", flexShrink: 0 }} />
-              <span style={{ fontSize: "22px", fontWeight: 800, letterSpacing: "-0.5px", lineHeight: 1 }}>
-                <span style={{ color: "#60D0FF" }}>FinHealth</span><span style={{ color: "#FF2020" }}>360</span>
-              </span>
-            </div>
-          </button>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
-            {(["Features", "Tools", "Pricing"] as const).map((l) => (
-              <button type="button" key={l}
-                className="text-sm font-medium transition-colors hover:text-white"
-                style={{ color: T.textSecondary, background: "none", border: "none", cursor: "pointer" }}
-                onClick={() => document.getElementById(l.toLowerCase())?.scrollIntoView({ behavior: 'smooth' })}>
-                {l}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3">
-            {isLoggedIn ? (
-              <button type="button" className="btn-primary px-4 py-2 rounded-lg text-sm flex items-center gap-1.5"
-                onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/app/dashboard'}>
-                Go to Dashboard <ArrowRight size={14} />
-              </button>
-            ) : (
-              <>
-                <button type="button" className="btn-ghost" style={{ padding: "8px 16px", borderRadius: "8px", fontSize: "14px" }}
-                  onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/login'}>Login</button>
-                <button type="button" className="btn-primary px-4 py-2 rounded-lg text-sm"
-                  onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>Check My Score</button>
-              </>
-            )}
-            <button type="button" style={{ display: "none", background: "none", border: "none", cursor: "pointer" }}
-              onClick={() => setMenuOpen(!menuOpen)}>
-              <div className="w-5 h-0.5 bg-white mb-1" /><div className="w-5 h-0.5 bg-white mb-1" /><div className="w-5 h-0.5 bg-white" />
-            </button>
-          </div>
+      <motion.div style={{ scaleX: scrollYProgress, position: 'fixed', top: 0, left: 0, right: 0, height: 2, background: C.grad1, transformOrigin: '0%', zIndex: 100 }} />
+      <motion.nav initial={{ y: -80 }} animate={{ y: 0 }} transition={{ duration: 0.6, ease: 'easeOut' }}
+        style={{ position: 'fixed', top: 2, left: 0, right: 0, zIndex: 99, padding: '0 4vw', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: scrolled ? 'rgba(5,8,22,0.85)' : 'transparent', backdropFilter: scrolled ? 'blur(20px)' : 'none', borderBottom: scrolled ? `1px solid ${C.border}` : 'none', transition: 'all 0.3s ease' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.6 }}
+            style={{ width: 36, height: 36, borderRadius: 10, background: C.grad1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Heart size={18} color="#fff" />
+          </motion.div>
+          <span style={{ fontSize: 20, fontWeight: 800, letterSpacing: '-0.5px' }}>
+            <span style={{ color: C.blue }}>FinHealth</span><span style={{ color: C.red }}>360</span>
+          </span>
         </div>
-
-        {menuOpen && (
-          <div className="md:hidden px-4 pb-4" style={{ background: "rgba(7,10,18,0.98)" }}>
-            {(["Features", "Tools", "Pricing"] as const).map((l) => (
-              <button type="button" key={l} className="block w-full text-left py-2 text-sm"
-                style={{ color: T.textSecondary, background: "none", border: "none", cursor: "pointer" }}
-                onClick={() => { setMenuOpen(false); document.getElementById(l.toLowerCase())?.scrollIntoView({ behavior: 'smooth' }); }}>
-                {l}
-              </button>
-            ))}
-            {isLoggedIn ? (
-              <button type="button" className="block w-full text-left py-2 text-sm font-semibold"
-                style={{ background: T.gradPrimary, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", border: "none", cursor: "pointer" }}
-                onClick={() => { setMenuOpen(false); window.location.href = 'https://financialai-frontend-lime.vercel.app/app/dashboard'; }}>Go to Dashboard →</button>
-            ) : (
-              <button type="button" className="block w-full text-left py-2 text-sm font-semibold"
-                style={{ background: T.gradPrimary, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", border: "none", cursor: "pointer" }}
-                onClick={() => { setMenuOpen(false); window.location.href = 'https://financialai-frontend-lime.vercel.app/login'; }}>Login / Sign Up</button>
-            )}
-          </div>
-        )}
-      </nav>
-
-      {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative pt-32 pb-24 overflow-hidden" style={{ minHeight: "92vh", display: "flex", alignItems: "center" }}>
-        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 0 }}>
-          <div style={{ position: "absolute", top: "-5%", left: "-5%", width: "55%", height: "55%", background: `radial-gradient(ellipse, rgba(47,230,255,0.09) 0%, transparent 65%)`, animation: "orbDrift 14s ease-in-out infinite" }} />
-          <div style={{ position: "absolute", bottom: "0%", right: "0%", width: "45%", height: "50%", background: `radial-gradient(ellipse, rgba(122,60,255,0.12) 0%, transparent 65%)`, animation: "orbDrift 18s ease-in-out infinite reverse" }} />
-          <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)`, backgroundSize: "60px 60px", opacity: 0.5 }} />
-        </div>
-
-        <div style={{ zIndex: 1, display: "flex", alignItems: "center", justifyContent: "space-between", gap: "3rem", flexWrap: "wrap", width: "100%", maxWidth: "100%", position: "relative", padding: "0 4vw" }}>
-
-          {/* Left */}
-          <div style={{ maxWidth: 560, flex: "1 1 340px" }}>
-
-            <div className="hero-fade-1 inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5"
-              style={{ background: `rgba(47,230,255,0.08)`, border: `1px solid rgba(47,230,255,0.22)` }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: T.cyan, display: "inline-block", animation: "insightPulse 2s ease-in-out infinite" }} />
-              <span className="text-xs font-medium" style={{ color: T.cyan }}>83% of Indians know they need a financial plan. Only 35% have one. - ABSLI 2024</span>
-            </div>
-
-            <h1 className="hero-fade-2 font-extrabold mb-5 leading-tight"
-              style={{ fontSize: "clamp(2.4rem, 5vw, 3.8rem)", fontFamily: T.fontDisplay, letterSpacing: "-0.04em", lineHeight: 1.1 }}>
-              <span style={{ background: "linear-gradient(to bottom, #F2F5FF 0%, rgba(242,245,255,0.55) 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                You're not bad with money.
-              </span>
-              <br />
-              <span style={{ background: T.gradPrimary, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                You just don't know where you stand.
-              </span>
-            </h1>
-
-            <p className="hero-fade-3 text-lg mb-6" style={{ color: T.textSecondary, lineHeight: 1.7, maxWidth: 460 }}>
-              India's household savings rate just hit a 50-year low. 88% of salaried Indians expect more financial uncertainty. Upload any document - salary slip, bank statement, tax return - and get your FinHealth Score, your risks, and exactly what to do next. In 60 seconds.
-            </p>
-
-            {/* ── FIX: Hero CTA - no server warmup, always ready ─────────────
-                The original button showed "Warming up servers..." and was disabled
-                on page load. For a fintech product, this reads as unreliable.
-                CTA is always active. Backend check happens silently if needed.
-            ─────────────────────────────────────────────────────────────────── */}
-            <div className="hero-fade-4 flex flex-col sm:flex-row gap-4 mb-6">
-              <button type="button"
-                className="btn-primary px-8 py-3.5 rounded-xl text-base flex items-center justify-center gap-2"
-                onClick={handleCTA}
-                data-ocid="hero.activate_agent.button"
-              >
-                Check My Financial Health - Free <ArrowRight size={18} />
-              </button>
-              <button type="button" className="btn-ghost px-8 py-3.5 rounded-xl text-base"
-                onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>
-                See How It Works
-              </button>
-            </div>
-
-            {/* Trust signals - process-based, verifiable */}
-            <div className="hero-fade-4 flex flex-wrap items-center gap-x-4 gap-y-1 mb-8"
-              style={{ fontSize: "12px", color: T.textSecondary }}>
-              <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                <ShieldCheck size={12} style={{ color: T.green }} />No bank access needed
-              </span>
-              <span style={{ color: T.textMuted }}>·</span>
-              <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                <Award size={12} style={{ color: T.cyan }} />Zero commissions
-              </span>
-              <span style={{ color: T.textMuted }}>·</span>
-              <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                <Shield size={12} style={{ color: T.purple }} />Data never sold
-              </span>
-            </div>
-
-            {/* Stats */}
-            <div className="hero-fade-5 flex flex-wrap gap-6">
-              {[["400M", "Indians with no financial guidance", T.cyan], ["5.3%", "Savings rate - 50-yr low (RBI)", T.green], ["60s", "To your FinHealth Score", T.purple]].map(([v, l, c]) => (
-                <div key={l} className="flex items-center gap-3">
-                  <div style={{ width: 1, height: 32, background: T.border }} />
-                  <div>
-                    <div className="text-2xl font-bold" style={{ color: c as string, fontFamily: T.fontDisplay }}>{v}</div>
-                    <div className="text-xs mt-0.5" style={{ color: T.textSecondary }}>{l}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right - Hero card ────────────────────────────────────────────────
-              FIX: Changed demo score from 46 (bad) to 72 (good-but-improvable).
-              Showing a bad financial score as the hero visual makes users anxious
-              before they've even signed up. 72 says "this is useful" and
-              "there's room to improve" without screaming "your finances are broken".
-              Also changed Insurance from 25% (alarming) to 55% (fixable).
-          ──────────────────────────────────────────────────────────────────── */}
-          <div className="hero-card" style={{ flex: "1 1 300px", maxWidth: 400 }}>
-            <div style={{
-              borderRadius: 20, border: `1px solid rgba(47,230,255,0.18)`,
-              background: "rgba(7,10,18,0.7)", backdropFilter: "blur(8px)",
-              padding: "24px", position: "relative", overflow: "hidden",
-            }}>
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "1px", background: `linear-gradient(90deg, transparent, ${T.cyan}, ${T.purple}, transparent)` }} />
-
-              <div className="flex items-center justify-between mb-5">
-                <div>
-                  <div className="text-xs font-medium mb-1" style={{ color: T.textSecondary }}>Financial Health Score</div>
-                  <div className="text-xs" style={{ color: T.textMuted }}>Updated just now</div>
-                </div>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-                  style={{ background: `rgba(47,230,255,0.1)`, border: `1px solid rgba(47,230,255,0.2)` }}>
-                  <Heart size={16} style={{ color: T.cyan }} />
-                </div>
-              </div>
-
-              {/* Score ring - 72/100 (good, not alarming) */}
-              <div className="flex items-center justify-center mb-5" style={{ position: 'relative' }}>
-                <div style={{ position: 'absolute', width: 134, height: 134, borderRadius: '50%', border: '1px solid rgba(47,230,255,0.2)', animation: 'pulseRing 3s ease-out infinite' }} />
-                <div style={{ position: 'absolute', width: 134, height: 134, borderRadius: '50%', border: '1px solid rgba(122,60,255,0.15)', animation: 'pulseRing 3s 1.2s ease-out infinite' }} />
-                <div style={{ position: 'absolute', width: 170, height: 170, borderRadius: '50%' }}>
-                  <div style={{ position: 'absolute', width: 8, height: 8, borderRadius: '50%', background: '#2FE6FF', top: '50%', left: '50%', marginTop: -4, marginLeft: -4, animation: 'orbitSpin 4s linear infinite', boxShadow: '0 0 8px #2FE6FF' }} />
-                </div>
-                <div style={{ position: 'absolute', width: 140, height: 140, borderRadius: '50%' }}>
-                  <div style={{ position: 'absolute', width: 6, height: 6, borderRadius: '50%', background: '#7A3CFF', top: '50%', left: '50%', marginTop: -3, marginLeft: -3, animation: 'orbitSpin2 3s linear infinite', boxShadow: '0 0 6px #7A3CFF' }} />
-                </div>
-                <div style={{ position: "relative", width: 120, height: 120 }}>
-                  <svg width="120" height="120" style={{ transform: "rotate(-90deg)" }}>
-                    <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
-                    <circle cx="60" cy="60" r="50" fill="none" stroke="url(#scoreGrad)" strokeWidth="8"
-                      strokeDasharray={`${2 * Math.PI * 50 * 0.72} ${2 * Math.PI * 50 * 0.28}`}
-                      strokeLinecap="round" />
-                    <defs>
-                      <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor={T.cyan} />
-                        <stop offset="100%" stopColor={T.purple} />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                  <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                    <div className="text-3xl font-bold text-white">72</div>
-                    <div className="text-xs" style={{ color: T.textSecondary }}>/ 100</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Dimension bars */}
-              <div className="space-y-2 mb-4">
-                {[["Cash Flow", 78, T.green], ["Investments", 65, T.cyan], ["Insurance", 55, T.amber], ["Debt", 82, T.green]].map(([label, pct, color]) => (
-                  <div key={label as string}>
-                    <div className="flex justify-between text-xs mb-1" style={{ color: T.textSecondary }}>
-                      <span>{label}</span><span style={{ color: color as string }}>{pct}%</span>
-                    </div>
-                    <div style={{ height: 4, borderRadius: 2, background: "rgba(255,255,255,0.06)" }}>
-                      <div style={{ height: "100%", width: `${pct}%`, borderRadius: 2, background: color as string, opacity: 0.85 }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Agent insight - opportunity, not alarm */}
-              <div style={{ background: `rgba(47,230,255,0.06)`, border: `1px solid rgba(47,230,255,0.15)`, borderRadius: 10, padding: "0.75rem 0.9rem", display: "flex", alignItems: "flex-start", gap: 8 }}>
-                <span style={{ width: 7, height: 7, borderRadius: "50%", background: T.cyan, marginTop: 3, flexShrink: 0, animation: "insightPulse 2.5s 1s ease-in-out infinite", display: "inline-block" }} />
-                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", margin: 0, lineHeight: 1.5 }}>
-                  💡 Your Agent found ₹18,000/yr in insurance savings - review detected
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Ticker - process trust, not social proof numbers ───────────────── */}
-      <div style={{ borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}`, background: "rgba(255,255,255,0.015)", padding: "14px 0", overflow: "hidden" }}>
-        <div className="ticker-track">
-          {tickerItems.map((item, i) => (
-            <div key={i} className="flex items-center gap-2 px-8" style={{ whiteSpace: "nowrap" }}>
-              <item.icon size={14} style={{ color: item.color, flexShrink: 0 }} />
-              <span style={{ fontSize: "13px", color: T.textSecondary, fontWeight: 500 }}>{item.text}</span>
-              <span style={{ width: 4, height: 4, borderRadius: "50%", background: T.border, display: "inline-block", marginLeft: "16px" }} />
-            </div>
+        <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
+          {['Features', 'Tools', 'Pricing', 'Security'].map(l => (
+            <motion.button key={l} whileHover={{ color: '#fff' }} onClick={() => document.getElementById(l.toLowerCase())?.scrollIntoView({ behavior: 'smooth' })}
+              style={{ background: 'none', border: 'none', color: C.muted, cursor: 'pointer', fontSize: 14, fontWeight: 500 }}>{l}</motion.button>
           ))}
         </div>
-      </div>
-
-      {/* ── Problems ───────────────────────────────────────────────────────── */}
-      <section className="py-20 px-4">
-        <div style={{ width: "100%", padding: "0 4vw" }}>
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4"
-              style={{ background: `rgba(255,80,80,0.08)`, border: `1px solid rgba(255,80,80,0.2)` }}>
-              <AlertTriangle size={12} style={{ color: T.red }} />
-              <span className="text-xs font-medium" style={{ color: T.red }}>The Problem</span>
-            </div>
-            <h2 className="text-3xl font-bold text-white mb-3" style={{ fontFamily: T.fontDisplay, letterSpacing: "-0.03em" }}>Why 35% of Indians never check their finances</h2>
-            <p style={{ color: T.textSecondary }}>It is not laziness. The system was never built for them. Source: ABSLI A-Nishchit Index 2024.</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {problems.map((p, i) => (
-              <div key={p.title} className="card-hover p-6 relative overflow-hidden"
-                style={{ background: `${p.color}08`, border: `1px solid ${p.color}25`, borderLeft: `3px solid ${p.color}`, borderRadius: 14 }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
-                  style={{ background: `${p.color}15`, border: `1px solid ${p.color}35` }}>
-                  <p.icon size={20} style={{ color: p.color }} />
-                </div>
-                <h3 className="font-semibold text-white mb-2">{p.title}</h3>
-                <p className="text-sm" style={{ color: T.textSecondary, lineHeight: 1.6 }}>{p.desc}</p>
-              </div>
-            ))}
-          </div>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <motion.button whileHover={{ borderColor: 'rgba(255,255,255,0.3)', color: '#fff' }}
+            style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.muted, padding: '8px 18px', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 500 }}
+            onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/login'}>Login</motion.button>
+          <motion.button whileHover={{ opacity: 0.9, scale: 1.02 }} whileTap={{ scale: 0.98 }}
+            style={{ background: C.grad1, border: 'none', color: '#fff', padding: '8px 20px', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
+            onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>Get Started Free</motion.button>
         </div>
-      </section>
-
-      {/* ── Old Way vs Agent ───────────────────────────────────────────────── */}
-      <section className="py-20 px-4">
-        <div style={{ width: "100%", padding: "0 4vw" }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-3" style={{ fontFamily: T.fontDisplay, letterSpacing: "-0.03em" }}>
-              Tools React. <span style={{ background: T.gradPrimary, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Agents Act.</span>
-            </h2>
-            <p style={{ color: T.textSecondary, maxWidth: 520, margin: "0 auto" }}>
-              The difference between <span style={{ color: "rgba(255,255,255,0.7)" }}>checking your money</span> and having it{" "}
-              <span style={{ color: T.cyan, fontWeight: 600 }}>managed for you.</span>
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="p-6 rounded-2xl" style={{ background: "rgba(255,80,80,0.04)", border: `1px solid rgba(255,80,80,0.15)` }}>
-              <div className="flex items-center gap-2 mb-6">
-                <span style={{ fontSize: 14 }}>❌</span>
-                <span className="font-bold text-sm" style={{ color: T.red }}>Without FinHealth Agent</span>
-              </div>
-              {[
-                "You check your finances - when you remember",
-                "You find problems after they've grown",
-                "You guess what to do next",
-                "You react to financial surprises",
-                "You Google advice that doesn't fit your situation",
-                "You pay hidden charges you never knew existed",
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3 mb-4">
-                  <span style={{ color: T.red, marginTop: 2, flexShrink: 0 }}>✕</span>
-                  <span className="text-sm" style={{ color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="p-6 rounded-2xl relative overflow-hidden" style={{ background: `rgba(47,230,255,0.04)`, border: `1px solid rgba(47,230,255,0.2)` }}>
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: T.gradPrimary }} />
-              <div className="flex items-center gap-2 mb-6">
-                <span style={{ fontSize: 14 }}>🤖</span>
-                <span className="font-bold text-sm" style={{ color: T.cyan }}>With Your FinHealth Agent</span>
-              </div>
-              {[
-                "Your Agent monitors your finances automatically",
-                "Your Agent detects risks before they become problems",
-                "Your Agent tells you exactly what to do next",
-                "Your Agent alerts you before surprises happen",
-                "Your Agent gives advice specific to YOUR numbers",
-                "Your Agent finds hidden charges and leaks for you",
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3 mb-4">
-                  <span style={{ color: T.cyan, marginTop: 2, flexShrink: 0 }}>✓</span>
-                  <span className="text-sm text-white" style={{ lineHeight: 1.6 }}>{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── How It Works ───────────────────────────────────────────────────── */}
-      <section id="tools" className="py-20 px-4">
-        <div style={{ width: "100%", padding: "0 4vw" }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-3" style={{ fontFamily: T.fontDisplay, letterSpacing: "-0.03em" }}>How Your Agent Works</h2>
-            <p style={{ color: T.textSecondary }}>Set it up once. Your Agent handles the rest.</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 relative">
-            <div className="hidden md:block absolute step-connector" style={{ height: 1, top: "20px", left: "16.67%", right: "16.67%" }} />
-            {steps.map((s, i) => (
-              <div key={s.n} className="relative card-hover"
-                style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${T.border}`, borderRadius: 16, padding: "1.5rem" }}>
-                <div className="mb-4">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm"
-                    style={{ background: `rgba(47,230,255,0.1)`, border: `1px solid rgba(47,230,255,0.3)`, color: T.cyan, fontFamily: T.fontDisplay }}>{s.n}</div>
-                </div>
-                <h3 className="font-semibold text-white mb-2">{s.title}</h3>
-                <p className="text-sm" style={{ color: T.textSecondary, lineHeight: 1.6 }}>{s.desc}</p>
-                {i < 2 && <div className="hidden md:block absolute -right-4 top-5 z-10" style={{ fontSize: 18, color: `rgba(47,230,255,0.4)` }}>→</div>}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Features ───────────────────────────────────────────────────────── */}
-      <section id="features" className="py-20 px-4">
-        <div style={{ width: "100%", padding: "0 4vw" }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-3" style={{ fontFamily: T.fontDisplay, letterSpacing: "-0.03em" }}>What Your Agent Does</h2>
-            <p style={{ color: T.textSecondary }}>A fully-fledged AI Agent - not a tool you operate, but an agent that works for you.</p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {capabilities.map((c, i) => (
-              <div key={c.title} className="card-hover glow-on-hover p-6 relative overflow-hidden group"
-                style={{ background: `${c.color}08`, border: `1px solid ${c.color}20`, borderRadius: 16 }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
-                  style={{ background: `${c.color}15`, border: `1px solid ${c.color}35` }}>
-                  <c.icon size={20} style={{ color: c.color }} />
-                </div>
-                <h3 className="font-semibold text-white mb-2">{c.title}</h3>
-                <p className="text-sm" style={{ color: T.textSecondary, lineHeight: 1.6 }}>{c.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      
-      {/* Tools Hub */}
-      <section id="tools-hub" className="py-20 px-4">
-        <div style={{ width: "100%", padding: "0 4vw" }}>
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style={{ background: "rgba(47,230,255,0.08)", border: "1px solid rgba(47,230,255,0.22)" }}>
-              <Zap size={12} style={{ color: T.cyan }} />
-              <span className="text-xs font-medium" style={{ color: T.cyan }}>Financial Toolkit</span>
-            </div>
-            <h2 className="text-3xl font-bold text-white mb-3" style={{ fontFamily: T.fontDisplay, letterSpacing: "-0.03em" }}>Every tool your finances need in one place</h2>
-            <p style={{ color: T.textSecondary, maxWidth: 520, margin: "0 auto" }}>20 plus calculators, analyzers and AI tools personalized to your income, goals and situation.</p>
-          </div>
-          <div className="mb-10"><div className="flex items-center gap-3 mb-5"><div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(45,123,255,0.12)", border: "1px solid rgba(45,123,255,0.3)" }}><TrendingUp size={16} style={{ color: "#2D7BFF" }} /></div><h3 className="text-base font-bold text-white">Investments</h3><div style={{ flex: 1, height: 1, background: T.border }} /></div><div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">{([{title:"SIP Calculator",desc:"Calculate your SIP maturity value and wealth growth over time"},{title:"Portfolio Analyzer",desc:"Analyze your portfolio performance, allocation and gaps"},{title:"Return Calculator",desc:"Calculate CAGR and annualized returns on any investment"},{title:"Risk Analysis",desc:"Assess your portfolio risk and get rebalancing signals"}]).map((tool)=>(<a key={tool.title} href="https://financialai-frontend-lime.vercel.app/app/investments" style={{ background:"rgba(45,123,255,0.05)",border:"1px solid rgba(45,123,255,0.15)",borderRadius:14,padding:"18px 18px 14px",textDecoration:"none",display:"block",transition:"transform 0.2s" }} onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";}} onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";}}><div className="font-semibold text-sm text-white mb-1">{tool.title}</div><div className="text-xs" style={{ color:T.textSecondary,lineHeight:1.6 }}>{tool.desc}</div><div className="text-xs font-semibold mt-3 flex items-center gap-1" style={{ color:"#2D7BFF" }}>Explore <ChevronRight size={11} /></div></a>))}</div></div>
-          <div className="mb-10"><div className="flex items-center gap-3 mb-5"><div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:"rgba(122,60,255,0.12)",border:"1px solid rgba(122,60,255,0.3)" }}><Shield size={16} style={{ color:T.purple }} /></div><h3 className="text-base font-bold text-white">Insurance</h3><div style={{ flex:1,height:1,background:T.border }} /></div><div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{([{title:"Policy Analyzer",desc:"Upload any policy and get real IRR and hidden charges revealed"},{title:"IRR Calculator",desc:"Calculate the true Internal Rate of Return on your insurance policy"},{title:"Coverage Checker",desc:"Check if your life and health coverage is adequate for your needs"}]).map((tool)=>(<a key={tool.title} href="https://financialai-frontend-lime.vercel.app/app/insurance" style={{ background:"rgba(122,60,255,0.05)",border:"1px solid rgba(122,60,255,0.15)",borderRadius:14,padding:"18px 18px 14px",textDecoration:"none",display:"block",transition:"transform 0.2s" }} onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";}} onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";}}><div className="font-semibold text-sm text-white mb-1">{tool.title}</div><div className="text-xs" style={{ color:T.textSecondary,lineHeight:1.6 }}>{tool.desc}</div><div className="text-xs font-semibold mt-3 flex items-center gap-1" style={{ color:T.purple }}>Explore <ChevronRight size={11} /></div></a>))}</div></div>
-          <div className="mb-10"><div className="flex items-center gap-3 mb-5"><div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:"rgba(49,233,129,0.12)",border:"1px solid rgba(49,233,129,0.3)" }}><Compass size={16} style={{ color:T.green }} /></div><h3 className="text-base font-bold text-white">Financial Planning</h3><div style={{ flex:1,height:1,background:T.border }} /></div><div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{([{title:"Retirement Planner",desc:"Plan your retirement corpus and monthly savings needed",href:"https://financialai-frontend-lime.vercel.app/app/planning"},{title:"Goal Planning",desc:"Set financial goals and track progress with smart projections",href:"https://financialai-frontend-lime.vercel.app/app/planning"},{title:"Wealth Projection",desc:"Project your net worth growth over the next 10-30 years",href:"https://financialai-frontend-lime.vercel.app/app/planning"}]).map((tool)=>(<a key={tool.title} href={tool.href} style={{ background:"rgba(49,233,129,0.04)",border:"1px solid rgba(49,233,129,0.15)",borderRadius:14,padding:"18px 18px 14px",textDecoration:"none",display:"block",transition:"transform 0.2s" }} onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";}} onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";}}><div className="font-semibold text-sm text-white mb-1">{tool.title}</div><div className="text-xs" style={{ color:T.textSecondary,lineHeight:1.6 }}>{tool.desc}</div><div className="text-xs font-semibold mt-3 flex items-center gap-1" style={{ color:T.green }}>Explore <ChevronRight size={11} /></div></a>))}</div></div>
-          <div className="mb-10"><div className="flex items-center gap-3 mb-5"><div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:"rgba(239,159,39,0.12)",border:"1px solid rgba(239,159,39,0.3)" }}><Calculator size={16} style={{ color:T.amber }} /></div><h3 className="text-base font-bold text-white">Loans</h3><div style={{ flex:1,height:1,background:T.border }} /></div><div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{([{title:"EMI Calculator",desc:"Calculate your monthly EMI for home, car, or personal loans instantly"},{title:"Loan Comparison",desc:"Compare multiple loan offers side by side on real total cost"},{title:"Prepayment Strategy",desc:"Find the optimal prepayment plan to save the most on interest"}]).map((tool)=>(<a key={tool.title} href="https://financialai-frontend-lime.vercel.app/app/loans" style={{ background:"rgba(239,159,39,0.04)",border:"1px solid rgba(239,159,39,0.15)",borderRadius:14,padding:"18px 18px 14px",textDecoration:"none",display:"block",transition:"transform 0.2s" }} onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";}} onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";}}><div className="font-semibold text-sm text-white mb-1">{tool.title}</div><div className="text-xs" style={{ color:T.textSecondary,lineHeight:1.6 }}>{tool.desc}</div><div className="text-xs font-semibold mt-3 flex items-center gap-1" style={{ color:T.amber }}>Explore <ChevronRight size={11} /></div></a>))}</div></div>
-          <div className="mb-10"><div className="flex items-center gap-3 mb-5"><div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:"rgba(47,230,255,0.12)",border:"1px solid rgba(47,230,255,0.3)" }}><PieChart size={16} style={{ color:T.cyan }} /></div><h3 className="text-base font-bold text-white">Tax</h3><div style={{ flex:1,height:1,background:T.border }} /></div><div className="grid sm:grid-cols-2 gap-4">{([{title:"Tax Calculator",desc:"Compare old vs new income tax regime for your exact income"},{title:"Deduction Optimizer",desc:"Find all deductions under 80C, 80D, HRA, NPS and more"}]).map((tool)=>(<a key={tool.title} href="https://financialai-frontend-lime.vercel.app/app/tax" style={{ background:"rgba(47,230,255,0.04)",border:"1px solid rgba(47,230,255,0.15)",borderRadius:14,padding:"18px 18px 14px",textDecoration:"none",display:"block",transition:"transform 0.2s" }} onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";}} onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";}}><div className="font-semibold text-sm text-white mb-1">{tool.title}</div><div className="text-xs" style={{ color:T.textSecondary,lineHeight:1.6 }}>{tool.desc}</div><div className="text-xs font-semibold mt-3 flex items-center gap-1" style={{ color:T.cyan }}>Explore <ChevronRight size={11} /></div></a>))}</div></div>
-          <div className="mb-10"><div className="flex items-center gap-3 mb-5"><div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:"rgba(122,60,255,0.12)",border:"1px solid rgba(122,60,255,0.3)" }}><Bot size={16} style={{ color:T.purple }} /></div><h3 className="text-base font-bold text-white">AI Tools</h3><div style={{ flex:1,height:1,background:T.border }} /></div><div className="grid sm:grid-cols-2 gap-4">{([{title:"Financial Assistant",desc:"Chat with AI for instant answers already knows your numbers",href:"https://financialai-frontend-lime.vercel.app/app/ai"},{title:"Report Explainer",desc:"Upload any financial document and get a plain-English summary",href:"https://financialai-frontend-lime.vercel.app/app/ai"}]).map((tool)=>(<a key={tool.title} href={tool.href} style={{ background:"rgba(122,60,255,0.05)",border:"1px solid rgba(122,60,255,0.2)",borderRadius:14,padding:"18px 18px 14px",textDecoration:"none",display:"block",transition:"transform 0.2s" }} onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";}} onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";}}><div className="font-semibold text-sm text-white mb-1">{tool.title}</div><div className="text-xs" style={{ color:T.textSecondary,lineHeight:1.6 }}>{tool.desc}</div><div className="text-xs font-semibold mt-3 flex items-center gap-1" style={{ color:T.purple }}>Explore <ChevronRight size={11} /></div></a>))}</div></div>
-          <div className="text-center mt-8"><a href="https://financialai-frontend-lime.vercel.app/app/tools" className="btn-primary inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-semibold" style={{ textDecoration:"none" }}>Explore All Tools <ArrowRight size={16} /></a></div>
-        </div>
-      </section>
-
-      {/* ── Pricing ────────────────────────────────────────────────────────── */}
-      <section id="pricing" className="py-20 px-4">
-        <div style={{ width: "100%", padding: "0 4vw" }}>
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4"
-              style={{ background: `rgba(49,233,129,0.1)`, border: `1px solid rgba(49,233,129,0.25)` }}>
-              <Sparkles size={12} style={{ color: T.green }} />
-              <span className="text-xs font-medium" style={{ color: T.green }}>Simple Pricing</span>
-            </div>
-            <h2 className="text-3xl font-bold text-white mb-3" style={{ fontFamily: T.fontDisplay, letterSpacing: "-0.03em" }}>
-              Choose How Your Agent Works For You
-            </h2>
-            <p style={{ color: T.textSecondary, maxWidth: 520, margin: "0 auto" }}>
-              Start free. Upgrade when you want more intelligence, more automation, and more control.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start" style={{ width: "100%", padding: "0 4vw" }}>
-            {/* FREE */}
-            <div className="pricing-card p-7 rounded-2xl flex flex-col"
-              style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${T.border}`, backdropFilter: "blur(8px)", minHeight: 480 }}>
-              <div className="mb-5">
-                <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: T.textSecondary }}>Free</div>
-                <div className="text-4xl font-extrabold text-white mb-1" style={{ fontFamily: T.fontDisplay }}>₹0</div>
-                <div className="text-xs mb-3" style={{ color: T.textSecondary }}>Forever free</div>
-              </div>
-              <ul className="space-y-2.5 flex-1 mb-6">
-                {["Financial Health Score", "Basic tools (SIP, EMI, calculators)", "Limited AI Agent chat (10/day)", "Basic insights & reports"].map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm" style={{ color: T.textSecondary }}>
-                    <CheckCircle size={13} style={{ color: T.green, flexShrink: 0, marginTop: 2 }} />{f}
-                  </li>
-                ))}
-              </ul>
-              <button type="button" className="btn-ghost w-full py-3 rounded-xl text-sm font-semibold"
-                onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>Activate My Agent (Free)</button>
-            </div>
-
-            {/* PRO - most popular */}
-            <div className="pricing-popular pricing-card p-7 rounded-2xl relative overflow-hidden flex flex-col"
-              style={{ background: "rgba(47,230,255,0.05)", border: "1px solid rgba(47,230,255,0.35)", backdropFilter: "blur(8px)", boxShadow: "0 0 60px rgba(47,230,255,0.08)", minHeight: 480 }}>
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: T.gradPrimary }} />
-              <div className="absolute top-4 right-4 text-xs font-bold px-2.5 py-1 rounded-full"
-                style={{ background: T.gradPrimary, color: "#fff" }}>Most Popular</div>
-              <div className="mb-5">
-                <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: T.cyan }}>Pro</div>
-                <div className="text-4xl font-extrabold text-white mb-1" style={{ fontFamily: T.fontDisplay }}>₹99</div>
-                <div className="text-xs mb-3" style={{ color: T.textSecondary }}>per month · cancel anytime</div>
-              </div>
-              <ul className="space-y-2.5 flex-1 mb-5">
-                {["Everything in Free", "5 AI Agent reports/month", "Advanced insights & recommendations", "Portfolio & tax intelligence", "Goal-based planning", "AI Agent chat (20/day)"].map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm" style={{ color: "#C5D3E8" }}>
-                    <CheckCircle size={13} style={{ color: T.cyan, flexShrink: 0, marginTop: 2 }} />{f}
-                  </li>
-                ))}
-              </ul>
-              <button type="button" className="btn-primary w-full py-3 rounded-xl text-sm font-semibold"
-                onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>Upgrade to Pro</button>
-              <p className="text-center text-xs mt-2" style={{ color: T.textMuted }}>7-day refund · no lock-in</p>
-            </div>
-
-            {/* ELITE */}
-            <div className="pricing-card p-7 rounded-2xl relative overflow-hidden flex flex-col"
-              style={{ background: "rgba(49,233,129,0.03)", border: "1px solid rgba(49,233,129,0.3)", backdropFilter: "blur(8px)", minHeight: 480 }}>
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: T.gradSuccess }} />
-              <div className="mb-5">
-                <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: T.green }}>Elite</div>
-                <div className="text-4xl font-extrabold text-white mb-1" style={{ fontFamily: T.fontDisplay }}>₹499</div>
-                <div className="text-xs mb-3" style={{ color: T.textSecondary }}>per month · cancel anytime</div>
-              </div>
-              <ul className="space-y-2.5 flex-1 mb-5">
-                {["Everything in Pro", "Unlimited AI Agent reports", "Weekly personalized insights", "Risk analysis & wealth projection", "Retirement & insurance planning", "Full tax optimization", "Unlimited AI Agent chat", "PDF report downloads", "Dedicated advisor support"].map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm" style={{ color: "#C5D3E8" }}>
-                    <CheckCircle size={13} style={{ color: T.green, flexShrink: 0, marginTop: 2 }} />{f}
-                  </li>
-                ))}
-              </ul>
-              <button type="button" className="w-full py-3 rounded-xl text-sm font-bold"
-                style={{ background: T.gradSuccess, color: "#070A12", border: "none", cursor: "pointer" }}
-                onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>Get Elite</button>
-              <p className="text-center text-xs mt-2" style={{ color: T.textMuted }}>7-day refund · no lock-in</p>
-            </div>
-            
-            {/* ELITE+ AGENT PLAN */}
-<div className="pricing-card p-7 rounded-2xl relative overflow-hidden flex flex-col"
-  style={{ background: "rgba(122,60,255,0.05)", border: "1px solid rgba(122,60,255,0.35)", backdropFilter: "blur(8px)", minHeight: 480 }}>
-  <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: T.gradPrimary }} />
-  <div className="absolute top-4 right-4 text-xs font-bold px-2.5 py-1 rounded-full"
-    style={{ background: "rgba(122,60,255,0.2)", color: T.purple, border: "1px solid rgba(122,60,255,0.4)" }}>
-
-  </div>
-  <div className="mb-5">
-    <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: T.purple }}>Elite+ Agent Plan</div>
-    <div className="text-4xl font-extrabold text-white mb-1" style={{ fontFamily: T.fontDisplay }}>₹999</div>
-    <div className="text-xs mb-3" style={{ color: T.textSecondary }}>per month · fully autonomous</div>
-  </div>
-  <div className="text-xs font-semibold uppercase tracking-widest mb-2 mt-1" style={{ color: "rgba(122,60,255,0.7)" }}>
-    Agent Features
-  </div>
-  <ul className="space-y-2.5 flex-1 mb-5">
-    {[
-      "Everything in Elite",
-      "Daily automatic financial analysis",
-      "Proactive alerts before problems happen",
-      "Agent works even when you are offline",
-      "Weekly AI financial roadmap",
-      "Continuous risk monitoring",
-      "Full memory across sessions",
-      "Personalised strategy engine",
-      "Priority AI processing",
-    ].map((f) => (
-      <li key={f} className="flex items-start gap-2.5 text-sm" style={{ color: "#C5D3E8" }}>
-        <CheckCircle size={13} style={{ color: T.purple, flexShrink: 0, marginTop: 2 }} />{f}
-      </li>
-    ))}
-  </ul>
-  <button type="button" className="w-full py-3 rounded-xl text-sm font-bold"
-    style={{ background: "rgba(122,60,255,0.15)", color: T.purple, border: "1px solid rgba(122,60,255,0.4)", cursor: "pointer" }}
-    onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>
-    Get Elite+
-  </button>
-  <p className="text-center text-xs mt-2" style={{ color: T.textMuted }}>7-day refund · no lock-in</p>
-</div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Market Reality ─────────────────────────────────────────────── */}
-      <section className="py-20 px-4">
-        <div style={{ width: "100%", padding: "0 4vw" }}>
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4"
-              style={{ background: "rgba(29,158,117,0.08)", border: "1px solid rgba(29,158,117,0.22)" }}>
-              <span className="text-xs font-medium" style={{ color: "#1D9E75" }}>Market Reality</span>
-            </div>
-            <h2 className="text-3xl font-bold text-white mb-3" style={{ fontFamily: T.fontDisplay, letterSpacing: "-0.03em" }}>
-              Where every finance app sits - and where we don't
-            </h2>
-            <p style={{ color: T.textSecondary, maxWidth: 540, margin: "0 auto" }}>
-              No competitor combines: works from any document + gives a clear action plan + built for India's salaried middle class.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-            {([
-              ["88%", "of Indians expect greater financial uncertainty in the next 5 years", "#2FE6FF"],
-              ["35%", "have never reviewed their finances - not once", "#7A3CFF"],
-              ["5.3%", "household savings rate - lowest in 50 years (RBI 2025)", "#31E981"],
-              ["400M", "middle-class Indians with zero access to financial guidance", "#EF9F27"],
-            ] as [string, string, string][]).map(([n, l, c]) => (
-              <div key={n} style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${T.border}`, borderTop: `2px solid ${c}`, borderRadius: 14, padding: "20px 18px" }}>
-                <div className="text-3xl font-extrabold mb-2" style={{ color: c, fontFamily: T.fontDisplay }}>{n}</div>
-                <div className="text-xs" style={{ color: T.textSecondary, lineHeight: 1.6 }}>{l}</div>
-              </div>
-            ))}
-          </div>
-          {/* ── Positioning map ── */}
-          <PositioningMap />
-          <div style={{ marginTop: 20, background: "rgba(47,230,255,0.03)", border: "1px dashed rgba(47,230,255,0.2)", borderRadius: 16, padding: "24px 28px" }}>
-            <div className="text-sm font-semibold mb-2" style={{ color: T.cyan }}>The gap nobody filled - until now</div>
-            <p className="text-sm" style={{ color: T.textSecondary, lineHeight: 1.8, margin: 0 }}>
-              Bank apps show your balance. Groww tracks your SIPs. CAs charge ₹5,000 per session. Generic AI has no India context.
-              None of them take your salary slip and tell you:{" "}
-              <span style={{ color: "rgba(255,255,255,0.85)", fontWeight: 600 }}>your score is 64/100, your EMI ratio is too high, fix this first.</span>
-              {" "}That is exactly what FinHealth does.{" "}
-              <span style={{ color: T.textMuted }}>Sources: ABSLI A-Nishchit Index 2024 · Morgan Stanley India 2025 · RBI Financial Savings Data 2025.</span>
-            </p>
-          </div>
-        </div>
-      </section>
-
-
-      {/* ── Testimonials ───────────────────────────────────────────────────── */}
-      <section className="py-20 px-4">
-        <div style={{ width: "100%", padding: "0 4vw" }}>
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4"
-              style={{ background: "rgba(47,230,255,0.06)", border: "1px solid rgba(47,230,255,0.18)" }}>
-              <span className="text-xs font-medium" style={{ color: T.cyan }}>What users say</span>
-            </div>
-            <h2 className="text-3xl font-bold text-white" style={{ fontFamily: T.fontDisplay, letterSpacing: "-0.03em" }}>
-              Real feedback from real users
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {([
-              {
-                name: "Rohan M.",
-                role: "Software Engineer, Pune",
-                avatar: "RM",
-                color: "#2FE6FF",
-                text: "I always knew I should track my finances but never did. FinHealth gave me a score in 60 seconds and told me exactly what was wrong - my EMI ratio was 48%, way too high. Fixed it in 3 months.",
-                stars: 5,
-              },
-              {
-                name: "Priya S.",
-                role: "Product Manager, Bangalore",
-                avatar: "PS",
-                color: "#31E981",
-                text: "Finally something built for Indian salaries. It understands SIPs, NPS, HRA - not just US 401k stuff. The tax comparison alone saved me ₹18,000 this year.",
-                stars: 5,
-              },
-              {
-                name: "Amit K.",
-                role: "CA, Mumbai",
-                avatar: "AK",
-                color: "#7A3CFF",
-                text: "I recommend this to clients who can't afford a full advisory session. It does the basic financial health check properly - scoring, red flags, and action steps. Solid product.",
-                stars: 5,
-              },
-            ] as {name:string;role:string;avatar:string;color:string;text:string;stars:number}[]).map((t) => (
-              <div key={t.name} className="card-hover p-6 rounded-2xl flex flex-col gap-4"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", backdropFilter: "blur(8px)" }}>
-                <div style={{ display: "flex", gap: 4 }}>
-                  {Array.from({ length: t.stars }).map((_, i) => (
-                    <Star key={i} size={13} style={{ color: "#EF9F27", fill: "#EF9F27" }} />
-                  ))}
-                </div>
-                <p className="text-sm" style={{ color: "rgba(255,255,255,0.65)", lineHeight: 1.75, flex: 1 }}>"{t.text}"</p>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: `${t.color}18`, border: `1px solid ${t.color}30`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: t.color, flexShrink: 0 }}>
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <div className="text-sm font-semibold" style={{ color: "#F2F5FF" }}>{t.name}</div>
-                    <div className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>{t.role}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Security & Trust ───────────────────────────────────────────────── */}
-      <section className="py-16 px-4">
-        <div style={{ width: "100%", padding: "0 4vw" }}>
-          <div style={{ background: "rgba(47,230,255,0.03)", border: "1px solid rgba(47,230,255,0.12)", borderRadius: 24, padding: "40px 36px" }}>
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4"
-                style={{ background: "rgba(49,233,129,0.08)", border: "1px solid rgba(49,233,129,0.2)" }}>
-                <ShieldCheck size={12} style={{ color: "#31E981" }} />
-                <span className="text-xs font-medium" style={{ color: "#31E981" }}>Security & Privacy</span>
-              </div>
-              <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: T.fontDisplay }}>
-                Your financial data is safe with us
-              </h2>
-              <p className="text-sm" style={{ color: "rgba(255,255,255,0.45)", maxWidth: 440, margin: "0 auto" }}>
-                We built FinHealth360 with a simple rule: your data belongs to you, not us.
-              </p>
-            </div>
-            <div className="grid sm:grid-cols-2 gap-5">
-              {([
-                { icon: "🔒", title: "No bank login required", desc: "We never ask for your bank credentials, UPI PIN, or net banking access. Ever." },
-                { icon: "🚫", title: "Your data is never sold", desc: "We have no advertisers. We earn from subscriptions only. Your data has no commercial value to us." },
-                { icon: "🗑️", title: "Delete anytime", desc: "Go to Settings → Delete Account. Your data is permanently erased within 24 hours. No questions." },
-                { icon: "📄", title: "Documents processed & discarded", desc: "Uploaded bank statements are analyzed and immediately discarded. Nothing is stored on our servers." },
-                { icon: "🔐", title: "End-to-end encrypted", desc: "All data is encrypted in transit (TLS 1.3) and at rest. Your profile is private to you alone." },
-                { icon: "🇮🇳", title: "Built for India, stored in India", desc: "Your data stays on Indian servers (Supabase Mumbai region). Compliant with DPDPA 2023." },
-              ] as {icon:string;title:string;desc:string}[]).map((item) => (
-                <div key={item.title} style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "16px", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14 }}>
-                  <span style={{ fontSize: 20, flexShrink: 0, marginTop: 2 }}>{item.icon}</span>
-                  <div>
-                    <div className="text-sm font-semibold mb-1" style={{ color: "#F2F5FF" }}>{item.title}</div>
-                    <div className="text-xs" style={{ color: "rgba(255,255,255,0.4)", lineHeight: 1.65 }}>{item.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="text-center mt-8">
-              <p className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>
-                Questions about privacy? Email us at{" "}
-                <a href="mailto:support@finhealth360.ai" style={{ color: T.cyan, textDecoration: "none" }}>support@finhealth360.ai</a>
-                {" "}— we respond within 24 hours.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-      {/* ── Final CTA ──────────────────────────────────────────────────────── */}
-      <section className="py-24 px-4 text-center relative overflow-hidden">
-        <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at center, rgba(47,230,255,0.07) 0%, transparent 60%)` }} />
-        <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`, backgroundSize: "60px 60px" }} />
-        <div className="relative z-10" style={{ width: "100%", padding: "0 4vw", textAlign: "center" }}>
-          <h2 className="text-3xl font-bold text-white mb-4" style={{ fontFamily: T.fontDisplay, letterSpacing: "-0.03em" }}>
-            88% of Indians expect more financial uncertainty.<br />Be the one who actually does something about it.
-          </h2>
-          <p className="mb-8" style={{ color: T.textSecondary }}>Upload any document - salary slip, bank statement, tax return. Get your FinHealth Score, your risks, and your action plan in under 60 seconds. No bank login. No CA required.</p>
-          <button type="button"
-            className="btn-primary px-10 py-4 rounded-xl text-lg flex items-center gap-2 mx-auto"
-            onClick={handleCTA}>
-            {isLoggedIn ? "Go to Dashboard →" : "Check My Financial Health - Free →"} <ChevronRight size={20} />
-          </button>
-          <div className="flex items-center justify-center gap-6 mt-8 flex-wrap">
-            {[[ShieldCheck, T.green, "100% Private"], [Award, T.cyan, "No hidden fees"], [Shield, T.purple, "No bank access"]].map(([Icon, color, text], i) => (
-              <div key={i} className="flex items-center gap-2">
-                {/* @ts-ignore */}
-                <Icon size={14} style={{ color }} />
-                <span style={{ fontSize: "12px", color: T.textSecondary }}>{text as string}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Footer ─────────────────────────────────────────────────────────── */}
-      <footer className="py-12 px-4" style={{ borderTop: `1px solid ${T.border}` }}>
-        <div style={{ width: "100%", padding: "0 4vw" }}>
-          <div className="grid sm:grid-cols-3 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-6 h-6 rounded flex items-center justify-center" style={{ background: T.gradPrimary }}><Sparkles size={12} /></div>
-                <span className="font-bold" style={{ background: T.gradPrimary, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>FinHealth360</span>
-              </div>
-              <p className="text-xs" style={{ color: T.textSecondary, lineHeight: 1.6 }}>Your personal AI Financial Agent - monitors, detects, and guides. Built for India.</p>
-            </div>
-            <div>
-              <div className="font-semibold text-white text-sm mb-3">Platform</div>
-              <Link href="/app/dashboard"  className="block text-xs mb-2" style={{ color: T.textSecondary }}>Dashboard</Link>
-              <Link href="/app/tools"      className="block text-xs mb-2" style={{ color: T.textSecondary }}>Tools Hub</Link>
-              <Link href="/app/ai"         className="block text-xs mb-2" style={{ color: T.textSecondary }}>AI Assistant</Link>
-              <a    href="#pricing"      className="block text-xs mb-2" style={{ color: T.textSecondary }}>Pricing</a>
-            </div>
-            <div>
-              <div className="font-semibold text-white text-sm mb-3">Legal</div>
-              <Link href="/privacy-policy" className="block text-xs mb-2" style={{ color: T.textSecondary }}>Privacy Policy</Link>
-              <Link href="/terms"          className="block text-xs mb-2" style={{ color: T.textSecondary }}>Terms of Use</Link>
-            </div>
-
-          </div>
-          <div className="pt-6" style={{ borderTop: `1px solid ${T.border}` }}>
-            <p className="text-xs text-center" style={{ color: T.textSecondary }}>© 2026 FinHealth360. For informational purposes only. Not financial advice.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+      </motion.nav>
     </>
   );
 }
 
+function HeroDashboard() {
+  const alerts = [
+    { icon: '🚨', text: 'No SIP detected — start investing', color: C.red },
+    { icon: '💡', text: '₹18,000 tax deduction available', color: C.amber },
+    { icon: '⚠️', text: 'EMI burden at 38% — review loans', color: C.amber },
+    { icon: '✅', text: 'Emergency fund: 4.2 months covered', color: C.green },
+  ];
+  return (
+    <motion.div initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
+      style={{ flex: '1 1 420px', maxWidth: 480, position: 'relative' }}>
+      <motion.div animate={{ y: [0, -12, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ background: 'rgba(11,16,32,0.9)', border: `1px solid rgba(0,212,255,0.2)`, borderRadius: 20, padding: 24, backdropFilter: 'blur(20px)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: C.grad1 }} />
+        <motion.div animate={{ top: ['-5%', '105%'] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
+          style={{ position: 'absolute', left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, rgba(0,212,255,0.5), transparent)', zIndex: 3 }} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <div>
+            <div style={{ fontSize: 12, color: C.muted, marginBottom: 2 }}>FinHealth Score</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>Live · Updated now</div>
+          </div>
+          <motion.div animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 2, repeat: Infinity }}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(0,230,118,0.1)', border: '1px solid rgba(0,230,118,0.3)', borderRadius: 20, padding: '4px 10px' }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.green }} />
+            <span style={{ fontSize: 10, color: C.green, fontWeight: 600 }}>AI ACTIVE</span>
+          </motion.div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20, position: 'relative' }}>
+          <div style={{ position: 'relative', width: 120, height: 120 }}>
+            <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+              style={{ position: 'absolute', inset: -16, borderRadius: '50%' }}>
+              <div style={{ position: 'absolute', top: 0, left: '50%', width: 8, height: 8, borderRadius: '50%', background: C.blue, boxShadow: `0 0 10px ${C.blue}`, marginLeft: -4, marginTop: -4 }} />
+            </motion.div>
+            <motion.div animate={{ rotate: -360 }} transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+              style={{ position: 'absolute', inset: -10, borderRadius: '50%' }}>
+              <div style={{ position: 'absolute', bottom: 0, left: '50%', width: 6, height: 6, borderRadius: '50%', background: C.purple, boxShadow: `0 0 8px ${C.purple}`, marginLeft: -3, marginBottom: -3 }} />
+            </motion.div>
+            {[0, 1].map(i => (
+              <motion.div key={i} animate={{ scale: [1, 1.6], opacity: [0.4, 0] }} transition={{ duration: 2.5, delay: i * 1.2, repeat: Infinity }}
+                style={{ position: 'absolute', inset: -8, borderRadius: '50%', border: `1px solid ${C.blue}` }} />
+            ))}
+            <svg width="120" height="120" style={{ transform: 'rotate(-90deg)' }}>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="8" />
+              <motion.circle cx="60" cy="60" r="50" fill="none" stroke="url(#heroGrad)" strokeWidth="8" strokeLinecap="round"
+                initial={{ strokeDasharray: '0 314' }} animate={{ strokeDasharray: `${314 * 0.72} 314` }} transition={{ duration: 1.5, delay: 0.5, ease: 'easeOut' }} />
+              <defs>
+                <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor={C.blue} />
+                  <stop offset="100%" stopColor={C.purple} />
+                </linearGradient>
+              </defs>
+            </svg>
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }} style={{ fontSize: 28, fontWeight: 800, color: '#fff' }}>72</motion.div>
+              <div style={{ fontSize: 11, color: C.muted }}>/100</div>
+            </div>
+          </div>
+        </div>
+        <div style={{ marginBottom: 16 }}>
+          {([['Cash Flow', 78, C.green], ['Investments', 65, C.blue], ['Insurance', 55, C.amber], ['Debt', 82, C.green]] as [string, number, string][]).map(([label, pct, color], i) => (
+            <div key={label} style={{ marginBottom: 8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: C.muted, marginBottom: 4 }}>
+                <span>{label}</span><span style={{ color }}>{pct}%</span>
+              </div>
+              <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.05)' }}>
+                <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1, delay: 0.8 + i * 0.1, ease: 'easeOut' }}
+                  style={{ height: '100%', borderRadius: 2, background: color, boxShadow: `0 0 8px ${color}` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 11, color: C.muted, marginBottom: 8, fontWeight: 600, letterSpacing: '0.05em' }}>AI ALERTS</div>
+        {alerts.slice(0, 2).map((a, i) => (
+          <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.2 + i * 0.2 }}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', background: `${a.color}08`, border: `1px solid ${a.color}20`, borderRadius: 8, marginBottom: 6 }}>
+            <span style={{ fontSize: 12 }}>{a.icon}</span>
+            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{a.text}</span>
+          </motion.div>
+        ))}
+      </motion.div>
+      <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 4, delay: 1, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ position: 'absolute', top: -20, left: -40, background: 'rgba(11,16,32,0.95)', border: `1px solid rgba(0,230,118,0.3)`, borderRadius: 12, padding: '10px 14px', backdropFilter: 'blur(12px)' }}>
+        <div style={{ fontSize: 10, color: C.muted }}>Net Worth</div>
+        <div style={{ fontSize: 16, fontWeight: 700, color: C.green }}>₹24.6L</div>
+      </motion.div>
+      <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 5, delay: 0.5, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ position: 'absolute', bottom: 20, right: -30, background: 'rgba(11,16,32,0.95)', border: `1px solid rgba(123,97,255,0.3)`, borderRadius: 12, padding: '10px 14px', backdropFilter: 'blur(12px)' }}>
+        <div style={{ fontSize: 10, color: C.muted }}>Monthly SIP</div>
+        <div style={{ fontSize: 16, fontWeight: 700, color: C.purple }}>₹0 ⚠️</div>
+      </motion.div>
+      <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 3.5, delay: 2, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ position: 'absolute', top: '40%', right: -35, background: 'rgba(11,16,32,0.95)', border: `1px solid rgba(0,212,255,0.3)`, borderRadius: 12, padding: '10px 14px', backdropFilter: 'blur(12px)' }}>
+        <div style={{ fontSize: 10, color: C.muted }}>Tax Saved</div>
+        <div style={{ fontSize: 16, fontWeight: 700, color: C.blue }}>₹18K</div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
+function Hero() {
+  return (
+    <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', position: 'relative', zIndex: 2, padding: '100px 4vw 60px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4rem', flexWrap: 'wrap', width: '100%' }}>
+        <div style={{ flex: '1 1 480px', maxWidth: 580 }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 999, background: `${C.blue}12`, border: `1px solid ${C.blue}30`, marginBottom: 24 }}>
+            <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }} style={{ width: 6, height: 6, borderRadius: '50%', background: C.blue, display: 'inline-block' }} />
+            <span style={{ fontSize: 12, fontWeight: 600, color: C.blue }}>India's AI Financial Operating System</span>
+          </motion.div>
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
+            style={{ fontSize: 'clamp(2.8rem, 5.5vw, 4.2rem)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1.08, marginBottom: 24 }}>
+            <span style={{ color: '#F0F4FF' }}>Your Entire<br />Financial Life.</span>
+            <br />
+            <span style={{ background: C.grad1, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Managed by AI.</span>
+          </motion.h1>
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
+            style={{ fontSize: 17, color: C.muted, lineHeight: 1.75, maxWidth: 500, marginBottom: 36 }}>
+            Track wealth, optimize taxes, analyze investments, detect risks, plan retirement — all in one AI-powered platform built for India. Get your FinHealth Score in 60 seconds.
+          </motion.p>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 32 }}>
+            <motion.button whileHover={{ scale: 1.03, boxShadow: `0 0 30px rgba(0,212,255,0.3)` }} whileTap={{ scale: 0.97 }}
+              style={{ background: C.grad1, border: 'none', color: '#fff', padding: '14px 28px', borderRadius: 12, cursor: 'pointer', fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}
+              onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>
+              Start Free <ArrowRight size={16} />
+            </motion.button>
+            <motion.button whileHover={{ borderColor: 'rgba(255,255,255,0.3)', color: '#fff' }} whileTap={{ scale: 0.97 }}
+              style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.muted, padding: '14px 28px', borderRadius: 12, cursor: 'pointer', fontSize: 15, fontWeight: 600 }}
+              onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/app/dashboard'}>
+              Explore Dashboard
+            </motion.button>
+          </motion.div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
+            {([['✔ No bank login', C.green], ['✔ India-focused', C.blue], ['✔ Zero commissions', C.purple], ['✔ AI-powered', C.amber]] as [string, string][]).map(([t, c]) => (
+              <span key={t} style={{ fontSize: 12, color: c, fontWeight: 600 }}>{t}</span>
+            ))}
+          </motion.div>
+        </div>
+        <HeroDashboard />
+      </div>
+    </section>
+  );
+}
+
+function useCounter(target: number, active: boolean, duration = 1800) {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    if (!active) return;
+    let start: number | null = null;
+    const step = (ts: number) => {
+      if (!start) start = ts;
+      const prog = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - prog, 3);
+      setVal(Math.floor(eased * target));
+      if (prog < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [active, target, duration]);
+  return val;
+}
+
+function StatItem({ n, suffix, label, color }: { n: number; suffix: string; label: string; color: string }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true });
+  const val = useCounter(n, inView);
+  return (
+    <motion.div ref={ref} variants={scaleIn} style={{ textAlign: 'center', padding: '32px 24px', background: C.card, border: `1px solid ${C.border}`, borderTop: `2px solid ${color}`, borderRadius: 16 }}>
+      <div style={{ fontSize: 42, fontWeight: 900, color, fontVariantNumeric: 'tabular-nums', marginBottom: 8, textShadow: `0 0 20px ${color}50` }}>{val}{suffix}</div>
+      <div style={{ fontSize: 13, color: C.muted, lineHeight: 1.5 }}>{label}</div>
+    </motion.div>
+  );
+}
+
+function Stats() {
+  return (
+    <Section style={{ padding: '60px 4vw' }}>
+      <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20 }}>
+        <StatItem n={400} suffix="M+" label="Indians without financial guidance" color={C.blue} />
+        <StatItem n={5} suffix=".3%" label="Household savings — 50-year low" color={C.green} />
+        <StatItem n={88} suffix="%" label="Expect greater financial uncertainty" color={C.purple} />
+        <StatItem n={60} suffix="s" label="To your FinHealth Score" color={C.amber} />
+      </motion.div>
+    </Section>
+  );
+}
+
+const features = [
+  { icon: Heart,      color: C.blue,    title: 'Financial Health Score',  desc: 'AI scores every dimension — cashflow, investments, insurance, debt — and monitors changes automatically.', tag: 'Core' },
+  { icon: TrendingUp, color: '#2D7BFF', title: 'Investment Intelligence',  desc: 'Detects underperforming SIPs, missing investments, portfolio gaps, and rebalancing opportunities.', tag: 'Investments' },
+  { icon: Shield,     color: C.purple,  title: 'Insurance Analyzer',      desc: 'Uncovers hidden charges, calculates real IRR on policies, and flags plans draining your returns.', tag: 'Insurance' },
+  { icon: Calculator, color: C.amber,   title: 'Tax Optimization',        desc: 'Compares old vs new regime, finds every deduction under 80C, 80D, HRA, NPS, and tells you what to claim.', tag: 'Tax' },
+  { icon: BarChart3,  color: C.green,   title: 'Loan Intelligence',       desc: 'Flags dangerous EMI-to-income ratios, compares loan offers, and builds the optimal prepayment strategy.', tag: 'Loans' },
+  { icon: Bot,        color: C.blue,    title: 'Autonomous AI Agent',     desc: 'Works 24/7. Monitors proactively, sends alerts before problems grow, and gives personalized recommendations.', tag: 'AI' },
+  { icon: Compass,    color: C.purple,  title: 'Retirement Planning',     desc: 'Calculates your retirement corpus gap, monthly savings needed, and projects wealth over 10–30 years.', tag: 'Planning' },
+  { icon: Target,     color: C.amber,   title: 'Goal Planning',           desc: 'Set financial goals, track progress with smart projections, and get notified when you\'re off track.', tag: 'Planning' },
+  { icon: Wallet,     color: C.green,   title: 'Cashflow Tracking',       desc: 'Tracks income vs expenses, emergency fund coverage, and flags cashflow risks before they become problems.', tag: 'Core' },
+];
+
+function FeatureCard({ f, i }: { f: typeof features[0]; i: number }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.div variants={fadeUp} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+      style={{ background: hovered ? `${f.color}08` : C.card, border: `1px solid ${hovered ? f.color + '40' : C.border}`, borderRadius: 16, padding: 24, cursor: 'default', transition: 'all 0.3s ease', boxShadow: hovered ? `0 0 30px ${f.color}15` : 'none' }}>
+      <motion.div animate={{ y: hovered ? -4 : 0 }} transition={{ duration: 0.3 }}
+        style={{ width: 44, height: 44, borderRadius: 12, background: `${f.color}15`, border: `1px solid ${f.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+        <f.icon size={22} color={f.color} />
+      </motion.div>
+      <div style={{ fontSize: 10, color: f.color, fontWeight: 700, letterSpacing: '0.08em', marginBottom: 8 }}>{f.tag}</div>
+      <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 8 }}>{f.title}</div>
+      <div style={{ fontSize: 13, color: C.muted, lineHeight: 1.65 }}>{f.desc}</div>
+    </motion.div>
+  );
+}
+
+function Features() {
+  return (
+    <Section id="features" style={{ padding: '100px 4vw' }}>
+      <div style={{ textAlign: 'center', marginBottom: 64 }}>
+        <Badge>Everything In One Place</Badge>
+        <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text, marginBottom: 16 }}>
+          Your AI Financial<br /><span style={{ background: C.grad1, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Command Center</span>
+        </motion.h2>
+        <motion.p variants={fadeUp} style={{ color: C.muted, maxWidth: 520, margin: '0 auto', fontSize: 16, lineHeight: 1.7 }}>
+          Not a calculator. Not a dashboard. An autonomous AI agent that monitors, detects, and acts on your behalf.
+        </motion.p>
+      </div>
+      <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
+        {features.map((f, i) => <FeatureCard key={f.title} f={f} i={i} />)}
+      </motion.div>
+    </Section>
+  );
+}
+
+const tools = [
+  { cat: 'Investments', color: '#2D7BFF', items: [
+    { title: 'SIP Calculator', desc: 'Maturity value and wealth growth', href: '/app/investments' },
+    { title: 'Portfolio Analyzer', desc: 'Performance, allocation and gaps', href: '/app/investments' },
+    { title: 'Return Calculator', desc: 'CAGR and annualized returns', href: '/app/investments' },
+    { title: 'Risk Analysis', desc: 'Portfolio risk and rebalancing signals', href: '/app/investments' },
+  ]},
+  { cat: 'Insurance', color: '#7B61FF', items: [
+    { title: 'Policy Analyzer', desc: 'Real IRR and hidden charges', href: '/app/insurance' },
+    { title: 'IRR Calculator', desc: 'True return on insurance policies', href: '/app/insurance' },
+    { title: 'Coverage Checker', desc: 'Life and health adequacy check', href: '/app/insurance' },
+  ]},
+  { cat: 'Planning', color: '#00E676', items: [
+    { title: 'Retirement Planner', desc: 'Corpus and monthly savings needed', href: '/app/planning' },
+    { title: 'Goal Planning', desc: 'Goals with smart projections', href: '/app/planning' },
+    { title: 'Wealth Projection', desc: 'Net worth over 10–30 years', href: '/app/planning' },
+  ]},
+  { cat: 'Loans', color: '#FFB547', items: [
+    { title: 'EMI Calculator', desc: 'Home, car or personal loan EMI', href: '/app/loans' },
+    { title: 'Loan Comparison', desc: 'Real cost of multiple offers', href: '/app/loans' },
+    { title: 'Prepayment Strategy', desc: 'Optimal plan to save on interest', href: '/app/loans' },
+  ]},
+  { cat: 'Tax', color: '#00D4FF', items: [
+    { title: 'Tax Calculator', desc: 'Old vs new regime comparison', href: '/app/tax' },
+    { title: 'Deduction Optimizer', desc: '80C, 80D, HRA, NPS and more', href: '/app/tax' },
+  ]},
+  { cat: 'AI Tools', color: '#7B61FF', items: [
+    { title: 'Financial Assistant', desc: 'AI chat that knows your numbers', href: '/app/ai' },
+    { title: 'Report Explainer', desc: 'Plain-English document summaries', href: '/app/ai' },
+  ]},
+];
+
+function ToolsHub() {
+  return (
+    <Section id="tools" style={{ padding: '100px 4vw' }}>
+      <div style={{ textAlign: 'center', marginBottom: 64 }}>
+        <Badge color={C.purple}>Financial Toolkit</Badge>
+        <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text, marginBottom: 16 }}>
+          20+ Tools. One Platform.
+        </motion.h2>
+        <motion.p variants={fadeUp} style={{ color: C.muted, maxWidth: 480, margin: '0 auto', fontSize: 16 }}>
+          Every calculator, analyzer and AI tool — personalized to your income and goals.
+        </motion.p>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
+        {tools.map((cat) => (
+          <motion.div key={cat.cat} variants={fadeUp}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+              <div style={{ width: 8, height: 8, borderRadius: '50%', background: cat.color }} />
+              <span style={{ fontSize: 13, fontWeight: 700, color: cat.color, letterSpacing: '0.06em' }}>{cat.cat.toUpperCase()}</span>
+              <div style={{ flex: 1, height: 1, background: C.border }} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
+              {cat.items.map((tool) => (
+                <motion.a key={tool.title} href={`https://financialai-frontend-lime.vercel.app${tool.href}`}
+                  whileHover={{ y: -4, borderColor: cat.color + '50', boxShadow: `0 8px 24px ${cat.color}12` }}
+                  style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: '16px 18px', textDecoration: 'none', display: 'block', transition: 'border-color 0.2s' }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4 }}>{tool.title}</div>
+                  <div style={{ fontSize: 12, color: C.muted, marginBottom: 10 }}>{tool.desc}</div>
+                  <div style={{ fontSize: 11, color: cat.color, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>Explore <ChevronRight size={10} /></div>
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+      <motion.div variants={fadeUp} style={{ textAlign: 'center', marginTop: 48 }}>
+        <motion.a href="https://financialai-frontend-lime.vercel.app/app/tools" whileHover={{ scale: 1.03, boxShadow: `0 0 30px rgba(0,212,255,0.25)` }}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.grad1, color: '#fff', padding: '14px 32px', borderRadius: 12, textDecoration: 'none', fontSize: 15, fontWeight: 700 }}>
+          Explore All Tools <ArrowRight size={16} />
+        </motion.a>
+      </motion.div>
+    </Section>
+  );
+}
+
+function AIAgent() {
+  const alerts = [
+    { icon: '🚨', text: 'Emergency fund critical — only 1.2 months covered', color: C.red, delay: 0 },
+    { icon: '🚨', text: 'No SIP detected — wealth creation at risk', color: C.red, delay: 0.5 },
+    { icon: '💡', text: 'Tax deduction opportunity — ₹18,000 available under 80D', color: C.amber, delay: 1 },
+    { icon: '⚠️', text: 'EMI burden at 38% of income — review home loan', color: C.amber, delay: 1.5 },
+    { icon: '✅', text: 'Health insurance renewed — coverage adequate', color: C.green, delay: 2 },
+  ];
+  return (
+    <Section style={{ padding: '100px 4vw' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4rem', flexWrap: 'wrap' }}>
+        <div style={{ flex: '1 1 400px' }}>
+          <Badge color={C.purple}>AI Agent Mode</Badge>
+          <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text, marginBottom: 20 }}>
+            Your AI Agent<br /><span style={{ background: C.grad1, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Never Sleeps.</span>
+          </motion.h2>
+          <motion.p variants={fadeUp} style={{ color: C.muted, fontSize: 16, lineHeight: 1.75, marginBottom: 32, maxWidth: 460 }}>
+            While you work, sleep, and live your life — your AI agent continuously monitors your finances, detects risks before they grow, and tells you exactly what to do next.
+          </motion.p>
+          {([['Continuous monitoring', 'Scans your finances 24/7, not just when you log in'], ['Proactive alerts', 'Notified before problems become expensive mistakes'], ['Personalized roadmap', 'Advice specific to YOUR numbers — not generic tips'], ['Autonomous operation', 'Works even when you\'re offline or not thinking about money']] as [string, string][]).map(([t, d]) => (
+            <motion.div key={t} variants={fadeUp} style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+              <div style={{ width: 20, height: 20, borderRadius: '50%', background: `${C.blue}20`, border: `1px solid ${C.blue}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
+                <CheckCircle size={11} color={C.blue} />
+              </div>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: C.text, marginBottom: 2 }}>{t}</div>
+                <div style={{ fontSize: 13, color: C.muted }}>{d}</div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        <motion.div variants={scaleIn} style={{ flex: '1 1 380px', maxWidth: 440 }}>
+          <div style={{ background: C.card, border: `1px solid rgba(123,97,255,0.3)`, borderRadius: 20, padding: 24, position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: C.grad1 }} />
+            <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 3, repeat: Infinity }}
+              style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(123,97,255,0.08) 0%, transparent 60%)', pointerEvents: 'none' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+              <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }} transition={{ duration: 2, repeat: Infinity }}
+                style={{ width: 10, height: 10, borderRadius: '50%', background: C.green, boxShadow: `0 0 12px ${C.green}` }} />
+              <span style={{ fontSize: 13, fontWeight: 700, color: C.text }}>AI Agent — Live Monitoring</span>
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, marginBottom: 12, fontWeight: 600, letterSpacing: '0.05em' }}>ACTIVE ALERTS</div>
+            {alerts.map((a, i) => (
+              <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ delay: a.delay, duration: 0.5 }} viewport={{ once: true }}
+                style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '10px 12px', background: `${a.color}08`, border: `1px solid ${a.color}20`, borderRadius: 10, marginBottom: 8 }}>
+                <span style={{ fontSize: 14, flexShrink: 0 }}>{a.icon}</span>
+                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>{a.text}</span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </Section>
+  );
+}
+
+function HowItWorks() {
+  const steps = [
+    { n: '01', title: 'Connect your financial life', desc: 'Enter your salary, expenses, loans, investments. No bank login. No documents required. Takes 2 minutes.' },
+    { n: '02', title: 'AI analyzes everything', desc: 'Your agent scores every dimension — health, investments, insurance, tax, loans — instantly.' },
+    { n: '03', title: 'Get your action plan', desc: 'Not generic advice. Specific actions for YOUR numbers. Ranked by impact. Updated automatically.' },
+  ];
+  return (
+    <Section style={{ padding: '100px 4vw' }}>
+      <div style={{ textAlign: 'center', marginBottom: 64 }}>
+        <Badge color={C.green}>How It Works</Badge>
+        <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text }}>
+          Set it up once.<br /><span style={{ background: C.grad2, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI handles the rest.</span>
+        </motion.h2>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24 }}>
+        {steps.map((s, i) => (
+          <motion.div key={s.n} variants={fadeUp}
+            style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 28, position: 'relative', overflow: 'hidden' }}>
+            <motion.div animate={{ opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 3, delay: i * 0.5, repeat: Infinity }}
+              style={{ position: 'absolute', top: 0, right: 0, width: 120, height: 120, background: `radial-gradient(ellipse, ${C.blue}10 0%, transparent 70%)` }} />
+            <div style={{ width: 44, height: 44, borderRadius: '50%', background: `${C.blue}15`, border: `1px solid ${C.blue}35`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, fontSize: 14, fontWeight: 800, color: C.blue }}>{s.n}</div>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 10 }}>{s.title}</h3>
+            <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.65 }}>{s.desc}</p>
+          </motion.div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+function Comparison() {
+  const rows = ['AI-powered analysis', 'Personalized to your numbers', 'Autonomous monitoring', 'Investment intelligence', 'Tax optimization', 'Insurance analysis', 'Retirement planning', 'Works without bank login'];
+  const cols = ['FinHealth360', 'Groww', 'INDmoney', 'Excel', 'Generic AI', 'CA'];
+  const data: Record<string, boolean[]> = {
+    'FinHealth360': [true, true, true, true, true, true, true, true],
+    'Groww':        [false, false, false, true, false, false, false, true],
+    'INDmoney':     [false, false, false, true, false, false, true, false],
+    'Excel':        [false, false, false, false, false, false, false, true],
+    'Generic AI':   [true, false, false, false, false, false, false, true],
+    'CA':           [false, true, false, true, true, true, true, false],
+  };
+  return (
+    <Section style={{ padding: '100px 4vw' }}>
+      <div style={{ textAlign: 'center', marginBottom: 48 }}>
+        <Badge color={C.amber}>Market Reality</Badge>
+        <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text }}>
+          Why nothing else comes close
+        </motion.h2>
+      </div>
+      <motion.div variants={fadeUp} style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          <thead>
+            <tr>
+              <th style={{ textAlign: 'left', padding: '12px 16px', color: C.muted, fontWeight: 600, borderBottom: `1px solid ${C.border}` }}>Feature</th>
+              {cols.map(col => (
+                <th key={col} style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 700, borderBottom: `1px solid ${C.border}`, color: col === 'FinHealth360' ? C.blue : C.muted, background: col === 'FinHealth360' ? `${C.blue}08` : 'transparent', borderTop: col === 'FinHealth360' ? `2px solid ${C.blue}` : 'none', whiteSpace: 'nowrap' }}>{col}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, ri) => (
+              <motion.tr key={row} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ delay: ri * 0.06 }} viewport={{ once: true }}
+                style={{ borderBottom: `1px solid ${C.border}` }}>
+                <td style={{ padding: '12px 16px', color: C.muted }}>{row}</td>
+                {cols.map(col => (
+                  <td key={col} style={{ padding: '12px 16px', textAlign: 'center', background: col === 'FinHealth360' ? `${C.blue}05` : 'transparent' }}>
+                    {data[col][ri]
+                      ? <span style={{ color: col === 'FinHealth360' ? C.green : 'rgba(255,255,255,0.3)', fontSize: 16 }}>✓</span>
+                      : <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 16 }}>✗</span>}
+                  </td>
+                ))}
+              </motion.tr>
+            ))}
+          </tbody>
+        </table>
+      </motion.div>
+    </Section>
+  );
+}
+
+function Testimonials() {
+  const reviews = [
+    { name: 'Rohan M.', role: 'Software Engineer, Pune', avatar: 'RM', color: C.blue, text: 'I always knew I should track my finances but never did. FinHealth360 gave me a score in 60 seconds and told me exactly what was wrong — my EMI ratio was 48%, way too high. Fixed it in 3 months.', stars: 5 },
+    { name: 'Priya S.', role: 'Product Manager, Bangalore', avatar: 'PS', color: C.green, text: 'Finally something built for Indian salaries. It understands SIPs, NPS, HRA — not just US 401k stuff. The tax comparison alone saved me ₹18,000 this year.', stars: 5 },
+    { name: 'Amit K.', role: 'CA, Mumbai', avatar: 'AK', color: C.purple, text: "I recommend this to clients who can't afford a full advisory session. It does the basic financial health check properly — scoring, red flags, and action steps. Solid product.", stars: 5 },
+  ];
+  return (
+    <Section style={{ padding: '100px 4vw' }}>
+      <div style={{ textAlign: 'center', marginBottom: 48 }}>
+        <Badge>What Users Say</Badge>
+        <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text }}>Real feedback. Real users.</motion.h2>
+      </div>
+      <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
+        {reviews.map((r) => (
+          <motion.div key={r.name} variants={fadeUp} whileHover={{ y: -6, boxShadow: `0 20px 40px rgba(0,0,0,0.3)` }}
+            style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 24 }}>
+            <div style={{ display: 'flex', gap: 3, marginBottom: 16 }}>
+              {Array.from({ length: r.stars }).map((_, i) => <Star key={i} size={13} fill={C.amber} color={C.amber} />)}
+            </div>
+            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', lineHeight: 1.75, marginBottom: 20 }}>"{r.text}"</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, borderTop: `1px solid ${C.border}`, paddingTop: 16 }}>
+              <div style={{ width: 38, height: 38, borderRadius: '50%', background: `${r.color}18`, border: `1px solid ${r.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: r.color }}>{r.avatar}</div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{r.name}</div>
+                <div style={{ fontSize: 11, color: C.muted }}>{r.role}</div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+    </Section>
+  );
+}
+
+function Security() {
+  const items = [
+    { icon: Lock,       color: C.blue,   title: 'No bank login required',        desc: 'We never ask for credentials, UPI PIN, or net banking access. Ever.' },
+    { icon: X,          color: C.red,    title: 'Your data is never sold',        desc: 'No advertisers. We earn from subscriptions only.' },
+    { icon: Trash2,     color: C.amber,  title: 'Delete anytime',                desc: 'Permanently erased within 24 hours. No questions asked.' },
+    { icon: FileText,   color: C.purple, title: 'Documents discarded after use',  desc: 'Analyzed and immediately discarded. Nothing stored.' },
+    { icon: ShieldCheck,color: C.green,  title: 'End-to-end encrypted',          desc: 'TLS 1.3 in transit, encrypted at rest. Private to you alone.' },
+    { icon: Globe,      color: C.blue,   title: 'Built for India, stored in India', desc: 'Supabase Mumbai. DPDPA 2023 compliant.' },
+  ];
+  return (
+    <Section id="security" style={{ padding: '100px 4vw' }}>
+      <div style={{ background: `${C.blue}05`, border: `1px solid ${C.blue}15`, borderRadius: 24, padding: '60px 48px' }}>
+        <div style={{ textAlign: 'center', marginBottom: 48 }}>
+          <Badge color={C.green}>Security & Privacy</Badge>
+          <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text, marginBottom: 16 }}>Your Financial Data Stays Yours</motion.h2>
+          <motion.p variants={fadeUp} style={{ color: C.muted, maxWidth: 440, margin: '0 auto' }}>We built FinHealth360 with one rule: your data belongs to you, not us.</motion.p>
+        </div>
+        <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
+          {items.map((item) => (
+            <motion.div key={item.title} variants={fadeUp} whileHover={{ borderColor: `${item.color}40`, background: `${item.color}06` }}
+              style={{ display: 'flex', gap: 14, padding: 20, background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: 14, transition: 'all 0.3s' }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: `${item.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <item.icon size={16} color={item.color} />
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4 }}>{item.title}</div>
+                <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>{item.desc}</div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </Section>
+  );
+}
+
+function Pricing() {
+  const plans = [
+    { name: 'Free', price: '₹0', sub: 'Forever free', color: C.muted, features: ['Financial Health Score', 'Basic tools (SIP, EMI)', 'AI chat (10/day)', 'Basic insights'], cta: 'Get Started Free', popular: false },
+    { name: 'Pro', price: '₹99', sub: '/month · cancel anytime', color: C.blue, features: ['Everything in Free', '5 AI reports/month', 'Portfolio & tax intelligence', 'Goal-based planning', 'AI chat (20/day)'], cta: 'Upgrade to Pro', popular: true },
+    { name: 'Elite', price: '₹499', sub: '/month · cancel anytime', color: C.green, features: ['Everything in Pro', 'Unlimited AI reports', 'Weekly personalized insights', 'Full tax optimization', 'PDF downloads', 'Advisor support'], cta: 'Get Elite', popular: false },
+    { name: 'Elite+ Agent', price: '₹999', sub: '/month · fully autonomous', color: C.purple, features: ['Everything in Elite', 'Daily automatic analysis', 'Proactive alerts', 'Works when offline', 'Weekly AI roadmap', 'Continuous risk monitoring', 'Full AI memory'], cta: 'Get Elite+', popular: false },
+  ];
+  return (
+    <Section id="pricing" style={{ padding: '100px 4vw' }}>
+      <div style={{ textAlign: 'center', marginBottom: 64 }}>
+        <Badge color={C.green}>Pricing</Badge>
+        <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text, marginBottom: 16 }}>Start free. Scale when ready.</motion.h2>
+        <motion.p variants={fadeUp} style={{ color: C.muted, fontSize: 16 }}>No lock-in. 7-day refund on all paid plans.</motion.p>
+      </div>
+      <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: 20, alignItems: 'start' }}>
+        {plans.map((plan) => (
+          <motion.div key={plan.name} variants={scaleIn} whileHover={{ y: -8 }}
+            style={{ background: plan.popular ? `${C.blue}08` : C.card, border: `1px solid ${plan.popular ? C.blue + '50' : C.border}`, borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden', boxShadow: plan.popular ? `0 0 40px ${C.blue}15` : 'none' }}>
+            {plan.popular && <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: C.grad1 }} />}
+            {plan.popular && (
+              <div style={{ position: 'absolute', top: 16, right: 16, background: C.grad1, color: '#fff', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 999 }}>Most Popular</div>
+            )}
+            <div style={{ fontSize: 11, fontWeight: 700, color: plan.color, letterSpacing: '0.08em', marginBottom: 12 }}>{plan.name.toUpperCase()}</div>
+            <div style={{ fontSize: 36, fontWeight: 900, color: C.text, marginBottom: 4 }}>{plan.price}</div>
+            <div style={{ fontSize: 12, color: C.muted, marginBottom: 24 }}>{plan.sub}</div>
+            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {plan.features.map(f => (
+                <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>
+                  <CheckCircle size={13} color={plan.color} style={{ flexShrink: 0, marginTop: 2 }} />{f}
+                </li>
+              ))}
+            </ul>
+            <motion.button whileHover={{ opacity: 0.9, scale: 1.02 }} whileTap={{ scale: 0.97 }}
+              onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}
+              style={{ width: '100%', padding: '12px 0', borderRadius: 10, border: plan.popular ? 'none' : `1px solid ${plan.color}40`, background: plan.popular ? C.grad1 : 'transparent', color: plan.popular ? '#fff' : plan.color, cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>
+              {plan.cta}
+            </motion.button>
+          </motion.div>
+        ))}
+      </motion.div>
+    </Section>
+  );
+}
+
+function FinalCTA() {
+  return (
+    <Section style={{ padding: '120px 4vw', textAlign: 'center', position: 'relative' }}>
+      <motion.div animate={{ opacity: [0.4, 0.7, 0.4] }} transition={{ duration: 4, repeat: Infinity }}
+        style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(0,212,255,0.08) 0%, transparent 60%)', pointerEvents: 'none' }} />
+      <Badge>Get Started Today</Badge>
+      <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2.4rem, 5vw, 4rem)', fontWeight: 900, letterSpacing: '-0.04em', color: C.text, marginBottom: 20, lineHeight: 1.1 }}>
+        Stop guessing<br />about your money.
+      </motion.h2>
+      <motion.p variants={fadeUp} style={{ color: C.muted, fontSize: 17, maxWidth: 500, margin: '0 auto 40px', lineHeight: 1.7 }}>
+        Your AI financial operating system is ready. Get your FinHealth Score in 60 seconds — free, no bank login required.
+      </motion.p>
+      <motion.div variants={fadeUp} style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <motion.button whileHover={{ scale: 1.04, boxShadow: `0 0 40px rgba(0,212,255,0.4)` }} whileTap={{ scale: 0.97 }}
+          onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}
+          style={{ background: C.grad1, border: 'none', color: '#fff', padding: '16px 36px', borderRadius: 14, cursor: 'pointer', fontSize: 16, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
+          Start Free <ArrowRight size={18} />
+        </motion.button>
+        <motion.button whileHover={{ borderColor: 'rgba(255,255,255,0.3)', color: '#fff' }}
+          onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/app/dashboard'}
+          style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.muted, padding: '16px 36px', borderRadius: 14, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
+          View Dashboard
+        </motion.button>
+      </motion.div>
+      <motion.div variants={fadeUp} style={{ display: 'flex', justifyContent: 'center', gap: 32, marginTop: 32, flexWrap: 'wrap' }}>
+        {([[ShieldCheck, C.green, '100% Private'], [Award, C.blue, 'No hidden fees'], [Shield, C.purple, 'No bank access']] as [React.ElementType, string, string][]).map(([Icon, color, text], i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: C.muted }}>
+            <Icon size={14} color={color} />{text}
+          </div>
+        ))}
+      </motion.div>
+    </Section>
+  );
+}
+
+function Footer() {
+  const base = 'https://financialai-frontend-lime.vercel.app';
+  return (
+    <footer style={{ borderTop: `1px solid ${C.border}`, padding: '60px 4vw 40px', position: 'relative', zIndex: 2 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 40, marginBottom: 48 }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: C.grad1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Heart size={14} color="#fff" /></div>
+            <span style={{ fontWeight: 800, fontSize: 16 }}><span style={{ color: C.blue }}>FinHealth</span><span style={{ color: C.red }}>360</span></span>
+          </div>
+          <p style={{ fontSize: 12, color: C.muted, lineHeight: 1.7, maxWidth: 200 }}>India's AI Financial Operating System. Built for the salaried middle class.</p>
+          <div style={{ marginTop: 12, fontSize: 11, color: C.blue, fontWeight: 600 }}>🇮🇳 Built for India</div>
+        </div>
+        {[
+          { title: 'Platform', links: [['Dashboard', `${base}/app/dashboard`], ['Financial Health', `${base}/app/financial-health`], ['Investments', `${base}/app/investments`], ['Insurance', `${base}/app/insurance`], ['Planning', `${base}/app/planning`], ['Loans', `${base}/app/loans`], ['Tax', `${base}/app/tax`], ['AI Agent', `${base}/app/ai`], ['Tools Hub', `${base}/app/tools`]] },
+          { title: 'Legal', links: [['Privacy Policy', '/privacy-policy'], ['Terms of Use', '/terms']] },
+        ].map(sec => (
+          <div key={sec.title}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 16, letterSpacing: '0.06em' }}>{sec.title}</div>
+            {sec.links.map(([label, href]) => (
+              <a key={label} href={href} style={{ display: 'block', fontSize: 13, color: C.muted, marginBottom: 8, textDecoration: 'none' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#fff')} onMouseLeave={e => (e.currentTarget.style.color = C.muted)}>{label}</a>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 24, textAlign: 'center', fontSize: 12, color: C.muted }}>
+        © 2026 FinHealth360. For informational purposes only. Not financial advice.
+      </div>
+    </footer>
+  );
+}
+
+export default function Home() {
+  return (
+    <div style={{ background: C.bg, color: C.text, fontFamily: 'Inter, system-ui, sans-serif', overflowX: 'hidden', minHeight: '100vh' }}>
+      <CursorGlow />
+      <Background />
+      <Particles />
+      <Navbar />
+      <Hero />
+      <Stats />
+      <Features />
+      <ToolsHub />
+      <AIAgent />
+      <HowItWorks />
+      <Comparison />
+      <Testimonials />
+      <Security />
+      <Pricing />
+      <FinalCTA />
+      <Footer />
+    </div>
+  );
+}
