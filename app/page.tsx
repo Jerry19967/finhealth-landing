@@ -550,120 +550,173 @@ export default function Home() {
       {/* ── Platform Features ── */}
       <section id="features" style={{ padding: '80px 4vw', position: 'relative', zIndex: 2 }}>
         <Reveal>
-          <motion.div variants={fadeUp} style={{ textAlign: 'center', marginBottom: 60 }}>
+          <motion.div variants={fadeUp} style={{ textAlign: 'center', marginBottom: 64 }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 13px', borderRadius: 999, background: 'rgba(47,230,255,0.08)', border: `1px solid rgba(47,230,255,0.22)`, marginBottom: 14 }}>
               <Sparkles size={11} color={T.cyan} />
               <span style={{ fontSize: 11, fontWeight: 600, color: T.cyan }}>Everything In One Platform</span>
             </div>
-            <h2 style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, letterSpacing: '-0.03em', color: T.textPrimary, marginBottom: 12 }}>
-              Every tool your finances need — all in one place
+            <h2 style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.04em', color: T.textPrimary, marginBottom: 14, lineHeight: 1.1 }}>
+              One platform.<br />
+              <span style={{ background: T.gradPrimary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Every financial need covered.</span>
             </h2>
-            <p style={{ color: T.textSecondary, fontSize: 15, maxWidth: 540, margin: '0 auto' }}>
-              Not just a calculator. A full financial intelligence platform — with an AI Agent that connects everything and works for you 24/7.
+            <p style={{ color: T.textSecondary, fontSize: 15, maxWidth: 500, margin: '0 auto' }}>
+              Not just calculators — an AI Agent that connects all 8 modules and works for you 24/7.
             </p>
           </motion.div>
+        </Reveal>
 
-          {/* Platform modules grid */}
+        {/* 2-col rich grid */}
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={stagger}
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 18, maxWidth: 1100, margin: '0 auto 20px' }}>
+
           {[
             {
               icon: Heart, color: T.cyan, label: 'Financial Health',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
-              tagline: 'Your overall financial score — updated live',
-              tools: ['Financial Health Score (0–100)', 'Cash flow analysis', 'Net worth tracker', 'Risk flag detection', 'Actionable improvement plan'],
+              tagline: 'Your 0–100 score across every financial dimension',
+              tools: ['Health Score', 'Cash Flow', 'Net Worth', 'Risk Flags', 'Action Plan'],
+              stat: '72', statLabel: 'avg score', statColor: T.cyan,
+              preview: [['Cash Flow', 78, T.green], ['Investments', 65, T.cyan], ['Insurance', 55, T.amber]],
             },
             {
               icon: TrendingUp, color: '#2D7BFF', label: 'Investments',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
-              tagline: 'Detect gaps, analyze returns, plan growth',
-              tools: ['SIP Calculator', 'Portfolio Analyzer', 'Return (CAGR) Calculator', 'Risk Analysis & Rebalancing'],
+              tagline: 'Detect SIP gaps, analyze portfolio, plan growth',
+              tools: ['SIP Calculator', 'Portfolio Analyzer', 'CAGR Calculator', 'Risk Analysis'],
+              stat: '4', statLabel: 'tools', statColor: '#2D7BFF',
+              preview: [['SIP Returns', 88, '#2D7BFF'], ['Portfolio', 72, T.cyan], ['Risk Score', 45, T.amber]],
             },
             {
               icon: Shield, color: T.purple, label: 'Insurance',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
-              tagline: 'Uncover hidden charges, check real coverage',
-              tools: ['Policy Analyzer (upload any policy)', 'IRR Calculator', 'Coverage Checker', 'Hidden charge detection'],
+              tagline: 'Upload any policy — get real IRR & hidden charges',
+              tools: ['Policy Analyzer', 'IRR Calculator', 'Coverage Checker', 'Hidden charges'],
+              stat: '₹18K', statLabel: 'avg savings found', statColor: T.purple,
+              preview: [['Life Cover', 60, T.purple], ['Health Cover', 40, T.amber], ['IRR', 55, T.green]],
             },
             {
               icon: FileText, color: T.green, label: 'Planning',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
-              tagline: 'Build your roadmap to financial freedom',
-              tools: ['Retirement Planner', 'Goal Planning', 'Wealth Projection (10–30 yr)', 'Emergency fund calculator'],
+              tagline: 'Retirement, goals & wealth projection in one place',
+              tools: ['Retirement Planner', 'Goal Planning', 'Wealth Projection', 'Emergency Fund'],
+              stat: '30yr', statLabel: 'projection horizon', statColor: T.green,
+              preview: [['Retirement Corpus', 65, T.green], ['Goal Progress', 42, T.cyan], ['Emergency Fund', 20, T.red]],
             },
             {
               icon: BarChart3, color: T.amber, label: 'Loans',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
-              tagline: 'Manage debt, reduce interest, prepay smart',
-              tools: ['EMI Calculator', 'Loan Comparison', 'Prepayment Strategy', 'EMI burden analysis'],
+              tagline: 'Manage EMIs, compare loans, prepay smarter',
+              tools: ['EMI Calculator', 'Loan Comparison', 'Prepayment Strategy', 'Burden analysis'],
+              stat: '48%', statLabel: 'max safe EMI ratio', statColor: T.amber,
+              preview: [['EMI Burden', 48, T.amber], ['Loan Cost', 62, T.red], ['Savings', 75, T.green]],
             },
             {
               icon: Calculator, color: T.cyan, label: 'Tax',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
-              tagline: 'Compare regimes, find every deduction',
-              tools: ['Old vs New regime comparison', 'Deduction Optimizer (80C, 80D, HRA)', 'NPS tax benefit calculator'],
+              tagline: 'Old vs new regime, every deduction found for you',
+              tools: ['Regime Comparison', 'Deduction Optimizer', '80C / 80D / HRA / NPS'],
+              stat: '₹46K', statLabel: 'avg tax saved', statColor: T.cyan,
+              preview: [['80C Used', 70, T.cyan], ['HRA Claimed', 55, T.purple], ['NPS Benefit', 40, T.green]],
             },
             {
               icon: Bot, color: T.purple, label: 'AI Agent',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
-              tagline: 'Ask anything — it knows your numbers',
-              tools: ['Financial Assistant chat', 'Document explainer (any doc)', 'Personalised advice (not generic)', 'Proactive alerts & monitoring'],
+              tagline: 'Ask anything — it already knows your numbers',
+              tools: ['Financial Assistant', 'Document Explainer', 'Proactive Alerts', 'Personalised advice'],
+              stat: '24/7', statLabel: 'always monitoring', statColor: T.purple,
+              preview: [['Accuracy', 94, T.purple], ['Response', 98, T.cyan], ['Personalised', 100, T.green]],
             },
             {
               icon: Zap, color: T.green, label: 'Tools Hub',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
-              tagline: '20+ tools, all personalised to your profile',
-              tools: ['Action items tailored to you', 'All calculators in one place', 'Profile-aware recommendations'],
+              tagline: '20+ tools — all personalised to your profile',
+              tools: ['Action items for you', 'All calculators', 'Profile-aware results'],
+              stat: '20+', statLabel: 'tools available', statColor: T.green,
+              preview: [['Tools Used', 12, T.green], ['Insights', 8, T.cyan], ['Alerts', 3, T.amber]],
             },
-          ].map((module, idx) => (
-            <motion.div key={module.label} variants={fadeUp}
-              style={{ marginBottom: 16 }}>
-              <a href={module.href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'block' }}>
-                <motion.div whileHover={{ y: -4, borderColor: `${module.color}50` }}
-                  style={{ background: `${module.color}07`, border: `1px solid ${module.color}22`, borderRadius: 18, padding: '22px 24px', display: 'grid', gridTemplateColumns: '1fr auto', gap: 16, alignItems: 'start', transition: 'all 0.22s', cursor: 'pointer', maxWidth: 1100, margin: '0 auto 16px' }}>
-                  <div style={{ display: 'flex', gap: 18, alignItems: 'flex-start' }}>
-                    {/* Icon */}
-                    <div style={{ width: 44, height: 44, borderRadius: 13, background: `${module.color}15`, border: `1px solid ${module.color}35`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <module.icon size={22} color={module.color} />
+          ].map(m => (
+            <motion.div key={m.label} variants={fadeUp}>
+              <a href={m.href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
+                <motion.div whileHover={{ y: -6, boxShadow: `0 20px 60px ${m.color}18` }}
+                  style={{ background: `${m.color}08`, border: `1px solid ${m.color}25`, borderRadius: 20, padding: '22px 22px 18px', height: '100%', display: 'flex', flexDirection: 'column', gap: 14, transition: 'all 0.25s', position: 'relative', overflow: 'hidden' }}>
+
+                  {/* Top accent line */}
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${m.color}, transparent)` }} />
+
+                  {/* Header row */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ width: 42, height: 42, borderRadius: 13, background: `${m.color}15`, border: `1px solid ${m.color}35`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <m.icon size={20} color={m.color} />
+                      </div>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 2 }}>
+                          <span style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary }}>{m.label}</span>
+                          <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 2, repeat: Infinity }}
+                            style={{ fontSize: 9, fontWeight: 700, color: T.green, background: 'rgba(49,233,129,0.12)', border: '1px solid rgba(49,233,129,0.3)', borderRadius: 999, padding: '2px 7px' }}>● LIVE</motion.span>
+                        </div>
+                        <div style={{ fontSize: 12, color: T.textSecondary, lineHeight: 1.4 }}>{m.tagline}</div>
+                      </div>
                     </div>
-                    {/* Text */}
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-                        <span style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary }}>{module.label}</span>
-                        <span style={{ fontSize: 10, fontWeight: 600, color: module.color, background: `${module.color}15`, border: `1px solid ${module.color}30`, borderRadius: 999, padding: '2px 8px' }}>LIVE</span>
-                      </div>
-                      <p style={{ fontSize: 13, color: T.textSecondary, margin: '0 0 12px', lineHeight: 1.5 }}>{module.tagline}</p>
-                      {/* Sub-tools */}
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
-                        {module.tools.map(t => (
-                          <span key={t} style={{ fontSize: 11, color: T.textSecondary, background: 'rgba(255,255,255,0.04)', border: `1px solid ${T.border}`, borderRadius: 6, padding: '3px 9px' }}>{t}</span>
-                        ))}
-                      </div>
+                    {/* Stat badge */}
+                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                      <div style={{ fontFamily: T.fontDisplay, fontSize: 20, fontWeight: 900, color: m.statColor, lineHeight: 1 }}>{m.stat}</div>
+                      <div style={{ fontSize: 10, color: T.textMuted, marginTop: 2 }}>{m.statLabel}</div>
                     </div>
                   </div>
-                  {/* Arrow */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 600, color: module.color, whiteSpace: 'nowrap', paddingTop: 4 }}>
+
+                  {/* Mini bar preview */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, background: 'rgba(0,0,0,0.2)', borderRadius: 12, padding: '12px 14px' }}>
+                    {m.preview.map(([label, pct, color]) => (
+                      <div key={String(label)}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: T.textMuted, marginBottom: 3 }}>
+                          <span>{label}</span><span style={{ color: String(color) }}>{pct}%</span>
+                        </div>
+                        <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.05)' }}>
+                          <div style={{ height: '100%', width: `${pct}%`, borderRadius: 2, background: String(color), opacity: 0.8 }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Tool tags */}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {m.tools.map(t => (
+                      <span key={t} style={{ fontSize: 11, color: m.color, background: `${m.color}10`, border: `1px solid ${m.color}25`, borderRadius: 6, padding: '3px 9px', fontWeight: 500 }}>{t}</span>
+                    ))}
+                  </div>
+
+                  {/* CTA row */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 5, fontSize: 12, fontWeight: 700, color: m.color, marginTop: 'auto' }}>
                     Get Access <ChevronRight size={14} />
                   </div>
                 </motion.div>
               </a>
             </motion.div>
           ))}
+        </motion.div>
 
-          {/* Dashboard CTA banner */}
+        {/* Dashboard CTA banner */}
+        <Reveal>
           <motion.div variants={fadeUp}>
-            <a href="https://financialai-frontend-lime.vercel.app/app/dashboard" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'block', maxWidth: 1100, margin: '8px auto 0' }}>
-              <motion.div whileHover={{ y: -3 }}
-                style={{ background: 'linear-gradient(135deg, rgba(47,230,255,0.08) 0%, rgba(122,60,255,0.08) 100%)', border: `1px solid rgba(47,230,255,0.25)`, borderRadius: 18, padding: '20px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 13, background: T.gradPrimary, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Sparkles size={20} color="#fff" />
-                  </div>
+            <a href="https://financialai-frontend-lime.vercel.app/app/dashboard" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'block', maxWidth: 1100, margin: '0 auto' }}>
+              <motion.div whileHover={{ y: -3, boxShadow: '0 20px 60px rgba(47,230,255,0.12)' }}
+                style={{ background: 'linear-gradient(135deg, rgba(47,230,255,0.08) 0%, rgba(122,60,255,0.1) 100%)', border: `1px solid rgba(47,230,255,0.28)`, borderRadius: 20, padding: '24px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: T.gradPrimary }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 3, repeat: Infinity }}
+                    style={{ width: 48, height: 48, borderRadius: 14, background: T.gradPrimary, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Sparkles size={22} color="#fff" />
+                  </motion.div>
                   <div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary, marginBottom: 3 }}>Dashboard — See Everything At Once</div>
-                    <div style={{ fontSize: 13, color: T.textSecondary }}>Net worth · Agent alerts · Weekly tips · All modules in one view</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: T.textPrimary, marginBottom: 4, fontFamily: T.fontDisplay }}>See Your Full Dashboard</div>
+                    <div style={{ fontSize: 13, color: T.textSecondary }}>Net worth · Agent alerts · All modules · Weekly intelligence — in one view</div>
                   </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 700, color: T.cyan }}>
-                  Open Dashboard <ChevronRight size={16} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <a href="https://financialai-frontend-lime.vercel.app/signup" className="btn-primary" style={{ fontSize: 13, padding: '11px 22px' }}>
+                    Start Free <ChevronRight size={15} />
+                  </a>
                 </div>
               </motion.div>
             </a>
