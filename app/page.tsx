@@ -567,49 +567,49 @@ export default function Home() {
           {[
             {
               icon: Heart, color: T.cyan, label: 'Financial Health',
-              href: 'https://financialai-frontend-lime.vercel.app/app/financial-health',
+              href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Your overall financial score — updated live',
               tools: ['Financial Health Score (0–100)', 'Cash flow analysis', 'Net worth tracker', 'Risk flag detection', 'Actionable improvement plan'],
             },
             {
               icon: TrendingUp, color: '#2D7BFF', label: 'Investments',
-              href: 'https://financialai-frontend-lime.vercel.app/app/investments',
+              href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Detect gaps, analyze returns, plan growth',
               tools: ['SIP Calculator', 'Portfolio Analyzer', 'Return (CAGR) Calculator', 'Risk Analysis & Rebalancing'],
             },
             {
               icon: Shield, color: T.purple, label: 'Insurance',
-              href: 'https://financialai-frontend-lime.vercel.app/app/insurance',
+              href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Uncover hidden charges, check real coverage',
               tools: ['Policy Analyzer (upload any policy)', 'IRR Calculator', 'Coverage Checker', 'Hidden charge detection'],
             },
             {
               icon: FileText, color: T.green, label: 'Planning',
-              href: 'https://financialai-frontend-lime.vercel.app/app/planning',
+              href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Build your roadmap to financial freedom',
               tools: ['Retirement Planner', 'Goal Planning', 'Wealth Projection (10–30 yr)', 'Emergency fund calculator'],
             },
             {
               icon: BarChart3, color: T.amber, label: 'Loans',
-              href: 'https://financialai-frontend-lime.vercel.app/app/loans',
+              href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Manage debt, reduce interest, prepay smart',
               tools: ['EMI Calculator', 'Loan Comparison', 'Prepayment Strategy', 'EMI burden analysis'],
             },
             {
               icon: Calculator, color: T.cyan, label: 'Tax',
-              href: 'https://financialai-frontend-lime.vercel.app/app/tax',
+              href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Compare regimes, find every deduction',
               tools: ['Old vs New regime comparison', 'Deduction Optimizer (80C, 80D, HRA)', 'NPS tax benefit calculator'],
             },
             {
               icon: Bot, color: T.purple, label: 'AI Agent',
-              href: 'https://financialai-frontend-lime.vercel.app/app/ai',
+              href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Ask anything — it knows your numbers',
               tools: ['Financial Assistant chat', 'Document explainer (any doc)', 'Personalised advice (not generic)', 'Proactive alerts & monitoring'],
             },
             {
               icon: Zap, color: T.green, label: 'Tools Hub',
-              href: 'https://financialai-frontend-lime.vercel.app/app/tools',
+              href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: '20+ tools, all personalised to your profile',
               tools: ['Action items tailored to you', 'All calculators in one place', 'Profile-aware recommendations'],
             },
@@ -641,7 +641,7 @@ export default function Home() {
                   </div>
                   {/* Arrow */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 600, color: module.color, whiteSpace: 'nowrap', paddingTop: 4 }}>
-                    Explore <ChevronRight size={14} />
+                    Get Access <ChevronRight size={14} />
                   </div>
                 </motion.div>
               </a>
