@@ -584,7 +584,6 @@ export default function Home() {
                   'Tax Calculator — old vs new regime',
                   'Score breakdown (2 of 6 factors visible)',
                   'Score share & recalculate',
-                  'Document upload & analysis',
                 ].map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, fontSize: 13, color: T.textSecondary }}>
                     <CheckCircle size={13} color={T.green} style={{ flexShrink: 0, marginTop: 2 }} />{f}
@@ -614,6 +613,7 @@ export default function Home() {
                   'Everything in Free',
                   '5 AI financial reports per month',
                   'AI Assistant — 10 messages/day',
+                  'Document upload & AI analysis',
                   'AI Analysis — deep financial health insights',
                   'Investments module — SIP, portfolio, returns',
                   'Insurance module — policy & coverage analysis',
