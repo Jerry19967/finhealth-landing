@@ -559,9 +559,16 @@ export default function Home() {
               One platform.<br />
               <span style={{ background: T.gradPrimary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Every financial need covered.</span>
             </h2>
-            <p style={{ color: T.textSecondary, fontSize: 15, maxWidth: 500, margin: '0 auto' }}>
-              Not just calculators — an AI Agent that connects all 8 modules and works for you 24/7.
+            <p style={{ color: T.textSecondary, fontSize: 15, maxWidth: 620, margin: '0 auto 10px' }}>
+              Financial Health Score, SIP Calculator, Tax Optimizer, Insurance Analyzer, Retirement Planner, Loan Tools & AI Agent — all in one place. Built for Indians.
             </p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 20, flexWrap: 'wrap', marginTop: 10 }}>
+              {['8 Modules', '20+ Tools', 'AI Agent 24/7', 'Free to Start'].map(badge => (
+                <span key={badge} style={{ fontSize: 11, fontWeight: 700, color: T.textSecondary, display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <span style={{ color: T.cyan }}>✓</span> {badge}
+                </span>
+              ))}
+            </div>
           </motion.div>
         </Reveal>
 
@@ -574,65 +581,117 @@ export default function Home() {
               icon: Heart, color: T.cyan, label: 'Financial Health',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Your 0–100 score across every financial dimension',
-              tools: ['Health Score', 'Cash Flow', 'Net Worth', 'Risk Flags', 'Action Plan'],
               stat: '72', statLabel: 'avg score', statColor: T.cyan,
               preview: [['Cash Flow', 78, T.green], ['Investments', 65, T.cyan], ['Insurance', 55, T.amber]],
+              features: [
+                { label: 'Financial Health Score', desc: 'Instant 0–100 score across 6 key dimensions', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Cash Flow Analysis', desc: 'Track income, expenses & monthly surplus', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Net Worth Tracker', desc: 'Assets minus liabilities in real time', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Risk Flags & Action Plan', desc: 'AI identifies gaps and tells you exactly what to fix', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Score History', desc: 'Track your improvement month by month', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+              ],
             },
             {
               icon: TrendingUp, color: '#2D7BFF', label: 'Investments',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Detect SIP gaps, analyze portfolio, plan growth',
-              tools: ['SIP Calculator', 'Portfolio Analyzer', 'CAGR Calculator', 'Risk Analysis'],
               stat: '4', statLabel: 'tools', statColor: '#2D7BFF',
               preview: [['SIP Returns', 88, '#2D7BFF'], ['Portfolio', 72, T.cyan], ['Risk Score', 45, T.amber]],
+              features: [
+                { label: 'SIP Calculator', desc: 'Calculate SIP maturity value & wealth growth', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Portfolio Analyzer', desc: 'Performance, allocation & rebalancing signals', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Return Calculator (CAGR)', desc: 'Annualized returns on any investment', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Risk Analysis', desc: 'Portfolio risk score with rebalancing recommendations', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+              ],
             },
             {
               icon: Shield, color: T.purple, label: 'Insurance',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Upload any policy — get real IRR & hidden charges',
-              tools: ['Policy Analyzer', 'IRR Calculator', 'Coverage Checker', 'Hidden charges'],
               stat: '₹18K', statLabel: 'avg savings found', statColor: T.purple,
               preview: [['Life Cover', 60, T.purple], ['Health Cover', 40, T.amber], ['IRR', 55, T.green]],
+              features: [
+                { label: 'Policy Analyzer', desc: 'Upload any policy — get real IRR & hidden charges instantly', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'IRR Calculator', desc: 'True Internal Rate of Return on your insurance policy', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Coverage Checker', desc: 'Is your life & health cover actually adequate?', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+              ],
             },
             {
-              icon: FileText, color: T.green, label: 'Planning',
+              icon: FileText, color: T.green, label: 'Financial Planning',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Retirement, goals & wealth projection in one place',
-              tools: ['Retirement Planner', 'Goal Planning', 'Wealth Projection', 'Emergency Fund'],
               stat: '30yr', statLabel: 'projection horizon', statColor: T.green,
               preview: [['Retirement Corpus', 65, T.green], ['Goal Progress', 42, T.cyan], ['Emergency Fund', 20, T.red]],
+              features: [
+                { label: 'Retirement Planner', desc: 'Corpus needed & monthly savings required to retire comfortably', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Goal Planning', desc: 'Set financial goals and track progress with projections', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Wealth Projection', desc: 'Project your net worth growth over 10–30 years', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Emergency Fund Planner', desc: 'Build a 6-month safety net with a step-by-step plan', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+              ],
             },
             {
               icon: BarChart3, color: T.amber, label: 'Loans',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Manage EMIs, compare loans, prepay smarter',
-              tools: ['EMI Calculator', 'Loan Comparison', 'Prepayment Strategy', 'Burden analysis'],
-              stat: '48%', statLabel: 'max safe EMI ratio', statColor: T.amber,
+              stat: '3', statLabel: 'loan tools', statColor: T.amber,
               preview: [['EMI Burden', 48, T.amber], ['Loan Cost', 62, T.red], ['Savings', 75, T.green]],
+              features: [
+                { label: 'EMI Calculator', desc: 'Monthly EMI for home, car, or personal loans', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Loan Comparison', desc: 'Compare multiple loan offers side by side on real total cost', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Prepayment Strategy', desc: 'Optimal prepayment plan to save maximum interest over time', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+              ],
             },
             {
-              icon: Calculator, color: T.cyan, label: 'Tax',
+              icon: Calculator, color: T.cyan, label: 'Tax Optimisation',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Old vs new regime, every deduction found for you',
-              tools: ['Regime Comparison', 'Deduction Optimizer', '80C / 80D / HRA / NPS'],
               stat: '₹46K', statLabel: 'avg tax saved', statColor: T.cyan,
               preview: [['80C Used', 70, T.cyan], ['HRA Claimed', 55, T.purple], ['NPS Benefit', 40, T.green]],
+              features: [
+                { label: 'Tax Calculator', desc: 'Compare old vs new income tax regime for your income', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Deduction Optimizer', desc: 'Find all deductions — 80C, 80D, HRA, NPS & more', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Regime Recommender', desc: 'AI tells you exactly which regime saves you more money', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+              ],
             },
             {
               icon: Bot, color: T.purple, label: 'AI Agent',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: 'Ask anything — it already knows your numbers',
-              tools: ['Financial Assistant', 'Document Explainer', 'Proactive Alerts', 'Personalised advice'],
               stat: '24/7', statLabel: 'always monitoring', statColor: T.purple,
               preview: [['Accuracy', 94, T.purple], ['Response', 98, T.cyan], ['Personalised', 100, T.green]],
+              features: [
+                { label: 'Financial Assistant Chat', desc: 'Ask any finance question — AI answers using your data', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Document Explainer', desc: 'Upload any financial document — get a plain-English summary', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Proactive Alerts', desc: 'Agent monitors SIPs, goals & debts and alerts you automatically', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Autonomous Agent Mode', desc: 'Continuous 24/7 monitoring — surfaces insights before you ask', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+              ],
             },
             {
               icon: Zap, color: T.green, label: 'Tools Hub',
               href: 'https://financialai-frontend-lime.vercel.app/signup',
               tagline: '20+ tools — all personalised to your profile',
-              tools: ['Action items for you', 'All calculators', 'Profile-aware results'],
               stat: '20+', statLabel: 'tools available', statColor: T.green,
               preview: [['Tools Used', 12, T.green], ['Insights', 8, T.cyan], ['Alerts', 3, T.amber]],
+              features: [
+                { label: 'Personalised Action Items', desc: 'Your top 3 priorities based on your actual numbers', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'SIP Calculator', desc: 'Calculate your SIP maturity value and wealth growth', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Portfolio Analyzer', desc: 'Analyze your portfolio performance and allocation', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Return Calculator (CAGR)', desc: 'Calculate CAGR and annualized returns on investments', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Risk Analysis', desc: 'Assess your portfolio risk and get rebalancing signals', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Policy Analyzer', desc: 'Upload any policy and get real IRR and hidden charges', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'IRR Calculator', desc: 'Calculate the true Internal Rate of Return on your policy', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Coverage Checker', desc: 'Check if your life and health coverage is adequate', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Retirement Planner', desc: 'Plan your retirement corpus and monthly savings needed', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Goal Planning', desc: 'Set financial goals and track progress with projections', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Wealth Projection', desc: 'Project your net worth growth over the next 10–30 years', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'EMI Calculator', desc: 'Calculate your monthly EMI for home, car, or personal loans', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Loan Comparison', desc: 'Compare multiple loan offers side by side on real cost', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Prepayment Strategy', desc: 'Find the optimal prepayment plan to save on interest', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Tax Calculator', desc: 'Compare old vs new income tax regime for your income', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Deduction Optimizer', desc: 'Find all deductions under 80C, 80D, HRA, and more', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Financial Assistant', desc: 'Chat with AI for instant answers to financial questions', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+                { label: 'Report Explainer', desc: 'Upload any financial document and get a plain-English summary', href: 'https://financialai-frontend-lime.vercel.app/signup' },
+              ],
             },
           ].map(m => (
             <motion.div key={m.label} variants={fadeUp}>
@@ -679,11 +738,22 @@ export default function Home() {
                     ))}
                   </div>
 
-                  {/* Tool tags */}
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {m.tools.map(t => (
-                      <span key={t} style={{ fontSize: 11, color: m.color, background: `${m.color}10`, border: `1px solid ${m.color}25`, borderRadius: 6, padding: '3px 9px', fontWeight: 500 }}>{t}</span>
-                    ))}
+                  {/* Feature list with links */}
+                  <div style={{ borderTop: `1px solid ${m.color}15`, paddingTop: 14 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: m.color, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>What’s included</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                      {m.features.map((f, i) => (
+                        <a key={i} href={f.href} target="_blank" rel="noopener noreferrer"
+                          style={{ textDecoration: 'none', display: 'flex', alignItems: 'flex-start', gap: 10, padding: '8px 0', borderBottom: i < m.features.length - 1 ? `1px solid rgba(255,255,255,0.04)` : 'none' }}>
+                          <div style={{ width: 5, height: 5, borderRadius: '50%', background: m.color, flexShrink: 0, marginTop: 6 }} />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: 12, fontWeight: 700, color: T.textPrimary, marginBottom: 1 }}>{f.label}</div>
+                            <div style={{ fontSize: 11, color: T.textMuted, lineHeight: 1.4 }}>{f.desc}</div>
+                          </div>
+                          <ChevronRight size={11} color={m.color} style={{ flexShrink: 0, marginTop: 4, opacity: 0.6 }} />
+                        </a>
+                      ))}
+                    </div>
                   </div>
 
                   {/* CTA row */}
