@@ -403,7 +403,6 @@ export default function Home() {
               <span style={{ background: T.gradPrimary, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 You just don't know where you stand.
               </span>
-              </span>
             </h1>
 
             <p className="hero-fade-3 text-lg mb-6" style={{ color: T.textSecondary, lineHeight: 1.7, maxWidth: 460 }}>
