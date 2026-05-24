@@ -768,4 +768,144 @@ export default function Home() {
                     <div style={{ fontSize: 12, fontWeight: 600, color: T.textPrimary, marginBottom: 3 }}>{item.title}</div>
                     <div style={{ fontSize: 11, color: T.textSecondary, lineHeight: 1.6 }}>{item.desc}</div>
                   </div>
-          
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* ── Pricing ── */}
+      <section id="pricing" style={{ padding: '80px 4vw', position: 'relative', zIndex: 2 }}>
+        <Reveal>
+          <motion.div variants={fadeUp} style={{ textAlign: 'center', marginBottom: 52 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 13px', borderRadius: 999, background: 'rgba(122,60,255,0.09)', border: `1px solid rgba(122,60,255,0.28)`, marginBottom: 14 }}>
+              <Zap size={11} color={T.purple} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: T.purple }}>Pricing</span>
+            </div>
+            <h2 style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(2rem, 4vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.03em', color: T.textPrimary, marginBottom: 12 }}>
+              Start Free. Scale When Ready.
+            </h2>
+            <p style={{ color: T.textSecondary, maxWidth: 480, margin: '0 auto', fontSize: 15 }}>
+              No credit card required. Cancel anytime.
+            </p>
+          </motion.div>
+          <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, maxWidth: 1100, margin: '0 auto' }}>
+            {[
+              {
+                name: 'Starter', price: 'Free', period: '', color: T.cyan, popular: false,
+                features: ['Financial Health Score', 'Basic AI Analysis', '3 document uploads/mo', 'Core calculators', 'Email support'],
+                cta: 'Start Free', href: 'https://financialai-frontend-lime.vercel.app/app/dashboard',
+              },
+              {
+                name: 'Pro', price: '₹499', period: '/mo', color: T.purple, popular: true,
+                features: ['Everything in Starter', 'Unlimited documents', 'AI Financial Copilot', 'All 20 calculators', 'Tax optimization', 'Priority support'],
+                cta: 'Start Pro Trial', href: 'https://financialai-frontend-lime.vercel.app/app/dashboard',
+              },
+              {
+                name: 'Wealth', price: '₹999', period: '/mo', color: T.green, popular: false,
+                features: ['Everything in Pro', 'Portfolio deep-dive', 'Investment intelligence', 'Retirement planner', 'Real-time alerts', 'Dedicated support'],
+                cta: 'Go Wealth', href: 'https://financialai-frontend-lime.vercel.app/app/dashboard',
+              },
+              {
+                name: 'Autonomous', price: '₹1,999', period: '/mo', color: T.amber, popular: false,
+                features: ['Everything in Wealth', 'AI agent mode', 'Automated monitoring', 'Family accounts (4)', 'API access', 'White-glove onboarding'],
+                cta: 'Go Autonomous', href: 'https://financialai-frontend-lime.vercel.app/app/dashboard',
+              },
+            ].map(plan => (
+              <motion.div key={plan.name} variants={fadeUp}
+                whileHover={{ y: -6, boxShadow: `0 0 40px ${plan.color}22` }}
+                style={{ position: 'relative', background: T.cardBg, border: `1px solid ${plan.popular ? plan.color + '55' : T.border}`, borderRadius: 18, padding: '32px 26px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                {plan.popular && (
+                  <div style={{ position: 'absolute', top: -13, left: '50%', transform: 'translateX(-50%)' }}>
+                    <motion.div animate={{ boxShadow: [`0 0 0px ${T.purple}`, `0 0 16px ${T.purple}88`, `0 0 0px ${T.purple}`] }} transition={{ duration: 2, repeat: Infinity }}
+                      style={{ background: T.gradPrimary, borderRadius: 999, padding: '4px 14px', fontSize: 10, fontWeight: 700, color: '#fff', whiteSpace: 'nowrap' }}>
+                      MOST POPULAR
+                    </motion.div>
+                  </div>
+                )}
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: plan.color, letterSpacing: '0.08em', marginBottom: 8 }}>{plan.name.toUpperCase()}</div>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                    <span style={{ fontFamily: T.fontDisplay, fontSize: 36, fontWeight: 900, color: T.textPrimary }}>{plan.price}</span>
+                    {plan.period && <span style={{ fontSize: 13, color: T.textSecondary }}>{plan.period}</span>}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+                  {plan.features.map(f => (
+                    <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 13, color: T.textSecondary }}>
+                      <CheckCircle size={13} color={plan.color} style={{ flexShrink: 0 }} />
+                      {f}
+                    </div>
+                  ))}
+                </div>
+                <a href={plan.href} target="_blank" rel="noopener noreferrer"
+                  style={{ display: 'block', textAlign: 'center', padding: '12px', borderRadius: 10, fontSize: 13, fontWeight: 700, textDecoration: 'none', background: plan.popular ? T.gradPrimary : 'transparent', color: plan.popular ? '#fff' : plan.color, border: plan.popular ? 'none' : `1px solid ${plan.color}44`, transition: 'opacity 0.2s' }}>
+                  {plan.cta}
+                </a>
+              </motion.div>
+            ))}
+          </motion.div>
+        </Reveal>
+      </section>
+
+      {/* ── CTA ── */}
+      <section style={{ padding: '80px 4vw', position: 'relative', zIndex: 2 }}>
+        <Reveal>
+          <motion.div variants={fadeUp}
+            style={{ maxWidth: 780, margin: '0 auto', textAlign: 'center', background: `linear-gradient(135deg, ${T.cyan}08, ${T.purple}08)`, border: `1px solid ${T.borderMid}`, borderRadius: 24, padding: '64px 40px', position: 'relative', overflow: 'hidden' }}>
+            <motion.div animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ duration: 4, repeat: Infinity }}
+              style={{ position: 'absolute', top: '-30%', right: '-10%', width: '50%', height: '140%', background: `radial-gradient(ellipse, ${T.purple}14, transparent 70%)`, pointerEvents: 'none' }} />
+            <h2 style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.04em', color: T.textPrimary, marginBottom: 16, lineHeight: 1.1 }}>
+              Your financial clarity starts today.
+            </h2>
+            <p style={{ color: T.textSecondary, fontSize: 16, marginBottom: 36, maxWidth: 440, margin: '0 auto 36px' }}>
+              Join thousands of Indians who finally understand their money — and know exactly what to do next.
+            </p>
+            <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <a href="https://financialai-frontend-lime.vercel.app/app/dashboard" target="_blank" rel="noopener noreferrer" className="btn-primary">
+                Analyze My Finances <ArrowRight size={15} />
+              </a>
+              <a href="https://financialai-frontend-lime.vercel.app/app/fi" target="_blank" rel="noopener noreferrer" className="btn-secondary">
+                See Financial Health Score
+              </a>
+            </div>
+            <p style={{ marginTop: 20, fontSize: 11, color: T.textMuted }}>Free forever plan · No credit card · No bank login</p>
+          </motion.div>
+        </Reveal>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer style={{ padding: '48px 4vw 32px', borderTop: `1px solid ${T.border}`, position: 'relative', zIndex: 2 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 36, marginBottom: 36 }}>
+          <div>
+            <div style={{ fontFamily: T.fontDisplay, fontSize: 18, fontWeight: 800, color: T.textPrimary, marginBottom: 10 }}>FinHealth360</div>
+            <p style={{ fontSize: 12, color: T.textSecondary, lineHeight: 1.7, maxWidth: 220 }}>
+              India's AI-powered financial intelligence platform. Understand your money. Act with confidence.
+            </p>
+          </div>
+          {[
+            { title: 'Platform', links: [['Dashboard', 'https://financialai-frontend-lime.vercel.app/app/dashboard'], ['Financial Health', 'https://financialai-frontend-lime.vercel.app/app/fi'], ['Tools', 'https://financialai-frontend-lime.vercel.app/app/tools'], ['AI Agent', 'https://financialai-frontend-lime.vercel.app/app/agent']] },
+            { title: 'Tools', links: [['SIP Calculator', 'https://financialai-frontend-lime.vercel.app/app/tools'], ['Tax Optimizer', 'https://financialai-frontend-lime.vercel.app/app/tools'], ['Net Worth', 'https://financialai-frontend-lime.vercel.app/app/tools'], ['Retirement', 'https://financialai-frontend-lime.vercel.app/app/tools']] },
+            { title: 'Company', links: [['About', '#'], ['Privacy', '#'], ['Terms', '#'], ['Contact', '#']] },
+          ].map(col => (
+            <div key={col.title}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: T.textPrimary, letterSpacing: '0.08em', marginBottom: 14 }}>{col.title.toUpperCase()}</div>
+              {col.links.map(([l, h]) => (
+                <a key={l} href={h} target="_blank" rel="noopener noreferrer"
+                  style={{ display: 'block', fontSize: 12, color: T.textSecondary, marginBottom: 8, textDecoration: 'none', transition: 'color 0.2s' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = T.textPrimary)}
+                  onMouseLeave={e => (e.currentTarget.style.color = T.textSecondary)}>
+                  {l}
+                </a>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 22, textAlign: 'center', fontSize: 11, color: T.textSecondary }}>
+          © 2026 FinHealth360. Provides AI-powered financial insights and educational analysis. Not a registered investment advisor.
+        </div>
+      </footer>
+    </div>
+  );
+}
