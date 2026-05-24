@@ -73,8 +73,8 @@ const COMPETITORS = [
 ];
 
 
-function useInView(threshold) {
-  threshold = threshold || 0.15;
+function useInView(threshold?: number) {
+  threshold = threshold ?? 0.15;
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
   useEffect(function() {
