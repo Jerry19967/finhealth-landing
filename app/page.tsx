@@ -319,59 +319,132 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Right — Hero card */}
-          <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.3 }}
-            animate={{ y: [0, -10, 0] } as any} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 } as any}
-            style={{ flex: '1 1 300px', maxWidth: 400 }}>
-            <div style={{ borderRadius: 20, border: `1px solid rgba(47,230,255,0.18)`, background: 'rgba(7,10,18,0.7)', backdropFilter: 'blur(8px)', padding: 24, position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${T.cyan}, ${T.purple}, transparent)` }} />
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-                <div>
-                  <div style={{ fontSize: 12, fontWeight: 500, color: T.textSecondary, marginBottom: 2 }}>Financial Health Score</div>
-                  <div style={{ fontSize: 11, color: T.textMuted }}>Updated just now</div>
+          {/* Right — Hero card (Financial Intelligence Score) */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }}
+            style={{ flex: '1 1 300px', maxWidth: 460, position: 'relative' }}>
+            <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}>
+
+              {/* Floating Net Worth badge — top left, overlaps card edge */}
+              <motion.div
+                initial={{ opacity: 0, x: -16, y: 10 }} animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.8 }}
+                style={{ position: 'absolute', top: -18, left: -18, zIndex: 10, background: '#0D1526', border: `1px solid rgba(47,230,255,0.25)`, borderRadius: 12, padding: '8px 14px', boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}>
+                <div style={{ fontSize: 10, color: T.textSecondary, fontWeight: 600, marginBottom: 2 }}>Net Worth</div>
+                <div style={{ fontFamily: T.fontDisplay, fontSize: 18, fontWeight: 800, color: T.green }}>₹24.6L</div>
+              </motion.div>
+
+              {/* Floating Tax Saved badge — right side */}
+              <motion.div
+                initial={{ opacity: 0, x: 16, y: 10 }} animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.0 }}
+                style={{ position: 'absolute', top: 180, right: -20, zIndex: 10, background: '#0D1526', border: `1px solid rgba(122,60,255,0.3)`, borderRadius: 12, padding: '8px 14px', boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}>
+                <div style={{ fontSize: 10, color: T.textSecondary, fontWeight: 600, marginBottom: 2 }}>Tax Saved</div>
+                <div style={{ fontFamily: T.fontDisplay, fontSize: 18, fontWeight: 800, color: T.purple }}>₹18K</div>
+              </motion.div>
+
+              {/* Floating Monthly SIP badge — bottom right */}
+              <motion.div
+                initial={{ opacity: 0, x: 16, y: 10 }} animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.2 }}
+                style={{ position: 'absolute', bottom: 60, right: -20, zIndex: 10, background: '#0D1526', border: `1px solid rgba(239,159,39,0.3)`, borderRadius: 12, padding: '8px 14px', boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}>
+                <div style={{ fontSize: 10, color: T.textSecondary, fontWeight: 600, marginBottom: 2 }}>Monthly SIP</div>
+                <div style={{ fontFamily: T.fontDisplay, fontSize: 16, fontWeight: 800, color: T.amber, display: 'flex', alignItems: 'center', gap: 5 }}>
+                  ₹0 <span style={{ fontSize: 14 }}>⚠️</span>
                 </div>
-                <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(47,230,255,0.1)', border: `1px solid rgba(47,230,255,0.2)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Heart size={16} color={T.cyan} />
+              </motion.div>
+
+              {/* Main card */}
+              <div style={{ borderRadius: 20, border: `1px solid rgba(47,230,255,0.18)`, background: 'rgba(7,10,18,0.85)', backdropFilter: 'blur(12px)', padding: '24px 24px 20px', position: 'relative', overflow: 'hidden' }}>
+                {/* Top gradient line */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${T.cyan}, ${T.purple})` }} />
+
+                {/* Header */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 18 }}>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: T.textPrimary, marginBottom: 3 }}>Financial Intelligence Score</div>
+                    <div style={{ fontSize: 11, color: T.textMuted }}>Live · Updated now</div>
+                  </div>
+                  <motion.div
+                    animate={{ boxShadow: [`0 0 0px ${T.green}`, `0 0 10px ${T.green}66`, `0 0 0px ${T.green}`] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 11px', borderRadius: 999, background: 'rgba(49,233,129,0.1)', border: `1px solid rgba(49,233,129,0.3)` }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: T.green, animation: 'insightPulse 1.5s ease-in-out infinite' }} />
+                    <span style={{ fontSize: 10, fontWeight: 700, color: T.green, letterSpacing: '0.06em' }}>INTELLIGENCE ACTIVE</span>
+                  </motion.div>
                 </div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
-                <div style={{ position: 'relative', width: 120, height: 120 }}>
-                  <svg width="120" height="120" style={{ transform: 'rotate(-90deg)' }}>
-                    <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
-                    <circle cx="60" cy="60" r="50" fill="none" stroke="url(#scoreGrad)" strokeWidth="8"
-                      strokeDasharray={`${2 * Math.PI * 50 * 0.72} ${2 * Math.PI * 50 * 0.28}`} strokeLinecap="round" />
-                    <defs>
-                      <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor={T.cyan} />
-                        <stop offset="100%" stopColor={T.purple} />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                  <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ fontFamily: T.fontDisplay, fontSize: 32, fontWeight: 800, color: T.textPrimary }}>72</div>
-                    <div style={{ fontSize: 11, color: T.textSecondary }}>/ 100</div>
+
+                {/* Score gauge */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 22, position: 'relative' }}>
+                  <div style={{ position: 'relative', width: 140, height: 140 }}>
+                    {/* Outer glow ring */}
+                    <motion.div
+                      animate={{ opacity: [0.3, 0.7, 0.3], scale: [1, 1.04, 1] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                      style={{ position: 'absolute', inset: -8, borderRadius: '50%', background: `radial-gradient(circle, rgba(47,230,255,0.08) 0%, transparent 70%)`, pointerEvents: 'none' }} />
+                    {/* Orbital dots */}
+                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                      style={{ position: 'absolute', inset: 0, borderRadius: '50%' }}>
+                      <div style={{ position: 'absolute', top: 4, left: '50%', width: 6, height: 6, borderRadius: '50%', background: T.cyan, transform: 'translateX(-50%)', boxShadow: `0 0 8px ${T.cyan}` }} />
+                    </motion.div>
+                    <motion.div animate={{ rotate: -360 }} transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
+                      style={{ position: 'absolute', inset: 8, borderRadius: '50%' }}>
+                      <div style={{ position: 'absolute', bottom: 2, left: '50%', width: 5, height: 5, borderRadius: '50%', background: T.purple, transform: 'translateX(-50%)', boxShadow: `0 0 8px ${T.purple}` }} />
+                    </motion.div>
+                    {/* SVG arc */}
+                    <svg width="140" height="140" style={{ transform: 'rotate(-90deg)', position: 'absolute', top: 0, left: 0 }}>
+                      <circle cx="70" cy="70" r="56" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="9" />
+                      <circle cx="70" cy="70" r="56" fill="none" stroke="url(#scoreGrad2)" strokeWidth="9"
+                        strokeDasharray={`${2 * Math.PI * 56 * 0.72} ${2 * Math.PI * 56 * 0.28}`} strokeLinecap="round" />
+                      <defs>
+                        <linearGradient id="scoreGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor={T.cyan} />
+                          <stop offset="100%" stopColor={T.purple} />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    {/* Score number */}
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ fontFamily: T.fontDisplay, fontSize: 36, fontWeight: 900, color: T.textPrimary, lineHeight: 1 }}>72</div>
+                      <div style={{ fontSize: 11, color: T.textSecondary, marginTop: 3 }}>/100</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Progress bars */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 18 }}>
+                  {[['Cash Flow', 78, T.green], ['Investments', 65, T.cyan], ['Insurance', 55, T.amber], ['Debt', 82, T.green]].map(([label, pct, color]) => (
+                    <div key={String(label)}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
+                        <span style={{ color: T.textSecondary }}>{label}</span>
+                        <span style={{ color: String(color), fontWeight: 600 }}>{pct}%</span>
+                      </div>
+                      <div style={{ height: 5, borderRadius: 3, background: 'rgba(255,255,255,0.05)' }}>
+                        <motion.div
+                          initial={{ width: 0 }} animate={{ width: `${pct}%` }}
+                          transition={{ duration: 1.2, delay: 0.6, ease: 'easeOut' }}
+                          style={{ height: '100%', borderRadius: 3, background: String(color), boxShadow: `0 0 8px ${String(color)}66` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Live Intelligence Alerts */}
+                <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 14 }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: T.textSecondary, marginBottom: 10 }}>LIVE INTELLIGENCE ALERTS</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, background: 'rgba(255,80,80,0.06)', border: `1px solid rgba(255,80,80,0.2)` }}>
+                      <span style={{ fontSize: 14 }}>🚨</span>
+                      <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>No SIP detected — wealth creation at risk</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, background: 'rgba(239,159,39,0.06)', border: `1px solid rgba(239,159,39,0.2)` }}>
+                      <span style={{ fontSize: 14 }}>💡</span>
+                      <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>₹18,000 deduction opportunity found</span>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
-                {[['Cash Flow', 78, T.green], ['Investments', 65, T.cyan], ['Insurance', 55, T.amber], ['Debt', 82, T.green]].map(([label, pct, color]) => (
-                  <div key={String(label)}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: T.textSecondary, marginBottom: 3 }}>
-                      <span>{label}</span><span style={{ color: String(color) }}>{pct}%</span>
-                    </div>
-                    <div style={{ height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.06)' }}>
-                      <div style={{ height: '100%', width: `${pct}%`, borderRadius: 2, background: String(color), opacity: 0.85 }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div style={{ background: 'rgba(47,230,255,0.06)', border: `1px solid rgba(47,230,255,0.15)`, borderRadius: 10, padding: '12px 14px', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                <span style={{ width: 7, height: 7, borderRadius: '50%', background: T.cyan, marginTop: 3, flexShrink: 0, animation: 'insightPulse 2.5s ease-in-out infinite' }} />
-                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', margin: 0, lineHeight: 1.5 }}>
-                  💡 Your Agent found ₹18,000/yr in insurance savings — review detected
-                </p>
-              </div>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
