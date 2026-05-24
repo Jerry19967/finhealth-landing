@@ -611,7 +611,6 @@ export default function Home() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1, marginBottom: 20 }}>
                 {[
                   'Everything in Free',
-                  'All 6 score factors unlocked',
                   'AI Analysis — deep financial health insights',
                   'Investments module — SIP, portfolio, returns',
                   'Insurance module — policy & coverage analysis',
