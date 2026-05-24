@@ -221,9 +221,10 @@ export default function Home() {
     <div className="min-h-screen" style={{ background: T.pageBg }}>
       <ParticleField />
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
-        <div style={{ position: 'absolute', top: '10%', left: '5%', width: '40vw', height: '40vw', background: 'radial-gradient(ellipse, rgba(47,230,255,0.05) 0%, transparent 65%)', animation: 'float1 22s ease-in-out infinite', borderRadius: '50%' }} />
-        <div style={{ position: 'absolute', top: '40%', right: '5%', width: '35vw', height: '35vw', background: 'radial-gradient(ellipse, rgba(122,60,255,0.065) 0%, transparent 65%)', animation: 'float2 28s ease-in-out infinite', borderRadius: '50%' }} />
-        <div style={{ position: 'absolute', bottom: '10%', left: '30%', width: '28vw', height: '28vw', background: 'radial-gradient(ellipse, rgba(49,233,129,0.038) 0%, transparent 65%)', animation: 'float3 18s ease-in-out infinite', borderRadius: '50%' }} />
+        <div style={{ position: 'absolute', top: '5%', left: '-5%', width: '45vw', height: '45vw', background: 'radial-gradient(ellipse, rgba(47,230,255,0.07) 0%, transparent 65%)', animation: 'morphBlob1 18s ease-in-out infinite, float1 22s ease-in-out infinite', animationFillMode: 'both' }} />
+        <div style={{ position: 'absolute', top: '35%', right: '-8%', width: '40vw', height: '40vw', background: 'radial-gradient(ellipse, rgba(122,60,255,0.08) 0%, transparent 65%)', animation: 'morphBlob2 22s ease-in-out infinite, float2 28s ease-in-out infinite' }} />
+        <div style={{ position: 'absolute', bottom: '5%', left: '25%', width: '32vw', height: '32vw', background: 'radial-gradient(ellipse, rgba(49,233,129,0.05) 0%, transparent 65%)', animation: 'morphBlob1 26s 5s ease-in-out infinite reverse, float3 18s ease-in-out infinite' }} />
+        <div style={{ position: 'absolute', top: '60%', left: '10%', width: '20vw', height: '20vw', background: 'radial-gradient(ellipse, rgba(239,159,39,0.04) 0%, transparent 65%)', animation: 'morphBlob2 14s ease-in-out infinite, float1 16s ease-in-out infinite reverse' }} />
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.011) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.011) 1px, transparent 1px)', backgroundSize: '60px 60px', animation: 'gridMove 10s linear infinite', opacity: 0.7 }} />
       </div>
 
@@ -275,6 +276,24 @@ export default function Home() {
         .btn-ghost:hover { border-color: rgba(255,255,255,0.3); color: #F2F5FF; }
 
         
+        
+        @keyframes morphBlob1 { 0%,100%{border-radius:60% 40% 30% 70%/60% 30% 70% 40%} 25%{border-radius:30% 60% 70% 40%/50% 60% 30% 60%} 50%{border-radius:50% 60% 30% 70%/40% 40% 60% 50%} 75%{border-radius:70% 30% 50% 60%/30% 70% 40% 60%} }
+        @keyframes morphBlob2 { 0%,100%{border-radius:40% 60% 60% 40%/40% 60% 40% 60%} 33%{border-radius:60% 40% 40% 60%/60% 40% 60% 40%} 66%{border-radius:50% 50% 40% 60%/40% 50% 60% 50%} }
+        @keyframes antigravity { 0%,100%{transform:translateY(0px) rotate(0deg)} 25%{transform:translateY(-18px) rotate(2deg)} 50%{transform:translateY(-8px) rotate(-1deg)} 75%{transform:translateY(-22px) rotate(1.5deg)} }
+        @keyframes antigravity2 { 0%,100%{transform:translateY(0px) rotate(0deg)} 33%{transform:translateY(-14px) rotate(-2deg)} 66%{transform:translateY(-24px) rotate(1deg)} }
+        @keyframes antigravity3 { 0%,100%{transform:translateY(0px)} 40%{transform:translateY(-10px)} 70%{transform:translateY(-20px)} }
+        @keyframes orbitSpin { 0%{transform:rotate(0deg) translateX(80px) rotate(0deg)} 100%{transform:rotate(360deg) translateX(80px) rotate(-360deg)} }
+        @keyframes orbitSpin2 { 0%{transform:rotate(0deg) translateX(55px) rotate(0deg)} 100%{transform:rotate(-360deg) translateX(55px) rotate(360deg)} }
+        @keyframes glowPulse { 0%,100%{opacity:0.5;filter:blur(20px)} 50%{opacity:1;filter:blur(30px)} }
+        @keyframes textGlow { 0%,100%{text-shadow:0 0 20px rgba(47,230,255,0.3)} 50%{text-shadow:0 0 40px rgba(47,230,255,0.7),0 0 80px rgba(122,60,255,0.3)} }
+        @keyframes borderRotate { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        @keyframes floatChip { 0%,100%{transform:translateY(0px) translateX(0px)} 33%{transform:translateY(-12px) translateX(5px)} 66%{transform:translateY(-6px) translateX(-4px)} }
+        @keyframes scanBeam { 0%{top:0%;opacity:0.6} 100%{top:100%;opacity:0} }
+        .antigravity-1 { animation: antigravity 6s ease-in-out infinite; }
+        .antigravity-2 { animation: antigravity2 8s ease-in-out infinite; }
+        .antigravity-3 { animation: antigravity3 7s ease-in-out infinite; }
+        .float-chip { animation: floatChip 5s ease-in-out infinite; }
+        .text-glow { animation: textGlow 3s ease-in-out infinite; }
         @keyframes particleDrift { 0%{transform:translate(0,0)} 100%{transform:translate(30px,-40px)} }
         @keyframes float1 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(40px,-30px) scale(1.08)} 66%{transform:translate(-20px,20px) scale(0.95)} }
         @keyframes float2 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-30px,20px) scale(1.05)} 66%{transform:translate(25px,-15px) scale(0.97)} }
@@ -384,6 +403,7 @@ export default function Home() {
               <span style={{ background: T.gradPrimary, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 You just don't know where you stand.
               </span>
+              </span>
             </h1>
 
             <p className="hero-fade-3 text-lg mb-6" style={{ color: T.textSecondary, lineHeight: 1.7, maxWidth: 460 }}>
@@ -469,6 +489,12 @@ export default function Home() {
               <div className="flex items-center justify-center mb-5" style={{ position: 'relative' }}>
                 <div style={{ position: 'absolute', width: 134, height: 134, borderRadius: '50%', border: '1px solid rgba(47,230,255,0.2)', animation: 'pulseRing 3s ease-out infinite' }} />
                 <div style={{ position: 'absolute', width: 134, height: 134, borderRadius: '50%', border: '1px solid rgba(122,60,255,0.15)', animation: 'pulseRing 3s 1.2s ease-out infinite' }} />
+                <div style={{ position: 'absolute', width: 170, height: 170, borderRadius: '50%' }}>
+                  <div style={{ position: 'absolute', width: 8, height: 8, borderRadius: '50%', background: '#2FE6FF', top: '50%', left: '50%', marginTop: -4, marginLeft: -4, animation: 'orbitSpin 4s linear infinite', boxShadow: '0 0 8px #2FE6FF' }} />
+                </div>
+                <div style={{ position: 'absolute', width: 140, height: 140, borderRadius: '50%' }}>
+                  <div style={{ position: 'absolute', width: 6, height: 6, borderRadius: '50%', background: '#7A3CFF', top: '50%', left: '50%', marginTop: -3, marginLeft: -3, animation: 'orbitSpin2 3s linear infinite', boxShadow: '0 0 6px #7A3CFF' }} />
+                </div>
                 <div style={{ position: "relative", width: 120, height: 120 }}>
                   <svg width="120" height="120" style={{ transform: "rotate(-90deg)" }}>
                     <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
