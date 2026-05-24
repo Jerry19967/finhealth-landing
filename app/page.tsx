@@ -580,8 +580,6 @@ export default function Home() {
                   'Dashboard — net worth, savings, expenses',
                   'Top priorities & action items',
                   '1 AI financial report per month',
-                  'SIP Calculator & EMI Calculator',
-                  'Tax Calculator — old vs new regime',
                   'Score breakdown (2 of 6 factors visible)',
                   'Score share & recalculate',
                 ].map(f => (
