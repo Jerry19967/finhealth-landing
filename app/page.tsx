@@ -575,7 +575,13 @@ export default function Home() {
                 <div style={{ fontSize: 12, color: T.textSecondary }}>Forever free</div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1, marginBottom: 24 }}>
-                {['Financial Health Score', 'Basic tools (SIP, EMI, calculators)', 'Limited AI Agent chat (10/day)', 'Basic insights & reports'].map(f => (
+                {[
+                  'Financial Health Score (0–100)',
+                  'SIP Calculator — SIP maturity & wealth growth',
+                  'EMI Calculator — home, car & personal loans',
+                  'Tax Calculator — old vs new regime comparison',
+                  'Basic insights dashboard',
+                ].map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, fontSize: 13, color: T.textSecondary }}>
                     <CheckCircle size={13} color={T.green} style={{ flexShrink: 0, marginTop: 2 }} />{f}
                   </div>
@@ -600,7 +606,19 @@ export default function Home() {
                 <div style={{ fontSize: 12, color: T.textSecondary }}>per month · cancel anytime</div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1, marginBottom: 20 }}>
-                {['Everything in Free', '5 AI Agent reports/month', 'Advanced insights & recommendations', 'Portfolio & tax intelligence', 'Goal-based planning', 'AI Agent chat (20/day)'].map(f => (
+                {[
+                  'Everything in Free',
+                  'AI Analysis — deep financial health insights',
+                  'Portfolio Analyzer — performance & allocation',
+                  'Return Calculator — CAGR on any investment',
+                  'IRR Calculator — true return on insurance',
+                  'Coverage Checker — life & health adequacy',
+                  'Goal-based financial planning',
+                  'Loan Comparison — real cost side-by-side',
+                  'Prepayment Strategy — optimal repayment plan',
+                  'Deduction Optimizer — 80C, 80D, HRA & more',
+                  'AI Assistant — chat with your financial agent',
+                ].map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, fontSize: 13, color: '#C5D3E8' }}>
                     <CheckCircle size={13} color={T.cyan} style={{ flexShrink: 0, marginTop: 2 }} />{f}
                   </div>
@@ -622,7 +640,18 @@ export default function Home() {
                 <div style={{ fontSize: 12, color: T.textSecondary }}>per month · cancel anytime</div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1, marginBottom: 20 }}>
-                {['Everything in Pro', 'Unlimited AI Agent reports', 'Weekly personalized insights', 'Risk analysis & wealth projection', 'Retirement & insurance planning', 'Full tax optimization', 'Unlimited AI Agent chat', 'PDF report downloads', 'Dedicated advisor support'].map(f => (
+                {[
+                  'Everything in Pro',
+                  'Risk Analysis — portfolio risk & rebalancing signals',
+                  'Policy Analyzer — real IRR & hidden charges',
+                  'Retirement Planner — corpus & monthly savings',
+                  'Wealth Projection — 10–30 year net worth forecast',
+                  'Scenario Planner — model financial decisions',
+                  'PDF financial report downloads',
+                  'Weekly AI personalised insights',
+                  'Unlimited AI Agent chat',
+                  'Elite financial intelligence score',
+                ].map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, fontSize: 13, color: '#C5D3E8' }}>
                     <CheckCircle size={13} color={T.green} style={{ flexShrink: 0, marginTop: 2 }} />{f}
                   </div>
@@ -644,7 +673,17 @@ export default function Home() {
                 <div style={{ fontSize: 12, color: T.textSecondary }}>per month · fully autonomous</div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1, marginBottom: 20 }}>
-                {['Everything in Elite', 'Daily automatic financial analysis', 'Proactive alerts before problems happen', 'Agent works even when you are offline', 'Weekly AI financial roadmap', 'Continuous risk monitoring', 'Full memory across sessions', 'Personalised strategy engine', 'Priority AI processing'].map(f => (
+                {[
+                  'Everything in Elite',
+                  'Autonomous Agent Mode — works while you sleep',
+                  'Daily automatic financial analysis',
+                  'Proactive alerts — flags problems before they hit',
+                  'Continuous risk monitoring 24/7',
+                  'Weekly AI financial roadmap',
+                  'Full memory across all sessions',
+                  'Personalised strategy engine',
+                  'Priority AI processing',
+                ].map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, fontSize: 13, color: '#C5D3E8' }}>
                     <CheckCircle size={13} color={T.purple} style={{ flexShrink: 0, marginTop: 2 }} />{f}
                   </div>
