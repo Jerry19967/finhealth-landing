@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AlertTriangle, ArrowRight, BarChart3, Bot, Calculator, CheckCircle, ChevronRight, Compass, Heart, Lightbulb, PieChart, Search, Shield, ShieldCheck, Sparkles, Star, Award, TrendingUp, Zap } from 'lucide-react';
 
 
@@ -72,6 +72,46 @@ const COMPETITORS = [
   { id: "excel",    label: "Excel / manual", abbr: "XL", cx: 60, cy: 82, desc: "Effort with no output - no score, no plan." },
 ];
 
+
+function useInView(threshold) {
+  threshold = threshold || 0.15;
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+  useEffect(function() {
+    const obs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) { setInView(true); obs.disconnect(); }
+    }, { threshold: threshold });
+    if (ref.current) obs.observe(ref.current);
+    return function() { obs.disconnect(); };
+  }, []);
+  return { ref, inView };
+}
+
+function ParticleField() {
+  const pts = Array.from({ length: 50 }, function(_, i) {
+    return {
+      id: i, x: (i * 17.3) % 100, y: (i * 23.7) % 100,
+      size: (i % 3) + 0.8, dur: 15 + (i % 12), delay: (i * 0.3) % 8,
+      color: i % 3 === 0 ? '#2FE6FF' : i % 3 === 1 ? '#7A3CFF' : '#31E981',
+      opacity: 0.07 + (i % 5) * 0.04,
+    };
+  });
+  return (
+    <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
+      {pts.map(function(p) {
+        return (
+          <div key={p.id} style={{
+            position: 'absolute', left: p.x + '%', top: p.y + '%',
+            width: p.size, height: p.size, borderRadius: '50%',
+            background: p.color, opacity: p.opacity,
+            animation: 'particleDrift ' + p.dur + 's ' + p.delay + 's ease-in-out infinite alternate',
+          }} />
+        );
+      })}
+    </div>
+  );
+}
+
 function PositioningMap() {
   const [hovered, setHovered] = useState(null as string | null);
   const [tooltip, setTooltip] = useState(null as {x:number;y:number;text:string;label:string}|null);
@@ -88,7 +128,7 @@ function PositioningMap() {
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>Hover any dot to see what they actually do</div>
         </div>
         <div style={{ display: "flex", gap: 16, fontSize: 12, color: "rgba(255,255,255,0.3)", alignItems: "center" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 5 }}><span style={{ width: 8, height: 8, borderRadius: "50%", background: "#1D9E75", display: "inline-block" }} />FinHealth AI</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 5 }}><span style={{ width: 8, height: 8, borderRadius: "50%", background: "#1D9E75", display: "inline-block" }} />FinHealth360</span>
           <span style={{ display: "flex", alignItems: "center", gap: 5 }}><span style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "inline-block" }} />Competitors</span>
         </div>
       </div>
@@ -110,7 +150,7 @@ function PositioningMap() {
           <circle cx="355" cy="62" r="16" fill="#1D9E75" opacity={hovered && hovered !== "fh" ? 0.4 : 1} style={{ transition: "opacity 0.3s" }} />
           <text x="355" y="58" textAnchor="middle" fill="white" fontSize="6" fontWeight="700">FIN</text>
           <text x="355" y="68" textAnchor="middle" fill="white" fontSize="6" fontWeight="700">HEALTH</text>
-          <text x="382" y="52" fill="#1D9E75" fontSize="9" fontWeight="700">FinHealth AI</text>
+          <text x="382" y="52" fill="#1D9E75" fontSize="9" fontWeight="700">FinHealth360</text>
           <text x="382" y="64" fill="rgba(47,230,255,0.7)" fontSize="7.5">any doc - score - action plan</text>
           <text x="382" y="75" fill="rgba(255,255,255,0.25)" fontSize="7">only one in this quadrant</text>
           {COMPETITORS.map((c) => {
@@ -179,6 +219,13 @@ export default function Home() {
     <>
       
     <div className="min-h-screen" style={{ background: T.pageBg }}>
+      <ParticleField />
+      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+        <div style={{ position: 'absolute', top: '10%', left: '5%', width: '40vw', height: '40vw', background: 'radial-gradient(ellipse, rgba(47,230,255,0.05) 0%, transparent 65%)', animation: 'float1 22s ease-in-out infinite', borderRadius: '50%' }} />
+        <div style={{ position: 'absolute', top: '40%', right: '5%', width: '35vw', height: '35vw', background: 'radial-gradient(ellipse, rgba(122,60,255,0.065) 0%, transparent 65%)', animation: 'float2 28s ease-in-out infinite', borderRadius: '50%' }} />
+        <div style={{ position: 'absolute', bottom: '10%', left: '30%', width: '28vw', height: '28vw', background: 'radial-gradient(ellipse, rgba(49,233,129,0.038) 0%, transparent 65%)', animation: 'float3 18s ease-in-out infinite', borderRadius: '50%' }} />
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.011) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.011) 1px, transparent 1px)', backgroundSize: '60px 60px', animation: 'gridMove 10s linear infinite', opacity: 0.7 }} />
+      </div>
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap');
@@ -227,6 +274,15 @@ export default function Home() {
         }
         .btn-ghost:hover { border-color: rgba(255,255,255,0.3); color: #F2F5FF; }
 
+        
+        @keyframes particleDrift { 0%{transform:translate(0,0)} 100%{transform:translate(30px,-40px)} }
+        @keyframes float1 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(40px,-30px) scale(1.08)} 66%{transform:translate(-20px,20px) scale(0.95)} }
+        @keyframes float2 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-30px,20px) scale(1.05)} 66%{transform:translate(25px,-15px) scale(0.97)} }
+        @keyframes float3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(15px,25px)} }
+        @keyframes pulseRing { 0%{transform:scale(0.85);opacity:0.6} 100%{transform:scale(2.2);opacity:0} }
+        @keyframes gridMove { 0%{background-position:0 0} 100%{background-position:60px 60px} }
+        .glow-on-hover { transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.2s ease; }
+        .glow-on-hover:hover { box-shadow: 0 0 28px rgba(47,230,255,0.13); transform: translateY(-4px); }
         .step-connector { background: linear-gradient(90deg, rgba(47,230,255,0.2), rgba(122,60,255,0.2)); }
       `}</style>
 
@@ -410,7 +466,9 @@ export default function Home() {
               </div>
 
               {/* Score ring - 72/100 (good, not alarming) */}
-              <div className="flex items-center justify-center mb-5">
+              <div className="flex items-center justify-center mb-5" style={{ position: 'relative' }}>
+                <div style={{ position: 'absolute', width: 134, height: 134, borderRadius: '50%', border: '1px solid rgba(47,230,255,0.2)', animation: 'pulseRing 3s ease-out infinite' }} />
+                <div style={{ position: 'absolute', width: 134, height: 134, borderRadius: '50%', border: '1px solid rgba(122,60,255,0.15)', animation: 'pulseRing 3s 1.2s ease-out infinite' }} />
                 <div style={{ position: "relative", width: 120, height: 120 }}>
                   <svg width="120" height="120" style={{ transform: "rotate(-90deg)" }}>
                     <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
@@ -590,7 +648,7 @@ export default function Home() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {capabilities.map((c, i) => (
-              <div key={c.title} className="card-hover p-6 relative overflow-hidden group"
+              <div key={c.title} className="card-hover glow-on-hover p-6 relative overflow-hidden group"
                 style={{ background: `${c.color}08`, border: `1px solid ${c.color}20`, borderRadius: 16 }}>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
                   style={{ background: `${c.color}15`, border: `1px solid ${c.color}35` }}>
@@ -873,7 +931,7 @@ export default function Home() {
                 Your financial data is safe with us
               </h2>
               <p className="text-sm" style={{ color: "rgba(255,255,255,0.45)", maxWidth: 440, margin: "0 auto" }}>
-                We built FinHealth with a simple rule: your data belongs to you, not us.
+                We built FinHealth360 with a simple rule: your data belongs to you, not us.
               </p>
             </div>
             <div className="grid sm:grid-cols-2 gap-5">
@@ -897,7 +955,7 @@ export default function Home() {
             <div className="text-center mt-8">
               <p className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>
                 Questions about privacy? Email us at{" "}
-                <a href="mailto:support@finhealth.ai" style={{ color: T.cyan, textDecoration: "none" }}>support@finhealth.ai</a>
+                <a href="mailto:support@finhealth360.ai" style={{ color: T.cyan, textDecoration: "none" }}>support@finhealth360.ai</a>
                 {" "}— we respond within 24 hours.
               </p>
             </div>
@@ -939,7 +997,7 @@ export default function Home() {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-6 h-6 rounded flex items-center justify-center" style={{ background: T.gradPrimary }}><Sparkles size={12} /></div>
-                <span className="font-bold" style={{ background: T.gradPrimary, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>FinHealth AI</span>
+                <span className="font-bold" style={{ background: T.gradPrimary, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>FinHealth360</span>
               </div>
               <p className="text-xs" style={{ color: T.textSecondary, lineHeight: 1.6 }}>Your personal AI Financial Agent - monitors, detects, and guides. Built for India.</p>
             </div>
@@ -958,7 +1016,7 @@ export default function Home() {
 
           </div>
           <div className="pt-6" style={{ borderTop: `1px solid ${T.border}` }}>
-            <p className="text-xs text-center" style={{ color: T.textSecondary }}>© 2026 FinHealth AI. For informational purposes only. Not financial advice.</p>
+            <p className="text-xs text-center" style={{ color: T.textSecondary }}>© 2026 FinHealth360. For informational purposes only. Not financial advice.</p>
           </div>
         </div>
       </footer>
