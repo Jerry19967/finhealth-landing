@@ -1,54 +1,72 @@
 'use client';
+import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Shield, Zap, TrendingUp, Bot, Calculator, PieChart, Heart, ChevronRight, Star, ShieldCheck, Award, BarChart3, Compass, Target, Wallet, AlertTriangle, CheckCircle, X, Sparkles, Lock, Globe, Trash2, FileText, Menu } from 'lucide-react';
+import { AlertTriangle, ArrowRight, BarChart3, Bot, Calculator, CheckCircle, ChevronRight, Compass, Heart, Lightbulb, PieChart, Search, Shield, ShieldCheck, Sparkles, Star, Award, TrendingUp, Zap } from 'lucide-react';
+import { motion, useScroll, useInView, AnimatePresence } from 'framer-motion';
 
-const C = {
-  bg:     "#050816",
-  card:   "#0B1020",
-  border: "rgba(255,255,255,0.08)",
-  blue:   "#00D4FF",
-  purple: "#7B61FF",
-  green:  "#00E676",
-  red:    "#FF4D6D",
-  amber:  "#FFB547",
-  text:   "#F0F4FF",
-  muted:  "#8B95B0",
-  grad1:  "linear-gradient(135deg, #00D4FF 0%, #7B61FF 100%)",
-  grad2:  "linear-gradient(135deg, #00E676 0%, #00D4FF 100%)",
+// ─── Tokens (unchanged from original) ───────────────────────────────────────
+const T = {
+  cyan:          "#2FE6FF",
+  purple:        "#7A3CFF",
+  green:         "#31E981",
+  amber:         "#EF9F27",
+  red:           "#FF5050",
+  pageBg:        "#070A12",
+  cardBg:        "#0D1526",
+  textPrimary:   "#F2F5FF",
+  textSecondary: "#9AA6BF",
+  textMuted:     "rgba(255,255,255,0.3)",
+  border:        "rgba(255,255,255,0.06)",
+  borderMid:     "rgba(255,255,255,0.08)",
+  gradPrimary:   "linear-gradient(135deg, #2FE6FF 0%, #7A3CFF 100%)",
+  fontDisplay:   "Bricolage Grotesque, sans-serif",
 };
 
-const fadeUp = { hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] } } };
-const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
-const scaleIn = { hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: "backOut" } } };
+// ─── Animation helpers ───────────────────────────────────────────────────────
+const fadeUp = {
+  hidden: { opacity: 0, y: 32 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: 'easeOut' } },
+};
+const stagger = { visible: { transition: { staggerChildren: 0.09 } } };
+const fadeIn = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.5 } } };
 
+// ─── Cursor glow ─────────────────────────────────────────────────────────────
 function CursorGlow() {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [pos, setPos] = useState({ x: -400, y: -400 });
   useEffect(() => {
     const h = (e: MouseEvent) => setPos({ x: e.clientX, y: e.clientY });
     window.addEventListener('mousemove', h);
     return () => window.removeEventListener('mousemove', h);
   }, []);
   return (
-    <div style={{ position: 'fixed', left: pos.x - 200, top: pos.y - 200, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,212,255,0.06) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 1, transition: 'left 0.15s ease, top 0.15s ease' }} />
+    <div style={{
+      position: 'fixed', pointerEvents: 'none', zIndex: 1,
+      left: pos.x - 200, top: pos.y - 200,
+      width: 400, height: 400, borderRadius: '50%',
+      background: 'radial-gradient(circle, rgba(47,230,255,0.055) 0%, transparent 70%)',
+      transition: 'left 0.12s ease, top 0.12s ease',
+    }} />
   );
 }
 
-function Particles() {
-  const pts = Array.from({ length: 60 }, (_, i) => ({
-    id: i, x: (i * 17.3) % 100, y: (i * 23.7) % 100,
-    size: (i % 4) * 0.6 + 0.6,
-    dur: 12 + (i % 15),
-    delay: (i * 0.4) % 10,
-    color: i % 3 === 0 ? C.blue : i % 3 === 1 ? C.purple : C.green,
-    opacity: 0.06 + (i % 6) * 0.03,
+// ─── Particle field ───────────────────────────────────────────────────────────
+function ParticleField() {
+  const pts = Array.from({ length: 55 }, (_, i) => ({
+    id: i,
+    x: (i * 17.3) % 100,
+    y: (i * 23.7) % 100,
+    size: (i % 3) * 0.7 + 0.7,
+    dur: 14 + (i % 13),
+    delay: (i * 0.35) % 9,
+    color: i % 3 === 0 ? T.cyan : i % 3 === 1 ? T.purple : T.green,
+    opacity: 0.055 + (i % 6) * 0.025,
   }));
   return (
     <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
       {pts.map(p => (
         <motion.div key={p.id}
           style={{ position: 'absolute', left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size, borderRadius: '50%', background: p.color, opacity: p.opacity }}
-          animate={{ y: [0, -30, 0], x: [0, 15, 0], opacity: [p.opacity, p.opacity * 2.5, p.opacity] }}
+          animate={{ y: [0, -28, 0], x: [0, 12, 0], opacity: [p.opacity, p.opacity * 2.8, p.opacity] }}
           transition={{ duration: p.dur, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
         />
       ))}
@@ -56,724 +74,722 @@ function Particles() {
   );
 }
 
+// ─── Background blobs ─────────────────────────────────────────────────────────
 function Background() {
   return (
     <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
-      <motion.div animate={{ borderRadius: ['60% 40% 30% 70%/60% 30% 70% 40%', '30% 60% 70% 40%/50% 60% 30% 60%', '60% 40% 30% 70%/60% 30% 70% 40%'] }} transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ position: 'absolute', top: '-10%', left: '-10%', width: '55vw', height: '55vw', background: 'radial-gradient(ellipse, rgba(0,212,255,0.07) 0%, transparent 65%)' }} />
-      <motion.div animate={{ borderRadius: ['40% 60% 60% 40%/40% 60% 40% 60%', '60% 40% 40% 60%/60% 40% 60% 40%', '40% 60% 60% 40%/40% 60% 40% 60%'] }} transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ position: 'absolute', top: '30%', right: '-10%', width: '50vw', height: '50vw', background: 'radial-gradient(ellipse, rgba(123,97,255,0.08) 0%, transparent 65%)' }} />
-      <motion.div animate={{ borderRadius: ['50% 50% 30% 70%/60% 40% 60% 40%', '70% 30% 60% 40%/40% 60% 40% 60%', '50% 50% 30% 70%/60% 40% 60% 40%'] }} transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ position: 'absolute', bottom: '-5%', left: '20%', width: '40vw', height: '40vw', background: 'radial-gradient(ellipse, rgba(0,230,118,0.05) 0%, transparent 65%)' }} />
-      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+      <motion.div
+        animate={{ borderRadius: ['60% 40% 30% 70%/60% 30% 70% 40%', '30% 60% 70% 40%/50% 60% 30% 60%', '60% 40% 30% 70%/60% 30% 70% 40%'] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ position: 'absolute', top: '-8%', left: '-8%', width: '50vw', height: '50vw', background: 'radial-gradient(ellipse, rgba(47,230,255,0.065) 0%, transparent 65%)' }}
+      />
+      <motion.div
+        animate={{ borderRadius: ['40% 60% 60% 40%/40% 60% 40% 60%', '60% 40% 40% 60%/60% 40% 60% 40%', '40% 60% 60% 40%/40% 60% 40% 60%'] }}
+        transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ position: 'absolute', top: '35%', right: '-8%', width: '44vw', height: '44vw', background: 'radial-gradient(ellipse, rgba(122,60,255,0.075) 0%, transparent 65%)' }}
+      />
+      <motion.div
+        animate={{ borderRadius: ['50% 50% 30% 70%/60% 40% 60% 40%', '70% 30% 60% 40%/40% 60% 40% 60%', '50% 50% 30% 70%/60% 40% 60% 40%'] }}
+        transition={{ duration: 19, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ position: 'absolute', bottom: '-5%', left: '22%', width: '36vw', height: '36vw', background: 'radial-gradient(ellipse, rgba(49,233,129,0.042) 0%, transparent 65%)' }}
+      />
+      {/* Grid */}
+      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
     </div>
   );
 }
 
-function Section({ children, id, style }: { children: React.ReactNode; id?: string; style?: React.CSSProperties }) {
+// ─── Scroll section wrapper ───────────────────────────────────────────────────
+function Reveal({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const inView = useInView(ref, { once: true, margin: '-60px' });
   return (
-    <motion.section id={id} ref={ref} initial="hidden" animate={inView ? "visible" : "hidden"} variants={stagger}
-      style={{ position: 'relative', zIndex: 2, padding: '100px 4vw', ...style }}>
+    <motion.div ref={ref} initial="hidden" animate={inView ? 'visible' : 'hidden'} variants={stagger} style={style}>
       {children}
-    </motion.section>
-  );
-}
-
-function Badge({ children, color = C.blue }: { children: React.ReactNode; color?: string }) {
-  return (
-    <motion.div variants={fadeUp} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 999, background: `${color}12`, border: `1px solid ${color}30`, marginBottom: 20 }}>
-      <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }} style={{ width: 6, height: 6, borderRadius: '50%', background: color, display: 'inline-block' }} />
-      <span style={{ fontSize: 12, fontWeight: 600, color, letterSpacing: '0.05em' }}>{children}</span>
     </motion.div>
   );
 }
 
-function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const { scrollYProgress } = useScroll();
-  useEffect(() => {
-    const u = scrollYProgress.on('change', v => setScrolled(v > 0.01));
-    return u;
-  }, [scrollYProgress]);
-  return (
-    <>
-      <motion.div style={{ scaleX: scrollYProgress, position: 'fixed', top: 0, left: 0, right: 0, height: 2, background: C.grad1, transformOrigin: '0%', zIndex: 100 }} />
-      <motion.nav initial={{ y: -80 }} animate={{ y: 0 }} transition={{ duration: 0.6, ease: 'easeOut' }}
-        style={{ position: 'fixed', top: 2, left: 0, right: 0, zIndex: 99, padding: '0 4vw', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: scrolled ? 'rgba(5,8,22,0.85)' : 'transparent', backdropFilter: scrolled ? 'blur(20px)' : 'none', borderBottom: scrolled ? `1px solid ${C.border}` : 'none', transition: 'all 0.3s ease' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.6 }}
-            style={{ width: 36, height: 36, borderRadius: 10, background: C.grad1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Heart size={18} color="#fff" />
-          </motion.div>
-          <span style={{ fontSize: 20, fontWeight: 800, letterSpacing: '-0.5px' }}>
-            <span style={{ color: C.blue }}>FinHealth</span><span style={{ color: C.red }}>360</span>
-          </span>
-        </div>
-        <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
-          {['Features', 'Tools', 'Pricing', 'Security'].map(l => (
-            <motion.button key={l} whileHover={{ color: '#fff' }} onClick={() => document.getElementById(l.toLowerCase())?.scrollIntoView({ behavior: 'smooth' })}
-              style={{ background: 'none', border: 'none', color: C.muted, cursor: 'pointer', fontSize: 14, fontWeight: 500 }}>{l}</motion.button>
-          ))}
-        </div>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <motion.button whileHover={{ borderColor: 'rgba(255,255,255,0.3)', color: '#fff' }}
-            style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.muted, padding: '8px 18px', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 500 }}
-            onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/login'}>Login</motion.button>
-          <motion.button whileHover={{ opacity: 0.9, scale: 1.02 }} whileTap={{ scale: 0.98 }}
-            style={{ background: C.grad1, border: 'none', color: '#fff', padding: '8px 20px', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
-            onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>Get Started Free</motion.button>
-        </div>
-      </motion.nav>
-    </>
-  );
-}
+// ─── Ticker ───────────────────────────────────────────────────────────────────
+const TICKER_ITEMS = [
+  "88% of Indians expect more financial uncertainty",
+  "72% have never reviewed their finances — not once",
+  "5.3% household savings rate — lowest in 50 years (RBI 2025)",
+  "400M+ middle-class Indians with zero access to financial guidance",
+];
 
-function HeroDashboard() {
-  const alerts = [
-    { icon: '🚨', text: 'No SIP detected — start investing', color: C.red },
-    { icon: '💡', text: '₹18,000 tax deduction available', color: C.amber },
-    { icon: '⚠️', text: 'EMI burden at 38% — review loans', color: C.amber },
-    { icon: '✅', text: 'Emergency fund: 4.2 months covered', color: C.green },
-  ];
+function Ticker() {
   return (
-    <motion.div initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
-      style={{ flex: '1 1 420px', maxWidth: 480, position: 'relative' }}>
-      <motion.div animate={{ y: [0, -12, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ background: 'rgba(11,16,32,0.9)', border: `1px solid rgba(0,212,255,0.2)`, borderRadius: 20, padding: 24, backdropFilter: 'blur(20px)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: C.grad1 }} />
-        <motion.div animate={{ top: ['-5%', '105%'] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
-          style={{ position: 'absolute', left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, rgba(0,212,255,0.5), transparent)', zIndex: 3 }} />
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <div>
-            <div style={{ fontSize: 12, color: C.muted, marginBottom: 2 }}>FinHealth Score</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>Live · Updated now</div>
-          </div>
-          <motion.div animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 2, repeat: Infinity }}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(0,230,118,0.1)', border: '1px solid rgba(0,230,118,0.3)', borderRadius: 20, padding: '4px 10px' }}>
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.green }} />
-            <span style={{ fontSize: 10, color: C.green, fontWeight: 600 }}>AI ACTIVE</span>
-          </motion.div>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20, position: 'relative' }}>
-          <div style={{ position: 'relative', width: 120, height: 120 }}>
-            <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-              style={{ position: 'absolute', inset: -16, borderRadius: '50%' }}>
-              <div style={{ position: 'absolute', top: 0, left: '50%', width: 8, height: 8, borderRadius: '50%', background: C.blue, boxShadow: `0 0 10px ${C.blue}`, marginLeft: -4, marginTop: -4 }} />
-            </motion.div>
-            <motion.div animate={{ rotate: -360 }} transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
-              style={{ position: 'absolute', inset: -10, borderRadius: '50%' }}>
-              <div style={{ position: 'absolute', bottom: 0, left: '50%', width: 6, height: 6, borderRadius: '50%', background: C.purple, boxShadow: `0 0 8px ${C.purple}`, marginLeft: -3, marginBottom: -3 }} />
-            </motion.div>
-            {[0, 1].map(i => (
-              <motion.div key={i} animate={{ scale: [1, 1.6], opacity: [0.4, 0] }} transition={{ duration: 2.5, delay: i * 1.2, repeat: Infinity }}
-                style={{ position: 'absolute', inset: -8, borderRadius: '50%', border: `1px solid ${C.blue}` }} />
-            ))}
-            <svg width="120" height="120" style={{ transform: 'rotate(-90deg)' }}>
-              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="8" />
-              <motion.circle cx="60" cy="60" r="50" fill="none" stroke="url(#heroGrad)" strokeWidth="8" strokeLinecap="round"
-                initial={{ strokeDasharray: '0 314' }} animate={{ strokeDasharray: `${314 * 0.72} 314` }} transition={{ duration: 1.5, delay: 0.5, ease: 'easeOut' }} />
-              <defs>
-                <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor={C.blue} />
-                  <stop offset="100%" stopColor={C.purple} />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }} style={{ fontSize: 28, fontWeight: 800, color: '#fff' }}>72</motion.div>
-              <div style={{ fontSize: 11, color: C.muted }}>/100</div>
-            </div>
-          </div>
-        </div>
-        <div style={{ marginBottom: 16 }}>
-          {([['Cash Flow', 78, C.green], ['Investments', 65, C.blue], ['Insurance', 55, C.amber], ['Debt', 82, C.green]] as [string, number, string][]).map(([label, pct, color], i) => (
-            <div key={label} style={{ marginBottom: 8 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: C.muted, marginBottom: 4 }}>
-                <span>{label}</span><span style={{ color }}>{pct}%</span>
-              </div>
-              <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.05)' }}>
-                <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1, delay: 0.8 + i * 0.1, ease: 'easeOut' }}
-                  style={{ height: '100%', borderRadius: 2, background: color, boxShadow: `0 0 8px ${color}` }} />
-              </div>
-            </div>
-          ))}
-        </div>
-        <div style={{ fontSize: 11, color: C.muted, marginBottom: 8, fontWeight: 600, letterSpacing: '0.05em' }}>AI ALERTS</div>
-        {alerts.slice(0, 2).map((a, i) => (
-          <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.2 + i * 0.2 }}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', background: `${a.color}08`, border: `1px solid ${a.color}20`, borderRadius: 8, marginBottom: 6 }}>
-            <span style={{ fontSize: 12 }}>{a.icon}</span>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{a.text}</span>
-          </motion.div>
+    <div style={{ width: '100%', overflow: 'hidden', background: 'rgba(47,230,255,0.04)', borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}`, padding: '11px 0' }}>
+      <motion.div
+        animate={{ x: ['0%', '-50%'] }}
+        transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}
+        style={{ display: 'flex', gap: 80, whiteSpace: 'nowrap' }}
+      >
+        {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+          <span key={i} style={{ fontSize: 12, color: T.textSecondary, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ color: T.cyan, opacity: 0.5 }}>◆</span>{item}
+          </span>
         ))}
       </motion.div>
-      <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 4, delay: 1, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ position: 'absolute', top: -20, left: -40, background: 'rgba(11,16,32,0.95)', border: `1px solid rgba(0,230,118,0.3)`, borderRadius: 12, padding: '10px 14px', backdropFilter: 'blur(12px)' }}>
-        <div style={{ fontSize: 10, color: C.muted }}>Net Worth</div>
-        <div style={{ fontSize: 16, fontWeight: 700, color: C.green }}>₹24.6L</div>
-      </motion.div>
-      <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 5, delay: 0.5, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ position: 'absolute', bottom: 20, right: -30, background: 'rgba(11,16,32,0.95)', border: `1px solid rgba(123,97,255,0.3)`, borderRadius: 12, padding: '10px 14px', backdropFilter: 'blur(12px)' }}>
-        <div style={{ fontSize: 10, color: C.muted }}>Monthly SIP</div>
-        <div style={{ fontSize: 16, fontWeight: 700, color: C.purple }}>₹0 ⚠️</div>
-      </motion.div>
-      <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 3.5, delay: 2, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ position: 'absolute', top: '40%', right: -35, background: 'rgba(11,16,32,0.95)', border: `1px solid rgba(0,212,255,0.3)`, borderRadius: 12, padding: '10px 14px', backdropFilter: 'blur(12px)' }}>
-        <div style={{ fontSize: 10, color: C.muted }}>Tax Saved</div>
-        <div style={{ fontSize: 16, fontWeight: 700, color: C.blue }}>₹18K</div>
-      </motion.div>
-    </motion.div>
+    </div>
   );
 }
 
-function Hero() {
+// ─── Positioning map (original visual, enhanced) ──────────────────────────────
+function PositioningMap() {
+  const [hovered, setHovered] = useState<string | null>(null);
+  const competitors = [
+    { id: 'FIN',  label: 'FinHealth360',    x: 80, y: 20, color: T.green,  size: 54, desc: 'Any doc · score · action plan', hero: true },
+    { id: 'CA',   label: 'CA / RIA',        x: 26, y: 29, color: T.textSecondary, size: 36, desc: 'Personalized but needs meeting' },
+    { id: 'S',    label: 'Scripbox',        x: 32, y: 42, color: T.textSecondary, size: 32, desc: 'Needs bank/demat login' },
+    { id: 'FI',   label: 'Fi / Jupiter',    x: 28, y: 64, color: T.textSecondary, size: 32, desc: 'Shows data, no action plan' },
+    { id: 'G',    label: 'Groww',           x: 36, y: 72, color: T.textSecondary, size: 32, desc: 'Investing only, no health score' },
+    { id: 'AI',   label: 'Generic AI',      x: 74, y: 60, color: T.textSecondary, size: 32, desc: 'No doc context, generic advice' },
+    { id: 'CT',   label: 'ClearTax',        x: 68, y: 69, color: T.textSecondary, size: 32, desc: 'Tax filing only' },
+    { id: 'XL',   label: 'Excel / manual',  x: 60, y: 76, color: T.textSecondary, size: 32, desc: 'Manual, no AI, no alerts' },
+  ];
   return (
-    <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', position: 'relative', zIndex: 2, padding: '100px 4vw 60px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4rem', flexWrap: 'wrap', width: '100%' }}>
-        <div style={{ flex: '1 1 480px', maxWidth: 580 }}>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 999, background: `${C.blue}12`, border: `1px solid ${C.blue}30`, marginBottom: 24 }}>
-            <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }} style={{ width: 6, height: 6, borderRadius: '50%', background: C.blue, display: 'inline-block' }} />
-            <span style={{ fontSize: 12, fontWeight: 600, color: C.blue }}>India's AI Financial Operating System</span>
+    <div style={{ position: 'relative', width: '100%', maxWidth: 760, margin: '0 auto', background: T.cardBg, border: `1px solid ${T.borderMid}`, borderRadius: 18, overflow: 'hidden' }}>
+      {/* glow behind open territory */}
+      <motion.div animate={{ opacity: [0.4, 0.75, 0.4] }} transition={{ duration: 4, repeat: Infinity }}
+        style={{ position: 'absolute', top: '5%', right: '12%', width: '38%', height: '50%', background: `radial-gradient(ellipse, ${T.green}12 0%, transparent 70%)`, pointerEvents: 'none' }} />
+
+      {/* header */}
+      <div style={{ padding: '18px 22px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: T.textPrimary }}>Where every finance app sits and where we don't</div>
+          <div style={{ fontSize: 11, color: T.textSecondary, marginTop: 2 }}>Hover any dot to see what they actually do</div>
+        </div>
+        <div style={{ display: 'flex', gap: 14, fontSize: 11 }}>
+          {[[T.green, 'FinHealth360'], [T.textSecondary, 'Competitors']].map(([c, l]) => (
+            <div key={l as string} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <div style={{ width: 7, height: 7, borderRadius: '50%', background: c as string }} />
+              <span style={{ color: T.textSecondary }}>{l}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* chart */}
+      <div style={{ position: 'relative', height: 420, margin: '12px 0 0' }}>
+        {/* axis labels */}
+        <div style={{ position: 'absolute', top: '7%', left: '50%', transform: 'translateX(-50%)', fontSize: 10, color: T.textSecondary, fontWeight: 600, letterSpacing: '0.07em' }}>gives clear action plan</div>
+        <div style={{ position: 'absolute', bottom: '5%', left: '50%', transform: 'translateX(-50%)', fontSize: 10, color: T.textSecondary, fontWeight: 600, letterSpacing: '0.07em' }}>shows data only</div>
+        <div style={{ position: 'absolute', left: '2%', top: '50%', transform: 'translateY(-50%) rotate(-90deg)', fontSize: 10, color: T.textSecondary, fontWeight: 600, letterSpacing: '0.07em', whiteSpace: 'nowrap' }}>needs bank login</div>
+        <div style={{ position: 'absolute', right: '1%', top: '50%', transform: 'translateY(-50%) rotate(90deg)', fontSize: 10, color: T.textSecondary, fontWeight: 600, letterSpacing: '0.07em', whiteSpace: 'nowrap' }}>works from any document</div>
+        {/* axes */}
+        <div style={{ position: 'absolute', top: 0, bottom: 0, left: '50%', width: 1, background: T.border }} />
+        <div style={{ position: 'absolute', left: 0, right: 0, top: '50%', height: 1, background: T.border }} />
+        {/* open territory */}
+        <div style={{ position: 'absolute', top: '13%', left: '51%', right: '2%', bottom: '52%', border: `1px dashed rgba(47,230,255,0.22)`, borderRadius: 8, background: 'rgba(47,230,255,0.025)' }}>
+          <div style={{ position: 'absolute', top: 7, left: 10, fontSize: 9, fontWeight: 700, color: T.cyan, letterSpacing: '0.1em' }}>OPEN TERRITORY</div>
+        </div>
+        {/* dots */}
+        {competitors.map(c => (
+          <div key={c.id} style={{ position: 'absolute', left: `${c.x}%`, top: `${c.y}%`, transform: 'translate(-50%,-50%)', zIndex: c.hero ? 10 : 5 }}
+            onMouseEnter={() => setHovered(c.id)} onMouseLeave={() => setHovered(null)}>
+            <motion.div
+              whileHover={{ scale: 1.18 }}
+              animate={c.hero ? { boxShadow: [`0 0 0px ${T.green}`, `0 0 22px ${T.green}70`, `0 0 0px ${T.green}`] } : {}}
+              transition={c.hero ? { duration: 2.5, repeat: Infinity } : {}}
+              style={{ width: c.size, height: c.size, borderRadius: '50%', background: c.hero ? `radial-gradient(135deg, ${T.green} 0%, ${T.cyan} 100%)` : 'rgba(255,255,255,0.07)', border: `2px solid ${c.hero ? T.green : 'rgba(255,255,255,0.14)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+              <span style={{ fontSize: c.hero ? 8 : 9, fontWeight: 800, color: '#fff', textAlign: 'center', lineHeight: 1.2 }}>{c.id}</span>
+            </motion.div>
+            {/* tooltip */}
+            <AnimatePresence>
+              {hovered === c.id && (
+                <motion.div initial={{ opacity: 0, y: -6, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.18 }}
+                  style={{ position: 'absolute', bottom: '115%', left: '50%', transform: 'translateX(-50%)', background: 'rgba(7,10,18,0.97)', border: `1px solid ${c.hero ? T.green : T.border}`, borderRadius: 10, padding: '9px 13px', whiteSpace: 'nowrap', zIndex: 20 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: c.hero ? T.green : T.textPrimary, marginBottom: 2 }}>{c.label}</div>
+                  <div style={{ fontSize: 11, color: T.textSecondary }}>{c.desc}</div>
+                  {c.hero && <div style={{ fontSize: 10, color: T.green, marginTop: 3, fontWeight: 600 }}>only one in this quadrant</div>}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            {/* label */}
+            {!c.hero && <div style={{ position: 'absolute', top: '108%', left: '50%', transform: 'translateX(-50%)', fontSize: 9, color: T.textSecondary, whiteSpace: 'nowrap', marginTop: 2 }}>{c.label}</div>}
+            {c.hero && (
+              <div style={{ position: 'absolute', top: '108%', left: '50%', transform: 'translateX(-50%)', marginTop: 4, textAlign: 'center' }}>
+                <div style={{ fontSize: 11, fontWeight: 800, color: T.green, whiteSpace: 'nowrap' }}>FinHealth360</div>
+                <div style={{ fontSize: 9, color: T.textSecondary, whiteSpace: 'nowrap' }}>any doc · score · action plan</div>
+                <div style={{ fontSize: 9, color: T.green, fontWeight: 600 }}>only one in this quadrant</div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* legend */}
+      <div style={{ display: 'flex', gap: 28, padding: '14px 28px 22px', borderTop: `1px solid ${T.border}`, flexWrap: 'wrap' }}>
+        {[['Any document', 'Salary slip, bank statement, tax return'], ['Instant score', '0–100 FinHealth Score in 60 seconds'], ['Clear action plan', 'Exactly what to fix first — not generic advice']].map(([t, s]) => (
+          <div key={t as string}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: T.textPrimary, marginBottom: 2 }}>
+              <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }} style={{ width: 6, height: 6, borderRadius: '50%', background: T.green }} />
+              {t}
+            </div>
+            <div style={{ fontSize: 11, color: T.textSecondary }}>{s}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Navbar ───────────────────────────────────────────────────────────────────
+export default function Home() {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { scrollYProgress } = useScroll();
+
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on('change', v => setScrolled(v > 0.01));
+    return unsubscribe;
+  }, [scrollYProgress]);
+
+  return (
+    <div style={{ background: T.pageBg, color: T.textPrimary, fontFamily: 'Inter, system-ui, sans-serif', overflowX: 'hidden', minHeight: '100vh' }}>
+
+      <style>{`
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        @keyframes heroFade1 { from { opacity:0; transform:translateY(20px) } to { opacity:1; transform:translateY(0) } }
+        @keyframes heroFade2 { from { opacity:0; transform:translateY(24px) } to { opacity:1; transform:translateY(0) } }
+        @keyframes heroFade3 { from { opacity:0; transform:translateY(28px) } to { opacity:1; transform:translateY(0) } }
+        @keyframes scoreReveal { from { stroke-dasharray: 0 314 } to { stroke-dasharray: 226 314 } }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        @keyframes pulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
+        @keyframes scanBeam { 0%{top:-2px;opacity:0.7} 100%{top:100%;opacity:0} }
+        .hero-fade-1 { animation: heroFade1 0.7s ease forwards; }
+        .hero-fade-2 { animation: heroFade2 0.8s 0.15s ease both; }
+        .hero-fade-3 { animation: heroFade3 0.8s 0.3s ease both; }
+        .hero-fade-4 { animation: heroFade1 0.8s 0.45s ease both; opacity:0; }
+        .score-ring { animation: scoreReveal 1.4s 0.5s ease both; }
+        .btn-primary { background: linear-gradient(135deg, #2FE6FF 0%, #7A3CFF 100%); color:#fff; border:none; padding:13px 28px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:opacity 0.2s, transform 0.2s; }
+        .btn-primary:hover { opacity:0.88; transform:translateY(-2px); }
+        .btn-secondary { background:transparent; color:${T.textSecondary}; border:1px solid ${T.border}; padding:13px 28px; border-radius:10px; font-size:14px; font-weight:500; cursor:pointer; transition:all 0.2s; }
+        .btn-secondary:hover { border-color:rgba(255,255,255,0.22); color:${T.textPrimary}; }
+        .card-hover { background:${T.cardBg}; border:1px solid ${T.border}; border-radius:14px; transition:border-color 0.25s, box-shadow 0.25s, transform 0.25s; }
+        .card-hover:hover { border-color:rgba(47,230,255,0.22); box-shadow:0 0 28px rgba(47,230,255,0.08); transform:translateY(-3px); }
+        .tool-card { background:${T.cardBg}; border:1px solid ${T.border}; border-radius:12px; padding:16px 18px; transition:all 0.22s; text-decoration:none; display:block; }
+        .tool-card:hover { border-color:rgba(47,230,255,0.28); box-shadow:0 0 20px rgba(47,230,255,0.07); transform:translateY(-3px); }
+        .step-connector { height:1px; flex:1; background:linear-gradient(90deg, rgba(47,230,255,0.3) 0%, transparent 100%); }
+        ::-webkit-scrollbar { width:5px } ::-webkit-scrollbar-track { background:${T.pageBg} } ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.08); border-radius:3px }
+      `}</style>
+
+      <CursorGlow />
+      <Background />
+      <ParticleField />
+
+      {/* Scroll progress bar */}
+      <motion.div style={{ scaleX: scrollYProgress, position: 'fixed', top: 0, left: 0, right: 0, height: 2, background: T.gradPrimary, transformOrigin: '0%', zIndex: 100 }} />
+
+      {/* ── Navbar ─────────────────────────────────────────────────────────── */}
+      <motion.nav initial={{ y: -64 }} animate={{ y: 0 }} transition={{ duration: 0.55, ease: 'easeOut' }}
+        style={{ position: 'fixed', top: 2, left: 0, right: 0, zIndex: 99, height: 60, padding: '0 4vw', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: scrolled ? 'rgba(7,10,18,0.88)' : 'transparent', backdropFilter: scrolled ? 'blur(18px)' : 'none', borderBottom: scrolled ? `1px solid ${T.border}` : 'none', transition: 'all 0.3s ease' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+          <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.55 }}
+            style={{ width: 34, height: 34, borderRadius: 9, background: T.gradPrimary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Heart size={16} color="#fff" />
           </motion.div>
-          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
-            style={{ fontSize: 'clamp(2.8rem, 5.5vw, 4.2rem)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1.08, marginBottom: 24 }}>
-            <span style={{ color: '#F0F4FF' }}>Your Entire<br />Financial Life.</span>
-            <br />
-            <span style={{ background: C.grad1, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Managed by AI.</span>
-          </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-            style={{ fontSize: 17, color: C.muted, lineHeight: 1.75, maxWidth: 500, marginBottom: 36 }}>
-            Track wealth, optimize taxes, analyze investments, detect risks, plan retirement — all in one AI-powered platform built for India. Get your FinHealth Score in 60 seconds.
+          <span style={{ fontSize: 19, fontWeight: 800, letterSpacing: '-0.4px', fontFamily: T.fontDisplay }}>
+            <span style={{ color: T.cyan }}>FinHealth</span><span style={{ color: T.red }}>360</span>
+          </span>
+        </div>
+        <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
+          {['Features', 'Tools', 'Pricing', 'Security'].map(l => (
+            <button key={l} onClick={() => document.getElementById(l.toLowerCase())?.scrollIntoView({ behavior: 'smooth' })}
+              style={{ background: 'none', border: 'none', color: T.textSecondary, cursor: 'pointer', fontSize: 13, fontWeight: 500, transition: 'color 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = T.textPrimary)} onMouseLeave={e => (e.currentTarget.style.color = T.textSecondary)}>{l}</button>
+          ))}
+        </div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button className="btn-secondary" style={{ padding: '7px 16px', fontSize: 13 }} onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/login'}>Login</button>
+          <button className="btn-primary" style={{ padding: '7px 16px', fontSize: 13 }} onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>Check My Score</button>
+        </div>
+      </motion.nav>
+
+      {/* ── Hero ───────────────────────────────────────────────────────────── */}
+      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', padding: '100px 4vw 60px', position: 'relative', zIndex: 2 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '3rem', flexWrap: 'wrap', width: '100%' }}>
+
+          {/* Left */}
+          <div style={{ maxWidth: 560, flex: '1 1 340px' }}>
+            <div className="hero-fade-1 inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 999, background: 'rgba(47,230,255,0.08)', border: '1px solid rgba(47,230,255,0.22)', marginBottom: 22 }}>
+              <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }}
+                style={{ width: 6, height: 6, borderRadius: '50%', background: T.cyan, display: 'inline-block' }} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: T.cyan, letterSpacing: '0.04em' }}>India's AI Financial Operating System</span>
+            </div>
+
+            <h1 className="hero-fade-2" style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(2.6rem, 5vw, 4rem)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1.07, marginBottom: 20 }}>
+              <span style={{ color: T.textPrimary }}>83% of Indians know they need a financial plan.</span>
+              <br />
+              <span style={{ background: T.gradPrimary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Only 35% have one.</span>
+              <span style={{ fontSize: '0.55em', color: T.textMuted, fontWeight: 400, display: 'block', marginTop: 6 }}>— ABSLI 2024</span>
+            </h1>
+
+            <p className="hero-fade-3" style={{ fontSize: 16, color: T.textSecondary, lineHeight: 1.72, maxWidth: 480, marginBottom: 32 }}>
+              You're not bad with money. You just don't know where you stand. Upload any document — salary slip, bank statement, tax return — and get your FinHealth Score, your risks, and exactly what to do next. In 60 seconds.
+            </p>
+
+            <div className="hero-fade-4" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 28 }}>
+              <button className="btn-primary" onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>
+                Check My Score <ArrowRight size={15} />
+              </button>
+              <button className="btn-secondary" onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/app/dashboard'}>
+                Explore Dashboard
+              </button>
+            </div>
+
+            <div className="hero-fade-4" style={{ display: 'flex', flexWrap: 'wrap', gap: 18 }}>
+              {[['✔ No bank login', T.green], ['✔ Zero commissions', T.cyan], ['✔ India-focused', T.purple], ['✔ AI-powered', T.amber]].map(([t, c]) => (
+                <span key={t as string} style={{ fontSize: 12, color: c as string, fontWeight: 600 }}>{t as string}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Right — dashboard card */}
+          <motion.div initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
+            style={{ flex: '1 1 380px', maxWidth: 460, position: 'relative' }}>
+            {/* floating chips */}
+            <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 4.5, delay: 0.5, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ position: 'absolute', top: -18, left: -32, background: 'rgba(13,21,38,0.96)', border: `1px solid rgba(49,233,129,0.3)`, borderRadius: 11, padding: '8px 13px', backdropFilter: 'blur(12px)', zIndex: 10 }}>
+              <div style={{ fontSize: 9, color: T.textSecondary }}>Net Worth</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: T.green }}>₹24.6L</div>
+            </motion.div>
+            <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 5.5, delay: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ position: 'absolute', bottom: 28, right: -28, background: 'rgba(13,21,38,0.96)', border: `1px solid rgba(122,60,255,0.3)`, borderRadius: 11, padding: '8px 13px', backdropFilter: 'blur(12px)', zIndex: 10 }}>
+              <div style={{ fontSize: 9, color: T.textSecondary }}>Monthly SIP</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: T.purple }}>₹0 ⚠️</div>
+            </motion.div>
+            <motion.div animate={{ y: [0, -7, 0] }} transition={{ duration: 3.8, delay: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ position: 'absolute', top: '38%', right: -32, background: 'rgba(13,21,38,0.96)', border: `1px solid rgba(47,230,255,0.3)`, borderRadius: 11, padding: '8px 13px', backdropFilter: 'blur(12px)', zIndex: 10 }}>
+              <div style={{ fontSize: 9, color: T.textSecondary }}>Tax Saved</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: T.cyan }}>₹18K</div>
+            </motion.div>
+
+            {/* main card */}
+            <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ background: 'rgba(7,10,18,0.7)', backdropFilter: 'blur(8px)', border: `1px solid rgba(47,230,255,0.14)`, borderRadius: 18, padding: '22px', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: T.gradPrimary }} />
+              {/* scan beam */}
+              <motion.div animate={{ top: ['-2px', '102%'] }} transition={{ duration: 3.8, repeat: Infinity, ease: 'linear', repeatDelay: 2.5 }}
+                style={{ position: 'absolute', left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, rgba(47,230,255,0.45), transparent)', zIndex: 3, pointerEvents: 'none' }} />
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
+                <div>
+                  <div style={{ fontSize: 11, color: T.textSecondary }}>FinHealth Score</div>
+                  <div style={{ fontSize: 10, color: T.textMuted }}>Live · Updated now</div>
+                </div>
+                <motion.div animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 2, repeat: Infinity }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(49,233,129,0.1)', border: '1px solid rgba(49,233,129,0.28)', borderRadius: 20, padding: '3px 9px' }}>
+                  <div style={{ width: 5, height: 5, borderRadius: '50%', background: T.green }} />
+                  <span style={{ fontSize: 9, color: T.green, fontWeight: 600 }}>AI ACTIVE</span>
+                </motion.div>
+              </div>
+
+              {/* score ring */}
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18, position: 'relative' }}>
+                <div style={{ position: 'relative', width: 110, height: 110 }}>
+                  {/* orbiting dots */}
+                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                    style={{ position: 'absolute', inset: -14, borderRadius: '50%' }}>
+                    <div style={{ position: 'absolute', top: 0, left: '50%', width: 7, height: 7, borderRadius: '50%', background: T.cyan, boxShadow: `0 0 8px ${T.cyan}`, marginLeft: -3.5, marginTop: -3.5 }} />
+                  </motion.div>
+                  <motion.div animate={{ rotate: -360 }} transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+                    style={{ position: 'absolute', inset: -9, borderRadius: '50%' }}>
+                    <div style={{ position: 'absolute', bottom: 0, left: '50%', width: 5, height: 5, borderRadius: '50%', background: T.purple, boxShadow: `0 0 7px ${T.purple}`, marginLeft: -2.5, marginBottom: -2.5 }} />
+                  </motion.div>
+                  {/* pulse rings */}
+                  {[0, 1].map(i => (
+                    <motion.div key={i} animate={{ scale: [1, 1.65], opacity: [0.38, 0] }} transition={{ duration: 2.5, delay: i * 1.2, repeat: Infinity }}
+                      style={{ position: 'absolute', inset: -7, borderRadius: '50%', border: `1px solid ${T.cyan}` }} />
+                  ))}
+                  <svg width="110" height="110" style={{ transform: 'rotate(-90deg)' }}>
+                    <circle cx="55" cy="55" r="46" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="7" />
+                    <motion.circle cx="55" cy="55" r="46" fill="none" stroke="url(#scoreG)" strokeWidth="7" strokeLinecap="round"
+                      initial={{ strokeDasharray: '0 289' }} animate={{ strokeDasharray: '208 289' }} transition={{ duration: 1.4, delay: 0.5, ease: 'easeOut' }} />
+                    <defs>
+                      <linearGradient id="scoreG" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor={T.cyan} /><stop offset="100%" stopColor={T.purple} />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.6 }} style={{ fontSize: 26, fontWeight: 800, color: '#fff', fontFamily: T.fontDisplay }}>72</motion.div>
+                    <div style={{ fontSize: 10, color: T.textSecondary }}>/100</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* bars */}
+              <div style={{ marginBottom: 14 }}>
+                {([['Cash Flow', 78, T.green], ['Investments', 65, T.cyan], ['Insurance', 55, T.amber], ['Debt', 82, T.green]] as [string, number, string][]).map(([label, pct, color], i) => (
+                  <div key={label} style={{ marginBottom: 7 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: T.textSecondary, marginBottom: 3 }}>
+                      <span>{label}</span><span style={{ color }}>{pct}%</span>
+                    </div>
+                    <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.05)' }}>
+                      <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1, delay: 0.9 + i * 0.1, ease: 'easeOut' }}
+                        style={{ height: '100%', borderRadius: 2, background: color, boxShadow: `0 0 6px ${color}` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ fontSize: 10, color: T.textMuted, marginBottom: 7, fontWeight: 600, letterSpacing: '0.06em' }}>AI ALERTS</div>
+              {[['🚨', 'No SIP detected — start investing', T.red], ['💡', '₹18,000 tax deduction available', T.amber]].map(([icon, text, color], i) => (
+                <motion.div key={i} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.3 + i * 0.18 }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '7px 9px', background: `${color as string}08`, border: `1px solid ${color as string}20`, borderRadius: 7, marginBottom: 5 }}>
+                  <span style={{ fontSize: 11 }}>{icon as string}</span>
+                  <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.58)' }}>{text as string}</span>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Ticker ─────────────────────────────────────────────────────────── */}
+      <div style={{ position: 'relative', zIndex: 2 }}>
+        <Ticker />
+      </div>
+
+      {/* ── Problems ───────────────────────────────────────────────────────── */}
+      <section style={{ padding: '80px 4vw', position: 'relative', zIndex: 2 }}>
+        <Reveal>
+          <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
+            {[
+              { icon: AlertTriangle, color: T.red,   stat: '88%',  label: 'of Indians expect more financial uncertainty in the next 5 years' },
+              { icon: Search,        color: T.amber,  stat: '72%',  label: 'have never reviewed their finances — not once' },
+              { icon: BarChart3,     color: T.cyan,   stat: '5.3%', label: 'household savings rate — lowest in 50 years (RBI 2025)' },
+              { icon: Lightbulb,     color: T.purple, stat: '400M', label: 'middle-class Indians with zero access to financial guidance' },
+            ].map(({ icon: Icon, color, stat, label }) => (
+              <motion.div key={stat} variants={fadeUp} style={{ background: T.cardBg, border: `1px solid ${T.border}`, borderTop: `2px solid ${color}`, borderRadius: 13, padding: '20px 18px' }}>
+                <Icon size={18} color={color} style={{ marginBottom: 10 }} />
+                <div style={{ fontSize: 28, fontWeight: 900, color, fontFamily: T.fontDisplay, marginBottom: 5 }}>{stat}</div>
+                <div style={{ fontSize: 12, color: T.textSecondary, lineHeight: 1.55 }}>{label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </Reveal>
+      </section>
+
+      {/* ── Positioning map ─────────────────────────────────────────────────── */}
+      <section style={{ padding: '80px 4vw', position: 'relative', zIndex: 2 }}>
+        <Reveal>
+          <motion.div variants={fadeUp} style={{ textAlign: 'center', marginBottom: 40 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 13px', borderRadius: 999, background: 'rgba(47,230,255,0.07)', border: `1px solid rgba(47,230,255,0.2)`, marginBottom: 14 }}>
+              <Zap size={11} color={T.cyan} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: T.cyan }}>Market Reality</span>
+            </div>
+            <h2 style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, letterSpacing: '-0.03em', color: T.textPrimary, marginBottom: 10 }}>
+              The gap nobody filled — until now
+            </h2>
+          </motion.div>
+          <motion.div variants={fadeUp}>
+            <PositioningMap />
+          </motion.div>
+        </Reveal>
+      </section>
+
+      {/* ── Features ───────────────────────────────────────────────────────── */}
+      <section id="features" style={{ padding: '80px 4vw', position: 'relative', zIndex: 2 }}>
+        <Reveal>
+          <motion.div variants={fadeUp} style={{ textAlign: 'center', marginBottom: 48 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 13px', borderRadius: 999, background: 'rgba(122,60,255,0.07)', border: `1px solid rgba(122,60,255,0.22)`, marginBottom: 14 }}>
+              <Sparkles size={11} color={T.purple} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: T.purple }}>Everything In One Place</span>
+            </div>
+            <h2 style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, letterSpacing: '-0.03em', color: T.textPrimary, marginBottom: 10 }}>
+              Your AI Financial Command Center
+            </h2>
+            <p style={{ color: T.textSecondary, maxWidth: 500, margin: '0 auto', fontSize: 15, lineHeight: 1.7 }}>
+              Not a calculator. Not a dashboard. An autonomous AI agent that monitors, detects, and acts on your behalf.
+            </p>
+          </motion.div>
+          <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 18 }}>
+            {[
+              { icon: Heart,      color: T.cyan,   tag: 'Core',        title: 'Financial Health Score',  desc: 'AI scores every dimension — cashflow, investments, insurance, debt — and monitors changes automatically.' },
+              { icon: TrendingUp, color: '#2D7BFF', tag: 'Investments', title: 'Investment Intelligence', desc: 'Detects underperforming SIPs, missing investments, portfolio gaps, and rebalancing opportunities.' },
+              { icon: Shield,     color: T.purple, tag: 'Insurance',   title: 'Insurance Analyzer',     desc: 'Uncovers hidden charges, calculates real IRR on policies, and flags plans draining your returns.' },
+              { icon: PieChart,   color: T.amber,  tag: 'Tax',         title: 'Tax Optimization',       desc: 'Compares old vs new regime, finds every deduction under 80C, 80D, HRA, NPS, and tells you what to claim.' },
+              { icon: Calculator, color: T.green,  tag: 'Loans',       title: 'Loan Intelligence',      desc: 'Flags dangerous EMI ratios, compares loan offers, and builds the optimal prepayment strategy.' },
+              { icon: Bot,        color: T.cyan,   tag: 'AI',          title: 'Autonomous AI Agent',    desc: 'Works 24/7. Monitors proactively, sends alerts before problems grow, gives personalized recommendations.' },
+            ].map(({ icon: Icon, color, tag, title, desc }) => (
+              <motion.div key={title} variants={fadeUp} className="card-hover" style={{ padding: 22 }}>
+                <div style={{ width: 40, height: 40, borderRadius: 11, background: `${color}14`, border: `1px solid ${color}28`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
+                  <Icon size={20} color={color} />
+                </div>
+                <div style={{ fontSize: 10, color, fontWeight: 700, letterSpacing: '0.08em', marginBottom: 6 }}>{tag.toUpperCase()}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: T.textPrimary, marginBottom: 7 }}>{title}</div>
+                <div style={{ fontSize: 12, color: T.textSecondary, lineHeight: 1.65 }}>{desc}</div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </Reveal>
+      </section>
+
+      {/* ── Tools Hub ──────────────────────────────────────────────────────── */}
+      <section id="tools" style={{ padding: '80px 4vw', position: 'relative', zIndex: 2 }}>
+        <Reveal>
+          <motion.div variants={fadeUp} style={{ textAlign: 'center', marginBottom: 48 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 13px', borderRadius: 999, background: 'rgba(47,230,255,0.07)', border: `1px solid rgba(47,230,255,0.2)`, marginBottom: 14 }}>
+              <Zap size={11} color={T.cyan} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: T.cyan }}>Financial Toolkit</span>
+            </div>
+            <h2 style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, letterSpacing: '-0.03em', color: T.textPrimary, marginBottom: 10 }}>
+              20+ Tools. One Platform.
+            </h2>
+            <p style={{ color: T.textSecondary, maxWidth: 460, margin: '0 auto', fontSize: 15 }}>
+              Every calculator, analyzer and AI tool — personalized to your income and goals.
+            </p>
+          </motion.div>
+
+          {[
+            { cat: 'Investments', color: '#2D7BFF', tools: [['SIP Calculator','Maturity value and wealth growth','/app/investments'],['Portfolio Analyzer','Performance, allocation and gaps','/app/investments'],['Return Calculator','CAGR and annualized returns','/app/investments'],['Risk Analysis','Portfolio risk and rebalancing signals','/app/investments']] },
+            { cat: 'Insurance',   color: T.purple, tools: [['Policy Analyzer','Real IRR and hidden charges','/app/insurance'],['IRR Calculator','True return on insurance policies','/app/insurance'],['Coverage Checker','Life and health adequacy check','/app/insurance']] },
+            { cat: 'Planning',    color: T.green,  tools: [['Retirement Planner','Corpus and monthly savings needed','/app/planning'],['Goal Planning','Goals with smart projections','/app/planning'],['Wealth Projection','Net worth over 10–30 years','/app/planning']] },
+            { cat: 'Loans',       color: T.amber,  tools: [['EMI Calculator','Home, car or personal loan EMI','/app/loans'],['Loan Comparison','Real cost of multiple offers','/app/loans'],['Prepayment Strategy','Optimal plan to save on interest','/app/loans']] },
+            { cat: 'Tax',         color: T.cyan,   tools: [['Tax Calculator','Old vs new regime comparison','/app/tax'],['Deduction Optimizer','80C, 80D, HRA, NPS and more','/app/tax']] },
+            { cat: 'AI Tools',    color: T.purple, tools: [['Financial Assistant','AI chat that knows your numbers','/app/ai'],['Report Explainer','Plain-English document summaries','/app/ai']] },
+          ].map(({ cat, color, tools }) => (
+            <motion.div key={cat} variants={fadeUp} style={{ marginBottom: 36 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                <div style={{ width: 7, height: 7, borderRadius: '50%', background: color }} />
+                <span style={{ fontSize: 11, fontWeight: 700, color, letterSpacing: '0.08em' }}>{cat.toUpperCase()}</span>
+                <div style={{ flex: 1, height: 1, background: T.border }} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 11 }}>
+                {tools.map(([title, desc, href]) => (
+                  <a key={title as string} href={`https://financialai-frontend-lime.vercel.app${href}`} className="tool-card">
+                    <div style={{ fontSize: 13, fontWeight: 600, color: T.textPrimary, marginBottom: 3 }}>{title}</div>
+                    <div style={{ fontSize: 11, color: T.textSecondary, marginBottom: 9 }}>{desc}</div>
+                    <div style={{ fontSize: 11, color, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 3 }}>Explore <ChevronRight size={10} /></div>
+                  </a>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+
+          <motion.div variants={fadeUp} style={{ textAlign: 'center', marginTop: 36 }}>
+            <a href="https://financialai-frontend-lime.vercel.app/app/tools" className="btn-primary" style={{ textDecoration: 'none' }}>
+              Explore All Tools <ArrowRight size={15} />
+            </a>
+          </motion.div>
+        </Reveal>
+      </section>
+
+      {/* ── How It Works ───────────────────────────────────────────────────── */}
+      <section style={{ padding: '80px 4vw', position: 'relative', zIndex: 2 }}>
+        <Reveal>
+          <motion.div variants={fadeUp} style={{ textAlign: 'center', marginBottom: 48 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 13px', borderRadius: 999, background: 'rgba(49,233,129,0.07)', border: `1px solid rgba(49,233,129,0.22)`, marginBottom: 14 }}>
+              <Sparkles size={11} color={T.green} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: T.green }}>How It Works</span>
+            </div>
+            <h2 style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, letterSpacing: '-0.03em', color: T.textPrimary }}>
+              From document to decision in 60 seconds
+            </h2>
+          </motion.div>
+          <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 22 }}>
+            {[
+              { n: '01', title: 'Upload any document',    desc: 'Salary slip, bank statement, tax return, insurance policy — any PDF works. No formatting required.' },
+              { n: '02', title: 'AI scores your finances', desc: 'Our agent analyzes every dimension — cashflow, investments, tax, insurance, loans — and gives you a 0–100 score.' },
+              { n: '03', title: 'Get your action plan',   desc: 'Not "save more" or "invest early." Specific steps for your numbers. Ranked by impact. Updated as you act.' },
+            ].map((s, i) => (
+              <motion.div key={s.n} variants={fadeUp} className="card-hover" style={{ padding: 24, position: 'relative', overflow: 'hidden' }}>
+                <motion.div animate={{ opacity: [0.25, 0.55, 0.25] }} transition={{ duration: 3.5, delay: i * 0.6, repeat: Infinity }}
+                  style={{ position: 'absolute', top: 0, right: 0, width: 100, height: 100, background: `radial-gradient(ellipse, ${T.cyan}0D 0%, transparent 70%)` }} />
+                <div style={{ width: 40, height: 40, borderRadius: '50%', background: `${T.cyan}12`, border: `1px solid ${T.cyan}28`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18, fontSize: 13, fontWeight: 800, color: T.cyan, fontFamily: T.fontDisplay }}>{s.n}</div>
+                <h3 style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary, marginBottom: 9 }}>{s.title}</h3>
+                <p style={{ fontSize: 12, color: T.textSecondary, lineHeight: 1.65 }}>{s.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </Reveal>
+      </section>
+
+      {/* ── Pricing ─────────────────────────────────────────────────────────── */}
+      <section id="pricing" style={{ padding: '80px 4vw', position: 'relative', zIndex: 2 }}>
+        <Reveal>
+          <motion.div variants={fadeUp} style={{ textAlign: 'center', marginBottom: 52 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 13px', borderRadius: 999, background: 'rgba(49,233,129,0.07)', border: `1px solid rgba(49,233,129,0.22)`, marginBottom: 14 }}>
+              <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }} style={{ width: 6, height: 6, borderRadius: '50%', background: T.green, display: 'inline-block' }} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: T.green }}>Pricing</span>
+            </div>
+            <h2 style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, letterSpacing: '-0.03em', color: T.textPrimary, marginBottom: 10 }}>
+              Start free. Scale when ready.
+            </h2>
+            <p style={{ color: T.textSecondary, fontSize: 14 }}>No lock-in. 7-day refund on all paid plans.</p>
+          </motion.div>
+          <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 18, alignItems: 'start' }}>
+            {[
+              { name: 'Free',         price: '₹0',   sub: 'Forever free',            color: T.textSecondary, features: ['Financial Health Score', 'Basic tools (SIP, EMI)', 'AI chat (10/day)', 'Basic insights'], cta: 'Get Started Free', popular: false },
+              { name: 'Pro',          price: '₹99',  sub: '/month · cancel anytime', color: T.cyan,          features: ['Everything in Free', '5 AI reports/month', 'Portfolio & tax intelligence', 'Goal-based planning', 'AI chat (20/day)'], cta: 'Upgrade to Pro', popular: true },
+              { name: 'Elite',        price: '₹499', sub: '/month · cancel anytime', color: T.green,         features: ['Everything in Pro', 'Unlimited AI reports', 'Weekly personalized insights', 'Full tax optimization', 'PDF downloads', 'Advisor support'], cta: 'Get Elite', popular: false },
+              { name: 'Elite+ Agent', price: '₹999', sub: '/month · fully autonomous', color: T.purple,      features: ['Everything in Elite', 'Daily automatic analysis', 'Proactive alerts', 'Works when offline', 'Weekly AI roadmap', 'Continuous risk monitoring', 'Full AI memory'], cta: 'Get Elite+', popular: false },
+            ].map(plan => (
+              <motion.div key={plan.name} variants={fadeUp} whileHover={{ y: -7 }}
+                style={{ background: plan.popular ? `${T.cyan}07` : T.cardBg, border: `1px solid ${plan.popular ? T.cyan + '45' : T.border}`, borderRadius: 18, padding: 24, position: 'relative', overflow: 'hidden', boxShadow: plan.popular ? `0 0 36px ${T.cyan}12` : 'none' }}>
+                {plan.popular && <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: T.gradPrimary }} />}
+                {plan.popular && <div style={{ position: 'absolute', top: 14, right: 14, background: T.gradPrimary, color: '#fff', fontSize: 9, fontWeight: 700, padding: '3px 9px', borderRadius: 999 }}>Most Popular</div>}
+                <div style={{ fontSize: 10, fontWeight: 700, color: plan.color, letterSpacing: '0.08em', marginBottom: 10 }}>{plan.name.toUpperCase()}</div>
+                <div style={{ fontSize: 34, fontWeight: 900, color: T.textPrimary, marginBottom: 3, fontFamily: T.fontDisplay }}>{plan.price}</div>
+                <div style={{ fontSize: 11, color: T.textSecondary, marginBottom: 22 }}>{plan.sub}</div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 22px', display: 'flex', flexDirection: 'column', gap: 9 }}>
+                  {plan.features.map(f => (
+                    <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, fontSize: 12, color: 'rgba(255,255,255,0.68)' }}>
+                      <CheckCircle size={12} color={plan.color} style={{ flexShrink: 0, marginTop: 1 }} />{f}
+                    </li>
+                  ))}
+                </ul>
+                <motion.button whileHover={{ opacity: 0.88, scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                  onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}
+                  style={{ width: '100%', padding: '11px 0', borderRadius: 9, border: plan.popular ? 'none' : `1px solid ${plan.color}38`, background: plan.popular ? T.gradPrimary : 'transparent', color: plan.popular ? '#fff' : plan.color, cursor: 'pointer', fontSize: 13, fontWeight: 700 }}>
+                  {plan.cta}
+                </motion.button>
+              </motion.div>
+            ))}
+          </motion.div>
+        </Reveal>
+      </section>
+
+      {/* ── Testimonials ───────────────────────────────────────────────────── */}
+      <section style={{ padding: '80px 4vw', position: 'relative', zIndex: 2 }}>
+        <Reveal>
+          <motion.div variants={fadeUp} style={{ textAlign: 'center', marginBottom: 44 }}>
+            <h2 style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(1.8rem, 3.5vw, 2.4rem)', fontWeight: 800, letterSpacing: '-0.03em', color: T.textPrimary }}>
+              Real people. Real results.
+            </h2>
+          </motion.div>
+          <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: 18 }}>
+            {[
+              { name: 'Rohan M.', role: 'Software Engineer, Pune', avatar: 'RM', color: T.cyan, stars: 5, text: 'I always knew I should track my finances but never did. FinHealth360 gave me a score in 60 seconds and told me exactly what was wrong — my EMI ratio was 48%, way too high. Fixed it in 3 months.' },
+              { name: 'Priya S.', role: 'Product Manager, Bangalore', avatar: 'PS', color: T.green, stars: 5, text: 'Finally something built for Indian salaries. It understands SIPs, NPS, HRA — not just US 401k stuff. The tax comparison alone saved me ₹18,000 this year.' },
+              { name: 'Amit K.', role: 'CA, Mumbai', avatar: 'AK', color: T.purple, stars: 5, text: "I recommend this to clients who can't afford a full advisory session. It does the basic financial health check properly — scoring, red flags, and action steps. Solid product." },
+            ].map(r => (
+              <motion.div key={r.name} variants={fadeUp} whileHover={{ y: -5, boxShadow: '0 16px 40px rgba(0,0,0,0.3)' }} className="card-hover" style={{ padding: 22 }}>
+                <div style={{ display: 'flex', gap: 3, marginBottom: 14 }}>
+                  {Array.from({ length: r.stars }).map((_, i) => <Star key={i} size={12} fill={T.amber} color={T.amber} />)}
+                </div>
+                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.62)', lineHeight: 1.72, marginBottom: 18 }}>"{r.text}"</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, borderTop: `1px solid ${T.border}`, paddingTop: 14 }}>
+                  <div style={{ width: 34, height: 34, borderRadius: '50%', background: `${r.color}16`, border: `1px solid ${r.color}28`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: r.color }}>{r.avatar}</div>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: T.textPrimary }}>{r.name}</div>
+                    <div style={{ fontSize: 10, color: T.textSecondary }}>{r.role}</div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </Reveal>
+      </section>
+
+      {/* ── Security ───────────────────────────────────────────────────────── */}
+      <section id="security" style={{ padding: '80px 4vw', position: 'relative', zIndex: 2 }}>
+        <Reveal>
+          <div style={{ background: `${T.green}04`, border: `1px solid ${T.green}14`, borderRadius: 20, padding: '52px 40px' }}>
+            <motion.div variants={fadeUp} style={{ textAlign: 'center', marginBottom: 44 }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 13px', borderRadius: 999, background: 'rgba(49,233,129,0.07)', border: `1px solid rgba(49,233,129,0.22)`, marginBottom: 14 }}>
+                <ShieldCheck size={11} color={T.green} />
+                <span style={{ fontSize: 11, fontWeight: 600, color: T.green }}>Security & Privacy</span>
+              </div>
+              <h2 style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(1.8rem, 3.5vw, 2.4rem)', fontWeight: 800, letterSpacing: '-0.03em', color: T.textPrimary, marginBottom: 10 }}>
+                Your Financial Data Stays Yours
+              </h2>
+              <p style={{ color: T.textSecondary, maxWidth: 400, margin: '0 auto', fontSize: 14 }}>
+                We built FinHealth360 with one rule: your data belongs to you, not us.
+              </p>
+            </motion.div>
+            <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 14 }}>
+              {[
+                { color: T.cyan,   icon: ShieldCheck, title: 'No bank login required',        desc: 'We never ask for credentials, UPI PIN, or net banking access. Ever.' },
+                { color: T.red,    icon: AlertTriangle,title:'Your data is never sold',        desc: 'No advertisers. We earn from subscriptions only.' },
+                { color: T.amber,  icon: Award,        title: 'Delete anytime',                desc: 'Permanently erased within 24 hours. No questions asked.' },
+                { color: T.purple, icon: Shield,       title: 'Documents discarded after use', desc: 'Analyzed and immediately discarded. Nothing stored.' },
+                { color: T.green,  icon: ShieldCheck,  title: 'End-to-end encrypted',         desc: 'TLS 1.3 in transit, encrypted at rest. Private to you alone.' },
+                { color: T.cyan,   icon: Zap,          title: 'Built for India, stored in India', desc: 'Supabase Mumbai. DPDPA 2023 compliant.' },
+              ].map(item => (
+                <motion.div key={item.title} variants={fadeUp} whileHover={{ borderColor: `${item.color}38`, background: `${item.color}05` }}
+                  style={{ display: 'flex', gap: 12, padding: 18, background: 'rgba(255,255,255,0.018)', border: `1px solid ${T.border}`, borderRadius: 12, transition: 'all 0.3s' }}>
+                  <div style={{ width: 34, height: 34, borderRadius: 9, background: `${item.color}14`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <item.icon size={15} color={item.color} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: T.textPrimary, marginBottom: 3 }}>{item.title}</div>
+                    <div style={{ fontSize: 11, color: T.textSecondary, lineHeight: 1.6 }}>{item.desc}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* ── Final CTA ──────────────────────────────────────────────────────── */}
+      <section style={{ padding: '100px 4vw', textAlign: 'center', position: 'relative', zIndex: 2 }}>
+        <motion.div animate={{ opacity: [0.35, 0.65, 0.35] }} transition={{ duration: 4, repeat: Infinity }}
+          style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(47,230,255,0.07) 0%, transparent 62%)', pointerEvents: 'none' }} />
+        <Reveal>
+          <motion.div variants={fadeUp} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 13px', borderRadius: 999, background: 'rgba(47,230,255,0.07)', border: `1px solid rgba(47,230,255,0.2)`, marginBottom: 22 }}>
+            <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }} style={{ width: 6, height: 6, borderRadius: '50%', background: T.cyan, display: 'inline-block' }} />
+            <span style={{ fontSize: 11, fontWeight: 600, color: T.cyan }}>Get Started Today</span>
+          </motion.div>
+          <motion.h2 variants={fadeUp} style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(2.2rem, 5vw, 3.6rem)', fontWeight: 900, letterSpacing: '-0.04em', color: T.textPrimary, marginBottom: 18, lineHeight: 1.1 }}>
+            Stop guessing<br />about your money.
+          </motion.h2>
+          <motion.p variants={fadeUp} style={{ color: T.textSecondary, fontSize: 16, maxWidth: 460, margin: '0 auto 36px', lineHeight: 1.7 }}>
+            Your AI financial operating system is ready. Get your FinHealth Score in 60 seconds — free, no bank login required.
           </motion.p>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 32 }}>
-            <motion.button whileHover={{ scale: 1.03, boxShadow: `0 0 30px rgba(0,212,255,0.3)` }} whileTap={{ scale: 0.97 }}
-              style={{ background: C.grad1, border: 'none', color: '#fff', padding: '14px 28px', borderRadius: 12, cursor: 'pointer', fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}
+          <motion.div variants={fadeUp} style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 28 }}>
+            <motion.button whileHover={{ scale: 1.04, boxShadow: '0 0 36px rgba(47,230,255,0.35)' }} whileTap={{ scale: 0.97 }}
+              className="btn-primary" style={{ padding: '14px 32px', fontSize: 15 }}
               onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}>
               Start Free <ArrowRight size={16} />
             </motion.button>
-            <motion.button whileHover={{ borderColor: 'rgba(255,255,255,0.3)', color: '#fff' }} whileTap={{ scale: 0.97 }}
-              style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.muted, padding: '14px 28px', borderRadius: 12, cursor: 'pointer', fontSize: 15, fontWeight: 600 }}
+            <button className="btn-secondary" style={{ padding: '14px 32px', fontSize: 15 }}
               onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/app/dashboard'}>
-              Explore Dashboard
-            </motion.button>
+              View Dashboard
+            </button>
           </motion.div>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
-            {([['✔ No bank login', C.green], ['✔ India-focused', C.blue], ['✔ Zero commissions', C.purple], ['✔ AI-powered', C.amber]] as [string, string][]).map(([t, c]) => (
-              <span key={t} style={{ fontSize: 12, color: c, fontWeight: 600 }}>{t}</span>
+          <motion.div variants={fadeUp} style={{ display: 'flex', justifyContent: 'center', gap: 28, flexWrap: 'wrap' }}>
+            {[[ShieldCheck, T.green, '100% Private'], [Award, T.cyan, 'No hidden fees'], [Shield, T.purple, 'No bank access']].map(([Icon, color, text], i) => (
+              <div key={i as number} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: T.textSecondary }}>
+                {/* @ts-ignore */}
+                <Icon size={13} color={color} />{text}
+              </div>
             ))}
           </motion.div>
-        </div>
-        <HeroDashboard />
-      </div>
-    </section>
-  );
-}
+        </Reveal>
+      </section>
 
-function useCounter(target: number, active: boolean, duration = 1800) {
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!active) return;
-    let start: number | null = null;
-    const step = (ts: number) => {
-      if (!start) start = ts;
-      const prog = Math.min((ts - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - prog, 3);
-      setVal(Math.floor(eased * target));
-      if (prog < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [active, target, duration]);
-  return val;
-}
-
-function StatItem({ n, suffix, label, color }: { n: number; suffix: string; label: string; color: string }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true });
-  const val = useCounter(n, inView);
-  return (
-    <motion.div ref={ref} variants={scaleIn} style={{ textAlign: 'center', padding: '32px 24px', background: C.card, border: `1px solid ${C.border}`, borderTop: `2px solid ${color}`, borderRadius: 16 }}>
-      <div style={{ fontSize: 42, fontWeight: 900, color, fontVariantNumeric: 'tabular-nums', marginBottom: 8, textShadow: `0 0 20px ${color}50` }}>{val}{suffix}</div>
-      <div style={{ fontSize: 13, color: C.muted, lineHeight: 1.5 }}>{label}</div>
-    </motion.div>
-  );
-}
-
-function Stats() {
-  return (
-    <Section style={{ padding: '60px 4vw' }}>
-      <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20 }}>
-        <StatItem n={400} suffix="M+" label="Indians without financial guidance" color={C.blue} />
-        <StatItem n={5} suffix=".3%" label="Household savings — 50-year low" color={C.green} />
-        <StatItem n={88} suffix="%" label="Expect greater financial uncertainty" color={C.purple} />
-        <StatItem n={60} suffix="s" label="To your FinHealth Score" color={C.amber} />
-      </motion.div>
-    </Section>
-  );
-}
-
-const features = [
-  { icon: Heart,      color: C.blue,    title: 'Financial Health Score',  desc: 'AI scores every dimension — cashflow, investments, insurance, debt — and monitors changes automatically.', tag: 'Core' },
-  { icon: TrendingUp, color: '#2D7BFF', title: 'Investment Intelligence',  desc: 'Detects underperforming SIPs, missing investments, portfolio gaps, and rebalancing opportunities.', tag: 'Investments' },
-  { icon: Shield,     color: C.purple,  title: 'Insurance Analyzer',      desc: 'Uncovers hidden charges, calculates real IRR on policies, and flags plans draining your returns.', tag: 'Insurance' },
-  { icon: Calculator, color: C.amber,   title: 'Tax Optimization',        desc: 'Compares old vs new regime, finds every deduction under 80C, 80D, HRA, NPS, and tells you what to claim.', tag: 'Tax' },
-  { icon: BarChart3,  color: C.green,   title: 'Loan Intelligence',       desc: 'Flags dangerous EMI-to-income ratios, compares loan offers, and builds the optimal prepayment strategy.', tag: 'Loans' },
-  { icon: Bot,        color: C.blue,    title: 'Autonomous AI Agent',     desc: 'Works 24/7. Monitors proactively, sends alerts before problems grow, and gives personalized recommendations.', tag: 'AI' },
-  { icon: Compass,    color: C.purple,  title: 'Retirement Planning',     desc: 'Calculates your retirement corpus gap, monthly savings needed, and projects wealth over 10–30 years.', tag: 'Planning' },
-  { icon: Target,     color: C.amber,   title: 'Goal Planning',           desc: 'Set financial goals, track progress with smart projections, and get notified when you\'re off track.', tag: 'Planning' },
-  { icon: Wallet,     color: C.green,   title: 'Cashflow Tracking',       desc: 'Tracks income vs expenses, emergency fund coverage, and flags cashflow risks before they become problems.', tag: 'Core' },
-];
-
-function FeatureCard({ f, i }: { f: typeof features[0]; i: number }) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <motion.div variants={fadeUp} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-      style={{ background: hovered ? `${f.color}08` : C.card, border: `1px solid ${hovered ? f.color + '40' : C.border}`, borderRadius: 16, padding: 24, cursor: 'default', transition: 'all 0.3s ease', boxShadow: hovered ? `0 0 30px ${f.color}15` : 'none' }}>
-      <motion.div animate={{ y: hovered ? -4 : 0 }} transition={{ duration: 0.3 }}
-        style={{ width: 44, height: 44, borderRadius: 12, background: `${f.color}15`, border: `1px solid ${f.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-        <f.icon size={22} color={f.color} />
-      </motion.div>
-      <div style={{ fontSize: 10, color: f.color, fontWeight: 700, letterSpacing: '0.08em', marginBottom: 8 }}>{f.tag}</div>
-      <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 8 }}>{f.title}</div>
-      <div style={{ fontSize: 13, color: C.muted, lineHeight: 1.65 }}>{f.desc}</div>
-    </motion.div>
-  );
-}
-
-function Features() {
-  return (
-    <Section id="features" style={{ padding: '100px 4vw' }}>
-      <div style={{ textAlign: 'center', marginBottom: 64 }}>
-        <Badge>Everything In One Place</Badge>
-        <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text, marginBottom: 16 }}>
-          Your AI Financial<br /><span style={{ background: C.grad1, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Command Center</span>
-        </motion.h2>
-        <motion.p variants={fadeUp} style={{ color: C.muted, maxWidth: 520, margin: '0 auto', fontSize: 16, lineHeight: 1.7 }}>
-          Not a calculator. Not a dashboard. An autonomous AI agent that monitors, detects, and acts on your behalf.
-        </motion.p>
-      </div>
-      <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
-        {features.map((f, i) => <FeatureCard key={f.title} f={f} i={i} />)}
-      </motion.div>
-    </Section>
-  );
-}
-
-const tools = [
-  { cat: 'Investments', color: '#2D7BFF', items: [
-    { title: 'SIP Calculator', desc: 'Maturity value and wealth growth', href: '/app/investments' },
-    { title: 'Portfolio Analyzer', desc: 'Performance, allocation and gaps', href: '/app/investments' },
-    { title: 'Return Calculator', desc: 'CAGR and annualized returns', href: '/app/investments' },
-    { title: 'Risk Analysis', desc: 'Portfolio risk and rebalancing signals', href: '/app/investments' },
-  ]},
-  { cat: 'Insurance', color: '#7B61FF', items: [
-    { title: 'Policy Analyzer', desc: 'Real IRR and hidden charges', href: '/app/insurance' },
-    { title: 'IRR Calculator', desc: 'True return on insurance policies', href: '/app/insurance' },
-    { title: 'Coverage Checker', desc: 'Life and health adequacy check', href: '/app/insurance' },
-  ]},
-  { cat: 'Planning', color: '#00E676', items: [
-    { title: 'Retirement Planner', desc: 'Corpus and monthly savings needed', href: '/app/planning' },
-    { title: 'Goal Planning', desc: 'Goals with smart projections', href: '/app/planning' },
-    { title: 'Wealth Projection', desc: 'Net worth over 10–30 years', href: '/app/planning' },
-  ]},
-  { cat: 'Loans', color: '#FFB547', items: [
-    { title: 'EMI Calculator', desc: 'Home, car or personal loan EMI', href: '/app/loans' },
-    { title: 'Loan Comparison', desc: 'Real cost of multiple offers', href: '/app/loans' },
-    { title: 'Prepayment Strategy', desc: 'Optimal plan to save on interest', href: '/app/loans' },
-  ]},
-  { cat: 'Tax', color: '#00D4FF', items: [
-    { title: 'Tax Calculator', desc: 'Old vs new regime comparison', href: '/app/tax' },
-    { title: 'Deduction Optimizer', desc: '80C, 80D, HRA, NPS and more', href: '/app/tax' },
-  ]},
-  { cat: 'AI Tools', color: '#7B61FF', items: [
-    { title: 'Financial Assistant', desc: 'AI chat that knows your numbers', href: '/app/ai' },
-    { title: 'Report Explainer', desc: 'Plain-English document summaries', href: '/app/ai' },
-  ]},
-];
-
-function ToolsHub() {
-  return (
-    <Section id="tools" style={{ padding: '100px 4vw' }}>
-      <div style={{ textAlign: 'center', marginBottom: 64 }}>
-        <Badge color={C.purple}>Financial Toolkit</Badge>
-        <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text, marginBottom: 16 }}>
-          20+ Tools. One Platform.
-        </motion.h2>
-        <motion.p variants={fadeUp} style={{ color: C.muted, maxWidth: 480, margin: '0 auto', fontSize: 16 }}>
-          Every calculator, analyzer and AI tool — personalized to your income and goals.
-        </motion.p>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
-        {tools.map((cat) => (
-          <motion.div key={cat.cat} variants={fadeUp}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: cat.color }} />
-              <span style={{ fontSize: 13, fontWeight: 700, color: cat.color, letterSpacing: '0.06em' }}>{cat.cat.toUpperCase()}</span>
-              <div style={{ flex: 1, height: 1, background: C.border }} />
+      {/* ── Footer ─────────────────────────────────────────────────────────── */}
+      <footer style={{ borderTop: `1px solid ${T.border}`, padding: '52px 4vw 36px', position: 'relative', zIndex: 2 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 36, marginBottom: 44 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10 }}>
+              <div style={{ width: 26, height: 26, borderRadius: 7, background: T.gradPrimary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Heart size={13} color="#fff" /></div>
+              <span style={{ fontWeight: 800, fontSize: 15, fontFamily: T.fontDisplay }}><span style={{ color: T.cyan }}>FinHealth</span><span style={{ color: T.red }}>360</span></span>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
-              {cat.items.map((tool) => (
-                <motion.a key={tool.title} href={`https://financialai-frontend-lime.vercel.app${tool.href}`}
-                  whileHover={{ y: -4, borderColor: cat.color + '50', boxShadow: `0 8px 24px ${cat.color}12` }}
-                  style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: '16px 18px', textDecoration: 'none', display: 'block', transition: 'border-color 0.2s' }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4 }}>{tool.title}</div>
-                  <div style={{ fontSize: 12, color: C.muted, marginBottom: 10 }}>{tool.desc}</div>
-                  <div style={{ fontSize: 11, color: cat.color, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>Explore <ChevronRight size={10} /></div>
-                </motion.a>
-              ))}
-            </div>
-          </motion.div>
-        ))}
-      </div>
-      <motion.div variants={fadeUp} style={{ textAlign: 'center', marginTop: 48 }}>
-        <motion.a href="https://financialai-frontend-lime.vercel.app/app/tools" whileHover={{ scale: 1.03, boxShadow: `0 0 30px rgba(0,212,255,0.25)` }}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.grad1, color: '#fff', padding: '14px 32px', borderRadius: 12, textDecoration: 'none', fontSize: 15, fontWeight: 700 }}>
-          Explore All Tools <ArrowRight size={16} />
-        </motion.a>
-      </motion.div>
-    </Section>
-  );
-}
-
-function AIAgent() {
-  const alerts = [
-    { icon: '🚨', text: 'Emergency fund critical — only 1.2 months covered', color: C.red, delay: 0 },
-    { icon: '🚨', text: 'No SIP detected — wealth creation at risk', color: C.red, delay: 0.5 },
-    { icon: '💡', text: 'Tax deduction opportunity — ₹18,000 available under 80D', color: C.amber, delay: 1 },
-    { icon: '⚠️', text: 'EMI burden at 38% of income — review home loan', color: C.amber, delay: 1.5 },
-    { icon: '✅', text: 'Health insurance renewed — coverage adequate', color: C.green, delay: 2 },
-  ];
-  return (
-    <Section style={{ padding: '100px 4vw' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '4rem', flexWrap: 'wrap' }}>
-        <div style={{ flex: '1 1 400px' }}>
-          <Badge color={C.purple}>AI Agent Mode</Badge>
-          <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text, marginBottom: 20 }}>
-            Your AI Agent<br /><span style={{ background: C.grad1, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Never Sleeps.</span>
-          </motion.h2>
-          <motion.p variants={fadeUp} style={{ color: C.muted, fontSize: 16, lineHeight: 1.75, marginBottom: 32, maxWidth: 460 }}>
-            While you work, sleep, and live your life — your AI agent continuously monitors your finances, detects risks before they grow, and tells you exactly what to do next.
-          </motion.p>
-          {([['Continuous monitoring', 'Scans your finances 24/7, not just when you log in'], ['Proactive alerts', 'Notified before problems become expensive mistakes'], ['Personalized roadmap', 'Advice specific to YOUR numbers — not generic tips'], ['Autonomous operation', 'Works even when you\'re offline or not thinking about money']] as [string, string][]).map(([t, d]) => (
-            <motion.div key={t} variants={fadeUp} style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
-              <div style={{ width: 20, height: 20, borderRadius: '50%', background: `${C.blue}20`, border: `1px solid ${C.blue}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
-                <CheckCircle size={11} color={C.blue} />
-              </div>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: C.text, marginBottom: 2 }}>{t}</div>
-                <div style={{ fontSize: 13, color: C.muted }}>{d}</div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-        <motion.div variants={scaleIn} style={{ flex: '1 1 380px', maxWidth: 440 }}>
-          <div style={{ background: C.card, border: `1px solid rgba(123,97,255,0.3)`, borderRadius: 20, padding: 24, position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: C.grad1 }} />
-            <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 3, repeat: Infinity }}
-              style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(123,97,255,0.08) 0%, transparent 60%)', pointerEvents: 'none' }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-              <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }} transition={{ duration: 2, repeat: Infinity }}
-                style={{ width: 10, height: 10, borderRadius: '50%', background: C.green, boxShadow: `0 0 12px ${C.green}` }} />
-              <span style={{ fontSize: 13, fontWeight: 700, color: C.text }}>AI Agent — Live Monitoring</span>
-            </div>
-            <div style={{ fontSize: 11, color: C.muted, marginBottom: 12, fontWeight: 600, letterSpacing: '0.05em' }}>ACTIVE ALERTS</div>
-            {alerts.map((a, i) => (
-              <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ delay: a.delay, duration: 0.5 }} viewport={{ once: true }}
-                style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '10px 12px', background: `${a.color}08`, border: `1px solid ${a.color}20`, borderRadius: 10, marginBottom: 8 }}>
-                <span style={{ fontSize: 14, flexShrink: 0 }}>{a.icon}</span>
-                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>{a.text}</span>
-              </motion.div>
+            <p style={{ fontSize: 11, color: T.textSecondary, lineHeight: 1.7, maxWidth: 190 }}>India's AI Financial Operating System. Built for the salaried middle class.</p>
+            <div style={{ marginTop: 10, fontSize: 10, color: T.cyan, fontWeight: 600 }}>🇮🇳 Built for India</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: T.textPrimary, marginBottom: 14, letterSpacing: '0.06em' }}>PLATFORM</div>
+            {[['Dashboard','/app/dashboard'],['Financial Health','/app/financial-health'],['Investments','/app/investments'],['Insurance','/app/insurance'],['Planning','/app/planning'],['Loans','/app/loans'],['Tax','/app/tax'],['AI Agent','/app/ai'],['Tools Hub','/app/tools']].map(([l, h]) => (
+              <a key={l as string} href={`https://financialai-frontend-lime.vercel.app${h}`} style={{ display: 'block', fontSize: 12, color: T.textSecondary, marginBottom: 7, textDecoration: 'none', transition: 'color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = T.textPrimary)} onMouseLeave={e => (e.currentTarget.style.color = T.textSecondary)}>{l as string}</a>
             ))}
           </div>
-        </motion.div>
-      </div>
-    </Section>
-  );
-}
-
-function HowItWorks() {
-  const steps = [
-    { n: '01', title: 'Connect your financial life', desc: 'Enter your salary, expenses, loans, investments. No bank login. No documents required. Takes 2 minutes.' },
-    { n: '02', title: 'AI analyzes everything', desc: 'Your agent scores every dimension — health, investments, insurance, tax, loans — instantly.' },
-    { n: '03', title: 'Get your action plan', desc: 'Not generic advice. Specific actions for YOUR numbers. Ranked by impact. Updated automatically.' },
-  ];
-  return (
-    <Section style={{ padding: '100px 4vw' }}>
-      <div style={{ textAlign: 'center', marginBottom: 64 }}>
-        <Badge color={C.green}>How It Works</Badge>
-        <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text }}>
-          Set it up once.<br /><span style={{ background: C.grad2, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI handles the rest.</span>
-        </motion.h2>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24 }}>
-        {steps.map((s, i) => (
-          <motion.div key={s.n} variants={fadeUp}
-            style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 28, position: 'relative', overflow: 'hidden' }}>
-            <motion.div animate={{ opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 3, delay: i * 0.5, repeat: Infinity }}
-              style={{ position: 'absolute', top: 0, right: 0, width: 120, height: 120, background: `radial-gradient(ellipse, ${C.blue}10 0%, transparent 70%)` }} />
-            <div style={{ width: 44, height: 44, borderRadius: '50%', background: `${C.blue}15`, border: `1px solid ${C.blue}35`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, fontSize: 14, fontWeight: 800, color: C.blue }}>{s.n}</div>
-            <h3 style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 10 }}>{s.title}</h3>
-            <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.65 }}>{s.desc}</p>
-          </motion.div>
-        ))}
-      </div>
-    </Section>
-  );
-}
-
-function Comparison() {
-  const rows = ['AI-powered analysis', 'Personalized to your numbers', 'Autonomous monitoring', 'Investment intelligence', 'Tax optimization', 'Insurance analysis', 'Retirement planning', 'Works without bank login'];
-  const cols = ['FinHealth360', 'Groww', 'INDmoney', 'Excel', 'Generic AI', 'CA'];
-  const data: Record<string, boolean[]> = {
-    'FinHealth360': [true, true, true, true, true, true, true, true],
-    'Groww':        [false, false, false, true, false, false, false, true],
-    'INDmoney':     [false, false, false, true, false, false, true, false],
-    'Excel':        [false, false, false, false, false, false, false, true],
-    'Generic AI':   [true, false, false, false, false, false, false, true],
-    'CA':           [false, true, false, true, true, true, true, false],
-  };
-  return (
-    <Section style={{ padding: '100px 4vw' }}>
-      <div style={{ textAlign: 'center', marginBottom: 48 }}>
-        <Badge color={C.amber}>Market Reality</Badge>
-        <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text }}>
-          Why nothing else comes close
-        </motion.h2>
-      </div>
-      <motion.div variants={fadeUp} style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-          <thead>
-            <tr>
-              <th style={{ textAlign: 'left', padding: '12px 16px', color: C.muted, fontWeight: 600, borderBottom: `1px solid ${C.border}` }}>Feature</th>
-              {cols.map(col => (
-                <th key={col} style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 700, borderBottom: `1px solid ${C.border}`, color: col === 'FinHealth360' ? C.blue : C.muted, background: col === 'FinHealth360' ? `${C.blue}08` : 'transparent', borderTop: col === 'FinHealth360' ? `2px solid ${C.blue}` : 'none', whiteSpace: 'nowrap' }}>{col}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, ri) => (
-              <motion.tr key={row} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ delay: ri * 0.06 }} viewport={{ once: true }}
-                style={{ borderBottom: `1px solid ${C.border}` }}>
-                <td style={{ padding: '12px 16px', color: C.muted }}>{row}</td>
-                {cols.map(col => (
-                  <td key={col} style={{ padding: '12px 16px', textAlign: 'center', background: col === 'FinHealth360' ? `${C.blue}05` : 'transparent' }}>
-                    {data[col][ri]
-                      ? <span style={{ color: col === 'FinHealth360' ? C.green : 'rgba(255,255,255,0.3)', fontSize: 16 }}>✓</span>
-                      : <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 16 }}>✗</span>}
-                  </td>
-                ))}
-              </motion.tr>
-            ))}
-          </tbody>
-        </table>
-      </motion.div>
-    </Section>
-  );
-}
-
-function Testimonials() {
-  const reviews = [
-    { name: 'Rohan M.', role: 'Software Engineer, Pune', avatar: 'RM', color: C.blue, text: 'I always knew I should track my finances but never did. FinHealth360 gave me a score in 60 seconds and told me exactly what was wrong — my EMI ratio was 48%, way too high. Fixed it in 3 months.', stars: 5 },
-    { name: 'Priya S.', role: 'Product Manager, Bangalore', avatar: 'PS', color: C.green, text: 'Finally something built for Indian salaries. It understands SIPs, NPS, HRA — not just US 401k stuff. The tax comparison alone saved me ₹18,000 this year.', stars: 5 },
-    { name: 'Amit K.', role: 'CA, Mumbai', avatar: 'AK', color: C.purple, text: "I recommend this to clients who can't afford a full advisory session. It does the basic financial health check properly — scoring, red flags, and action steps. Solid product.", stars: 5 },
-  ];
-  return (
-    <Section style={{ padding: '100px 4vw' }}>
-      <div style={{ textAlign: 'center', marginBottom: 48 }}>
-        <Badge>What Users Say</Badge>
-        <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text }}>Real feedback. Real users.</motion.h2>
-      </div>
-      <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
-        {reviews.map((r) => (
-          <motion.div key={r.name} variants={fadeUp} whileHover={{ y: -6, boxShadow: `0 20px 40px rgba(0,0,0,0.3)` }}
-            style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 24 }}>
-            <div style={{ display: 'flex', gap: 3, marginBottom: 16 }}>
-              {Array.from({ length: r.stars }).map((_, i) => <Star key={i} size={13} fill={C.amber} color={C.amber} />)}
-            </div>
-            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', lineHeight: 1.75, marginBottom: 20 }}>"{r.text}"</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, borderTop: `1px solid ${C.border}`, paddingTop: 16 }}>
-              <div style={{ width: 38, height: 38, borderRadius: '50%', background: `${r.color}18`, border: `1px solid ${r.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: r.color }}>{r.avatar}</div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{r.name}</div>
-                <div style={{ fontSize: 11, color: C.muted }}>{r.role}</div>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
-    </Section>
-  );
-}
-
-function Security() {
-  const items = [
-    { icon: Lock,       color: C.blue,   title: 'No bank login required',        desc: 'We never ask for credentials, UPI PIN, or net banking access. Ever.' },
-    { icon: X,          color: C.red,    title: 'Your data is never sold',        desc: 'No advertisers. We earn from subscriptions only.' },
-    { icon: Trash2,     color: C.amber,  title: 'Delete anytime',                desc: 'Permanently erased within 24 hours. No questions asked.' },
-    { icon: FileText,   color: C.purple, title: 'Documents discarded after use',  desc: 'Analyzed and immediately discarded. Nothing stored.' },
-    { icon: ShieldCheck,color: C.green,  title: 'End-to-end encrypted',          desc: 'TLS 1.3 in transit, encrypted at rest. Private to you alone.' },
-    { icon: Globe,      color: C.blue,   title: 'Built for India, stored in India', desc: 'Supabase Mumbai. DPDPA 2023 compliant.' },
-  ];
-  return (
-    <Section id="security" style={{ padding: '100px 4vw' }}>
-      <div style={{ background: `${C.blue}05`, border: `1px solid ${C.blue}15`, borderRadius: 24, padding: '60px 48px' }}>
-        <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <Badge color={C.green}>Security & Privacy</Badge>
-          <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text, marginBottom: 16 }}>Your Financial Data Stays Yours</motion.h2>
-          <motion.p variants={fadeUp} style={{ color: C.muted, maxWidth: 440, margin: '0 auto' }}>We built FinHealth360 with one rule: your data belongs to you, not us.</motion.p>
-        </div>
-        <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
-          {items.map((item) => (
-            <motion.div key={item.title} variants={fadeUp} whileHover={{ borderColor: `${item.color}40`, background: `${item.color}06` }}
-              style={{ display: 'flex', gap: 14, padding: 20, background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: 14, transition: 'all 0.3s' }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: `${item.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <item.icon size={16} color={item.color} />
-              </div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4 }}>{item.title}</div>
-                <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>{item.desc}</div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-    </Section>
-  );
-}
-
-function Pricing() {
-  const plans = [
-    { name: 'Free', price: '₹0', sub: 'Forever free', color: C.muted, features: ['Financial Health Score', 'Basic tools (SIP, EMI)', 'AI chat (10/day)', 'Basic insights'], cta: 'Get Started Free', popular: false },
-    { name: 'Pro', price: '₹99', sub: '/month · cancel anytime', color: C.blue, features: ['Everything in Free', '5 AI reports/month', 'Portfolio & tax intelligence', 'Goal-based planning', 'AI chat (20/day)'], cta: 'Upgrade to Pro', popular: true },
-    { name: 'Elite', price: '₹499', sub: '/month · cancel anytime', color: C.green, features: ['Everything in Pro', 'Unlimited AI reports', 'Weekly personalized insights', 'Full tax optimization', 'PDF downloads', 'Advisor support'], cta: 'Get Elite', popular: false },
-    { name: 'Elite+ Agent', price: '₹999', sub: '/month · fully autonomous', color: C.purple, features: ['Everything in Elite', 'Daily automatic analysis', 'Proactive alerts', 'Works when offline', 'Weekly AI roadmap', 'Continuous risk monitoring', 'Full AI memory'], cta: 'Get Elite+', popular: false },
-  ];
-  return (
-    <Section id="pricing" style={{ padding: '100px 4vw' }}>
-      <div style={{ textAlign: 'center', marginBottom: 64 }}>
-        <Badge color={C.green}>Pricing</Badge>
-        <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', color: C.text, marginBottom: 16 }}>Start free. Scale when ready.</motion.h2>
-        <motion.p variants={fadeUp} style={{ color: C.muted, fontSize: 16 }}>No lock-in. 7-day refund on all paid plans.</motion.p>
-      </div>
-      <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: 20, alignItems: 'start' }}>
-        {plans.map((plan) => (
-          <motion.div key={plan.name} variants={scaleIn} whileHover={{ y: -8 }}
-            style={{ background: plan.popular ? `${C.blue}08` : C.card, border: `1px solid ${plan.popular ? C.blue + '50' : C.border}`, borderRadius: 20, padding: 28, position: 'relative', overflow: 'hidden', boxShadow: plan.popular ? `0 0 40px ${C.blue}15` : 'none' }}>
-            {plan.popular && <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: C.grad1 }} />}
-            {plan.popular && (
-              <div style={{ position: 'absolute', top: 16, right: 16, background: C.grad1, color: '#fff', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 999 }}>Most Popular</div>
-            )}
-            <div style={{ fontSize: 11, fontWeight: 700, color: plan.color, letterSpacing: '0.08em', marginBottom: 12 }}>{plan.name.toUpperCase()}</div>
-            <div style={{ fontSize: 36, fontWeight: 900, color: C.text, marginBottom: 4 }}>{plan.price}</div>
-            <div style={{ fontSize: 12, color: C.muted, marginBottom: 24 }}>{plan.sub}</div>
-            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {plan.features.map(f => (
-                <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>
-                  <CheckCircle size={13} color={plan.color} style={{ flexShrink: 0, marginTop: 2 }} />{f}
-                </li>
-              ))}
-            </ul>
-            <motion.button whileHover={{ opacity: 0.9, scale: 1.02 }} whileTap={{ scale: 0.97 }}
-              onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}
-              style={{ width: '100%', padding: '12px 0', borderRadius: 10, border: plan.popular ? 'none' : `1px solid ${plan.color}40`, background: plan.popular ? C.grad1 : 'transparent', color: plan.popular ? '#fff' : plan.color, cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>
-              {plan.cta}
-            </motion.button>
-          </motion.div>
-        ))}
-      </motion.div>
-    </Section>
-  );
-}
-
-function FinalCTA() {
-  return (
-    <Section style={{ padding: '120px 4vw', textAlign: 'center', position: 'relative' }}>
-      <motion.div animate={{ opacity: [0.4, 0.7, 0.4] }} transition={{ duration: 4, repeat: Infinity }}
-        style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(0,212,255,0.08) 0%, transparent 60%)', pointerEvents: 'none' }} />
-      <Badge>Get Started Today</Badge>
-      <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(2.4rem, 5vw, 4rem)', fontWeight: 900, letterSpacing: '-0.04em', color: C.text, marginBottom: 20, lineHeight: 1.1 }}>
-        Stop guessing<br />about your money.
-      </motion.h2>
-      <motion.p variants={fadeUp} style={{ color: C.muted, fontSize: 17, maxWidth: 500, margin: '0 auto 40px', lineHeight: 1.7 }}>
-        Your AI financial operating system is ready. Get your FinHealth Score in 60 seconds — free, no bank login required.
-      </motion.p>
-      <motion.div variants={fadeUp} style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <motion.button whileHover={{ scale: 1.04, boxShadow: `0 0 40px rgba(0,212,255,0.4)` }} whileTap={{ scale: 0.97 }}
-          onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/quick-score'}
-          style={{ background: C.grad1, border: 'none', color: '#fff', padding: '16px 36px', borderRadius: 14, cursor: 'pointer', fontSize: 16, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
-          Start Free <ArrowRight size={18} />
-        </motion.button>
-        <motion.button whileHover={{ borderColor: 'rgba(255,255,255,0.3)', color: '#fff' }}
-          onClick={() => window.location.href = 'https://financialai-frontend-lime.vercel.app/app/dashboard'}
-          style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.muted, padding: '16px 36px', borderRadius: 14, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
-          View Dashboard
-        </motion.button>
-      </motion.div>
-      <motion.div variants={fadeUp} style={{ display: 'flex', justifyContent: 'center', gap: 32, marginTop: 32, flexWrap: 'wrap' }}>
-        {([[ShieldCheck, C.green, '100% Private'], [Award, C.blue, 'No hidden fees'], [Shield, C.purple, 'No bank access']] as [React.ElementType, string, string][]).map(([Icon, color, text], i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: C.muted }}>
-            <Icon size={14} color={color} />{text}
-          </div>
-        ))}
-      </motion.div>
-    </Section>
-  );
-}
-
-function Footer() {
-  const base = 'https://financialai-frontend-lime.vercel.app';
-  return (
-    <footer style={{ borderTop: `1px solid ${C.border}`, padding: '60px 4vw 40px', position: 'relative', zIndex: 2 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 40, marginBottom: 48 }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: C.grad1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Heart size={14} color="#fff" /></div>
-            <span style={{ fontWeight: 800, fontSize: 16 }}><span style={{ color: C.blue }}>FinHealth</span><span style={{ color: C.red }}>360</span></span>
-          </div>
-          <p style={{ fontSize: 12, color: C.muted, lineHeight: 1.7, maxWidth: 200 }}>India's AI Financial Operating System. Built for the salaried middle class.</p>
-          <div style={{ marginTop: 12, fontSize: 11, color: C.blue, fontWeight: 600 }}>🇮🇳 Built for India</div>
-        </div>
-        {[
-          { title: 'Platform', links: [['Dashboard', `${base}/app/dashboard`], ['Financial Health', `${base}/app/financial-health`], ['Investments', `${base}/app/investments`], ['Insurance', `${base}/app/insurance`], ['Planning', `${base}/app/planning`], ['Loans', `${base}/app/loans`], ['Tax', `${base}/app/tax`], ['AI Agent', `${base}/app/ai`], ['Tools Hub', `${base}/app/tools`]] },
-          { title: 'Legal', links: [['Privacy Policy', '/privacy-policy'], ['Terms of Use', '/terms']] },
-        ].map(sec => (
-          <div key={sec.title}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 16, letterSpacing: '0.06em' }}>{sec.title}</div>
-            {sec.links.map(([label, href]) => (
-              <a key={label} href={href} style={{ display: 'block', fontSize: 13, color: C.muted, marginBottom: 8, textDecoration: 'none' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#fff')} onMouseLeave={e => (e.currentTarget.style.color = C.muted)}>{label}</a>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: T.textPrimary, marginBottom: 14, letterSpacing: '0.06em' }}>LEGAL</div>
+            {[['Privacy Policy','/privacy-policy'],['Terms of Use','/terms']].map(([l, h]) => (
+              <a key={l as string} href={h as string} style={{ display: 'block', fontSize: 12, color: T.textSecondary, marginBottom: 7, textDecoration: 'none', transition: 'color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = T.textPrimary)} onMouseLeave={e => (e.currentTarget.style.color = T.textSecondary)}>{l as string}</a>
             ))}
           </div>
-        ))}
-      </div>
-      <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 24, textAlign: 'center', fontSize: 12, color: C.muted }}>
-        © 2026 FinHealth360. For informational purposes only. Not financial advice.
-      </div>
-    </footer>
-  );
-}
-
-export default function Home() {
-  return (
-    <div style={{ background: C.bg, color: C.text, fontFamily: 'Inter, system-ui, sans-serif', overflowX: 'hidden', minHeight: '100vh' }}>
-      <CursorGlow />
-      <Background />
-      <Particles />
-      <Navbar />
-      <Hero />
-      <Stats />
-      <Features />
-      <ToolsHub />
-      <AIAgent />
-      <HowItWorks />
-      <Comparison />
-      <Testimonials />
-      <Security />
-      <Pricing />
-      <FinalCTA />
-      <Footer />
-    </div>
-  );
-}
+        </div>
+        <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 22, textAlign: 'center', fontSize: 11, color
