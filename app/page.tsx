@@ -855,7 +855,7 @@ export default function Home() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
               <div style={{ width: 24, height: 24, borderRadius: 6, background: T.gradPrimary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Sparkles size={12} color="#fff" /></div>
-              <span style={{ fontWeight: 700, background: T.gradPrimary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>FinHealth AI</span>
+              <span style={{ fontWeight: 700, background: T.gradPrimary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>FinHealth360</span>
             </div>
             <p style={{ fontSize: 12, color: T.textSecondary, lineHeight: 1.6, maxWidth: 220 }}>Your personal AI Financial Agent — monitors, detects, and guides. Built for India.</p>
           </div>
@@ -869,7 +869,7 @@ export default function Home() {
           </div>
           <div>
             <div style={{ fontSize: 12, fontWeight: 700, color: T.textPrimary, letterSpacing: '0.08em', marginBottom: 14 }}>LEGAL</div>
-            {[['Privacy Policy', '#'], ['Terms of Use', '#']].map(([l, h]) => (
+            {[['Privacy Policy', 'https://financialai-frontend-lime.vercel.app/privacy-policy'], ['Terms of Use', 'https://financialai-frontend-lime.vercel.app/terms']].map(([l, h]) => (
               <a key={l} href={h} style={{ display: 'block', fontSize: 12, color: T.textSecondary, marginBottom: 8, textDecoration: 'none', transition: 'color 0.2s' }}
                 onMouseEnter={e => (e.currentTarget.style.color = T.textPrimary)}
                 onMouseLeave={e => (e.currentTarget.style.color = T.textSecondary)}>{l}</a>
@@ -877,7 +877,7 @@ export default function Home() {
           </div>
         </div>
         <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 22, textAlign: 'center', fontSize: 11, color: T.textSecondary, maxWidth: 1100, margin: '0 auto' }}>
-          © 2026 FinHealth AI. For informational purposes only. Not financial advice.
+          © 2026 FinHealth360. For informational purposes only. Not financial advice.
         </div>
       </footer>
     </div>
