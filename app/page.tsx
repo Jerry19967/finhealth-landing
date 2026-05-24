@@ -548,78 +548,7 @@ export default function Home() {
         </Reveal>
       </section>
 
-      {/* ── Platform Features ── */}
       <FeaturesGrid />
-
-                  {/* Mini bar preview */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, background: 'rgba(0,0,0,0.2)', borderRadius: 12, padding: '12px 14px' }}>
-                    {m.preview.map(([label, pct, color]) => (
-                      <div key={String(label)}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: T.textMuted, marginBottom: 3 }}>
-                          <span>{label}</span><span style={{ color: String(color) }}>{pct}%</span>
-                        </div>
-                        <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.05)' }}>
-                          <div style={{ height: '100%', width: `${pct}%`, borderRadius: 2, background: String(color), opacity: 0.8 }} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Feature list with links */}
-                  <div style={{ borderTop: `1px solid ${m.color}15`, paddingTop: 14 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: m.color, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>What’s included</div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-                      {m.features.map((f, i) => (
-                        <a key={i} href={f.href} target="_blank" rel="noopener noreferrer"
-                          style={{ textDecoration: 'none', display: 'flex', alignItems: 'flex-start', gap: 10, padding: '8px 0', borderBottom: i < m.features.length - 1 ? `1px solid rgba(255,255,255,0.04)` : 'none' }}>
-                          <div style={{ width: 5, height: 5, borderRadius: '50%', background: m.color, flexShrink: 0, marginTop: 6 }} />
-                          <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: 12, fontWeight: 700, color: T.textPrimary, marginBottom: 1 }}>{f.label}</div>
-                            <div style={{ fontSize: 11, color: T.textMuted, lineHeight: 1.4 }}>{f.desc}</div>
-                          </div>
-                          <ChevronRight size={11} color={m.color} style={{ flexShrink: 0, marginTop: 4, opacity: 0.6 }} />
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* CTA row */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 5, fontSize: 12, fontWeight: 700, color: m.color, marginTop: 'auto' }}>
-                    Get Access <ChevronRight size={14} />
-                  </div>
-                </motion.div>
-              </a>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Dashboard CTA banner */}
-        <Reveal>
-          <motion.div variants={fadeUp}>
-            <a href="https://financialai-frontend-lime.vercel.app/app/dashboard" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'block', maxWidth: 1100, margin: '0 auto' }}>
-              <motion.div whileHover={{ y: -3, boxShadow: '0 20px 60px rgba(47,230,255,0.12)' }}
-                style={{ background: 'linear-gradient(135deg, rgba(47,230,255,0.08) 0%, rgba(122,60,255,0.1) 100%)', border: `1px solid rgba(47,230,255,0.28)`, borderRadius: 20, padding: '24px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: T.gradPrimary }} />
-                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                  <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 3, repeat: Infinity }}
-                    style={{ width: 48, height: 48, borderRadius: 14, background: T.gradPrimary, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Sparkles size={22} color="#fff" />
-                  </motion.div>
-                  <div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: T.textPrimary, marginBottom: 4, fontFamily: T.fontDisplay }}>See Your Full Dashboard</div>
-                    <div style={{ fontSize: 13, color: T.textSecondary }}>Net worth · Agent alerts · All modules · Weekly intelligence — in one view</div>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <a href="https://financialai-frontend-lime.vercel.app/signup" className="btn-primary" style={{ fontSize: 13, padding: '11px 22px' }}>
-                    Start Free <ChevronRight size={15} />
-                  </a>
-                </div>
-              </motion.div>
-            </a>
-          </motion.div>
-        </Reveal>
-      </section>
 
       {/* ── Pricing ── */}
       <section id="pricing" style={{ padding: '80px 4vw', position: 'relative', zIndex: 2 }}>
