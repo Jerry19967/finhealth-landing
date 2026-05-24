@@ -577,10 +577,13 @@ export default function Home() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1, marginBottom: 24 }}>
                 {[
                   'Financial Health Score (0–100)',
-                  'SIP Calculator — SIP maturity & wealth growth',
-                  'EMI Calculator — home, car & personal loans',
-                  'Tax Calculator — old vs new regime comparison',
-                  'Basic insights dashboard',
+                  'Dashboard — net worth, savings, expenses',
+                  'Top priorities & action items',
+                  'SIP Calculator & EMI Calculator',
+                  'Tax Calculator — old vs new regime',
+                  'Basic score breakdown (2 of 6 factors)',
+                  'Score share & recalculate',
+                  'Document upload & analysis',
                 ].map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, fontSize: 13, color: T.textSecondary }}>
                     <CheckCircle size={13} color={T.green} style={{ flexShrink: 0, marginTop: 2 }} />{f}
@@ -608,15 +611,14 @@ export default function Home() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1, marginBottom: 20 }}>
                 {[
                   'Everything in Free',
+                  'All 6 score factors unlocked',
                   'AI Analysis — deep financial health insights',
-                  'Portfolio Analyzer — performance & allocation',
-                  'Return Calculator — CAGR on any investment',
-                  'IRR Calculator — true return on insurance',
-                  'Coverage Checker — life & health adequacy',
-                  'Goal-based financial planning',
-                  'Loan Comparison — real cost side-by-side',
-                  'Prepayment Strategy — optimal repayment plan',
-                  'Deduction Optimizer — 80C, 80D, HRA & more',
+                  'Investments module — SIP, portfolio, returns',
+                  'Insurance module — policy & coverage analysis',
+                  'Planning module — goals & retirement',
+                  'Loans module — EMI, comparison, prepayment',
+                  'Tax module — deduction optimizer',
+                  'Tools Hub — full access to all 18 tools',
                   'AI Assistant — chat with your financial agent',
                 ].map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, fontSize: 13, color: '#C5D3E8' }}>
@@ -675,6 +677,7 @@ export default function Home() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1, marginBottom: 20 }}>
                 {[
                   'Everything in Elite',
+                  'All 6 score factors + full breakdown',
                   'Autonomous Agent Mode — works while you sleep',
                   'Daily automatic financial analysis',
                   'Proactive alerts — flags problems before they hit',
