@@ -20,7 +20,7 @@ const C = {
 
 const fadeUp = { hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' as const } } };
 const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
-const scaleIn = { hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: "backOut" } } };
+const scaleIn = { hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } } };
 
 function CursorGlow() {
   const [pos, setPos] = useState({ x: 0, y: 0 });
