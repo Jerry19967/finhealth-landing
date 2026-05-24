@@ -579,9 +579,10 @@ export default function Home() {
                   'Financial Health Score (0–100)',
                   'Dashboard — net worth, savings, expenses',
                   'Top priorities & action items',
+                  '1 AI financial report per month',
                   'SIP Calculator & EMI Calculator',
                   'Tax Calculator — old vs new regime',
-                  'Basic score breakdown (2 of 6 factors)',
+                  'Score breakdown (2 of 6 factors visible)',
                   'Score share & recalculate',
                   'Document upload & analysis',
                 ].map(f => (
@@ -605,12 +606,14 @@ export default function Home() {
               </div>
               <div style={{ marginBottom: 20 }}>
                 <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: T.cyan, marginBottom: 8 }}>PRO</div>
-                <div style={{ fontFamily: T.fontDisplay, fontSize: 38, fontWeight: 900, color: T.textPrimary, marginBottom: 4 }}>₹99</div>
-                <div style={{ fontSize: 12, color: T.textSecondary }}>per month · cancel anytime</div>
+                <div style={{ fontFamily: T.fontDisplay, fontSize: 38, fontWeight: 900, color: T.textPrimary, marginBottom: 4 }}>₹66<span style={{fontSize:16, fontWeight:500, color: T.textSecondary}}>/mo</span></div>
+                <div style={{ fontSize: 12, color: T.textSecondary }}>₹799/year · cancel anytime</div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1, marginBottom: 20 }}>
                 {[
                   'Everything in Free',
+                  '5 AI financial reports per month',
+                  'AI Assistant — 10 messages/day',
                   'AI Analysis — deep financial health insights',
                   'Investments module — SIP, portfolio, returns',
                   'Insurance module — policy & coverage analysis',
@@ -618,7 +621,6 @@ export default function Home() {
                   'Loans module — EMI, comparison, prepayment',
                   'Tax module — deduction optimizer',
                   'Tools Hub — full access to all 18 tools',
-                  'AI Assistant — chat with your financial agent',
                 ].map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, fontSize: 13, color: '#C5D3E8' }}>
                     <CheckCircle size={13} color={T.cyan} style={{ flexShrink: 0, marginTop: 2 }} />{f}
@@ -637,12 +639,14 @@ export default function Home() {
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: T.gradGreen, borderRadius: '20px 20px 0 0' }} />
               <div style={{ marginBottom: 20 }}>
                 <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: T.green, marginBottom: 8 }}>ELITE</div>
-                <div style={{ fontFamily: T.fontDisplay, fontSize: 38, fontWeight: 900, color: T.textPrimary, marginBottom: 4 }}>₹499</div>
-                <div style={{ fontSize: 12, color: T.textSecondary }}>per month · cancel anytime</div>
+                <div style={{ fontFamily: T.fontDisplay, fontSize: 38, fontWeight: 900, color: T.textPrimary, marginBottom: 4 }}>₹332<span style={{fontSize:16, fontWeight:500, color: T.textSecondary}}>/mo</span></div>
+                <div style={{ fontSize: 12, color: T.textSecondary }}>₹3,999/year · cancel anytime</div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1, marginBottom: 20 }}>
                 {[
                   'Everything in Pro',
+                  'Unlimited AI financial reports',
+                  'AI Assistant — 30 messages/day',
                   'Risk Analysis — portfolio risk & rebalancing signals',
                   'Policy Analyzer — real IRR & hidden charges',
                   'Retirement Planner — corpus & monthly savings',
@@ -650,7 +654,6 @@ export default function Home() {
                   'Scenario Planner — model financial decisions',
                   'PDF financial report downloads',
                   'Weekly AI personalised insights',
-                  'Unlimited AI Agent chat',
                   'Elite financial intelligence score',
                 ].map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, fontSize: 13, color: '#C5D3E8' }}>
@@ -670,13 +673,14 @@ export default function Home() {
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: T.gradPrimary, borderRadius: '20px 20px 0 0' }} />
               <div style={{ marginBottom: 20 }}>
                 <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: T.purple, marginBottom: 8 }}>ELITE+ AGENT PLAN</div>
-                <div style={{ fontFamily: T.fontDisplay, fontSize: 38, fontWeight: 900, color: T.textPrimary, marginBottom: 4 }}>₹999</div>
-                <div style={{ fontSize: 12, color: T.textSecondary }}>per month · fully autonomous</div>
+                <div style={{ fontFamily: T.fontDisplay, fontSize: 38, fontWeight: 900, color: T.textPrimary, marginBottom: 4 }}>₹666<span style={{fontSize:16, fontWeight:500, color: T.textSecondary}}>/mo</span></div>
+                <div style={{ fontSize: 12, color: T.textSecondary }}>₹7,999/year · fully autonomous</div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1, marginBottom: 20 }}>
                 {[
                   'Everything in Elite',
                   'All 6 score factors + full breakdown',
+                  'Unlimited AI reports + unlimited messages',
                   'Autonomous Agent Mode — works while you sleep',
                   'Daily automatic financial analysis',
                   'Proactive alerts — flags problems before they hit',
@@ -684,7 +688,6 @@ export default function Home() {
                   'Weekly AI financial roadmap',
                   'Full memory across all sessions',
                   'Personalised strategy engine',
-                  'Priority AI processing',
                 ].map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, fontSize: 13, color: '#C5D3E8' }}>
                     <CheckCircle size={13} color={T.purple} style={{ flexShrink: 0, marginTop: 2 }} />{f}
