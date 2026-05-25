@@ -10,13 +10,13 @@ import {
 } from 'lucide-react'
 
 const sections = [
-  { title: 'AI Financial Dashboard',     eyebrow: 'Financial Command Center',  description: 'Monitor savings, expenses, investments, alerts, and your complete financial health in one AI-powered workspace.',               icon: Wallet,     image: '/screens/dashboard.png'       },
-  { title: 'Autonomous AI Alerts',       eyebrow: 'Always-On Risk Detection',  description: 'Your AI agent detects emergency fund gaps, missed SIPs, portfolio risks, and money opportunities automatically.',                icon: Bot,        image: '/screens/alerts.png'          },
-  { title: 'Financial Health Analysis',  eyebrow: 'Score, Red Flags & Action', description: 'Understand strengths, red flags, action plans, and your overall money position with clear AI insights.',                         icon: HeartPulse, image: '/screens/financial-health.png'},
-  { title: 'Investment Intelligence',    eyebrow: 'SIP & Wealth Projection',   description: 'Visualize SIP projections, long-term wealth growth, and portfolio optimization insights tailored to your numbers.',               icon: TrendingUp, image: '/screens/investments.png'    },
-  { title: 'Insurance Analysis',         eyebrow: 'Policy & Coverage Review',  description: 'Analyze policy IRR, hidden charges, coverage gaps, and insurance efficiency instantly.',                                          icon: Shield,     image: '/screens/insurance.png'      },
-  { title: 'Goal & Retirement Planning', eyebrow: 'Future Planning',           description: 'Plan retirement, child education, wealth goals, and long-term financial freedom with clarity.',                                   icon: Target,     image: '/screens/planning.png'       },
-  { title: 'AI Financial Agent',         eyebrow: 'Personal Money Assistant',  description: 'Ask your personal AI agent questions about savings, tax, SIPs, insurance, risks, and next actions — anytime.',                   icon: Bot,        image: '/screens/agent.png'          },
+  { title: 'AI Financial Dashboard',     eyebrow: 'Financial Command Center',  description: 'Monitor savings, expenses, investments, alerts, and your complete financial health in one AI-powered workspace.',       icon: Wallet,     image: '/screens/dashboard.png'        },
+  { title: 'Autonomous AI Alerts',       eyebrow: 'Always-On Risk Detection',  description: 'Your AI agent detects emergency fund gaps, missed SIPs, portfolio risks, and money opportunities automatically.',      icon: Bot,        image: '/screens/alerts.png'           },
+  { title: 'Financial Health Analysis',  eyebrow: 'Score, Red Flags & Action', description: 'Understand strengths, red flags, action plans, and your overall money position with clear AI insights.',               icon: HeartPulse, image: '/screens/financial-health.png' },
+  { title: 'Investment Intelligence',    eyebrow: 'SIP & Wealth Projection',   description: 'Visualize SIP projections, long-term wealth growth, and portfolio optimization insights tailored to your numbers.',     icon: TrendingUp, image: '/screens/investments.png'     },
+  { title: 'Insurance Analysis',         eyebrow: 'Policy & Coverage Review',  description: 'Analyze policy IRR, hidden charges, coverage gaps, and insurance efficiency instantly.',                                icon: Shield,     image: '/screens/insurance.png'       },
+  { title: 'Goal & Retirement Planning', eyebrow: 'Future Planning',           description: 'Plan retirement, child education, wealth goals, and long-term financial freedom with clarity.',                         icon: Target,     image: '/screens/planning.png'        },
+  { title: 'AI Financial Agent',         eyebrow: 'Personal Money Assistant',  description: 'Ask your personal AI agent questions about savings, tax, SIPs, insurance, risks, and next actions — anytime.',         icon: Bot,        image: '/screens/agent.png'           },
 ]
 
 const toolCategories = [
@@ -69,51 +69,73 @@ const toolCategories = [
   },
 ]
 
-const palette: Record<string, { card: string; badge: string; icon: string; row: string; glow: string; arrow: string }> = {
-  cyan:    { card: 'border-cyan-400/25 hover:border-cyan-400/45 hover:shadow-cyan-400/10',        badge: 'bg-cyan-400/10 text-cyan-300 border-cyan-400/30',        icon: 'bg-cyan-400/15 text-cyan-300',        row: 'hover:bg-cyan-400/10',    glow: 'bg-cyan-400',    arrow: 'text-cyan-400'    },
-  violet:  { card: 'border-violet-400/25 hover:border-violet-400/45 hover:shadow-violet-400/10',  badge: 'bg-violet-400/10 text-violet-300 border-violet-400/30',  icon: 'bg-violet-400/15 text-violet-300',    row: 'hover:bg-violet-400/10',  glow: 'bg-violet-400',  arrow: 'text-violet-400'  },
-  sky:     { card: 'border-sky-400/25 hover:border-sky-400/45 hover:shadow-sky-400/10',           badge: 'bg-sky-400/10 text-sky-300 border-sky-400/30',           icon: 'bg-sky-400/15 text-sky-300',          row: 'hover:bg-sky-400/10',     glow: 'bg-sky-400',     arrow: 'text-sky-400'     },
-  emerald: { card: 'border-emerald-400/25 hover:border-emerald-400/45 hover:shadow-emerald-400/10', badge: 'bg-emerald-400/10 text-emerald-300 border-emerald-400/30', icon: 'bg-emerald-400/15 text-emerald-300', row: 'hover:bg-emerald-400/10', glow: 'bg-emerald-400', arrow: 'text-emerald-400' },
-  amber:   { card: 'border-amber-400/25 hover:border-amber-400/45 hover:shadow-amber-400/10',     badge: 'bg-amber-400/10 text-amber-300 border-amber-400/30',     icon: 'bg-amber-400/15 text-amber-300',      row: 'hover:bg-amber-400/10',   glow: 'bg-amber-400',   arrow: 'text-amber-400'   },
-  rose:    { card: 'border-rose-400/25 hover:border-rose-400/45 hover:shadow-rose-400/10',        badge: 'bg-rose-400/10 text-rose-300 border-rose-400/30',        icon: 'bg-rose-400/15 text-rose-300',        row: 'hover:bg-rose-400/10',    glow: 'bg-rose-400',    arrow: 'text-rose-400'    },
+type PaletteKey = 'cyan' | 'violet' | 'sky' | 'emerald' | 'amber' | 'rose'
+const palette: Record<PaletteKey, { card: string; badge: string; icon: string; row: string; glow: string; arrow: string }> = {
+  cyan:    { card: 'border-cyan-400/25 hover:border-cyan-400/50 hover:shadow-cyan-500/10',           badge: 'bg-cyan-400/10 text-cyan-300 border-cyan-400/30',           icon: 'bg-cyan-400/15 text-cyan-300',    row: 'hover:bg-cyan-400/10',    glow: 'bg-cyan-400',    arrow: 'text-cyan-400'    },
+  violet:  { card: 'border-violet-400/25 hover:border-violet-400/50 hover:shadow-violet-500/10',     badge: 'bg-violet-400/10 text-violet-300 border-violet-400/30',     icon: 'bg-violet-400/15 text-violet-300',  row: 'hover:bg-violet-400/10',  glow: 'bg-violet-400',  arrow: 'text-violet-400'  },
+  sky:     { card: 'border-sky-400/25 hover:border-sky-400/50 hover:shadow-sky-500/10',              badge: 'bg-sky-400/10 text-sky-300 border-sky-400/30',              icon: 'bg-sky-400/15 text-sky-300',      row: 'hover:bg-sky-400/10',     glow: 'bg-sky-400',     arrow: 'text-sky-400'     },
+  emerald: { card: 'border-emerald-400/25 hover:border-emerald-400/50 hover:shadow-emerald-500/10',  badge: 'bg-emerald-400/10 text-emerald-300 border-emerald-400/30',  icon: 'bg-emerald-400/15 text-emerald-300', row: 'hover:bg-emerald-400/10', glow: 'bg-emerald-400', arrow: 'text-emerald-400' },
+  amber:   { card: 'border-amber-400/25 hover:border-amber-400/50 hover:shadow-amber-500/10',        badge: 'bg-amber-400/10 text-amber-300 border-amber-400/30',        icon: 'bg-amber-400/15 text-amber-300',  row: 'hover:bg-amber-400/10',   glow: 'bg-amber-400',   arrow: 'text-amber-400'   },
+  rose:    { card: 'border-rose-400/25 hover:border-rose-400/50 hover:shadow-rose-500/10',           badge: 'bg-rose-400/10 text-rose-300 border-rose-400/30',           icon: 'bg-rose-400/15 text-rose-300',    row: 'hover:bg-rose-400/10',    glow: 'bg-rose-400',    arrow: 'text-rose-400'    },
 }
 
 const fadeUp = { hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }
 
 export default function FeaturesGrid() {
   return (
-    <section id="features" className="relative z-[2] w-full overflow-hidden bg-[#050816] py-24 text-white lg:py-36">
+    <section
+      id="features"
+      style={{
+        position: 'relative',
+        zIndex: 2,
+        width: '100%',
+        overflow: 'hidden',
+        background: '#050816',
+        paddingTop: 96,
+        paddingBottom: 96,
+        color: '#fff',
+      }}
+    >
+      {/* grid bg */}
+      <div style={{ pointerEvents: 'none', position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px)', backgroundSize: '72px 72px' }} />
+      {/* ambient blobs */}
+      <div style={{ pointerEvents: 'none', position: 'absolute', left: '-8%', top: '8%', width: 520, height: 520, borderRadius: '50%', background: 'rgba(47,230,255,0.07)', filter: 'blur(120px)' }} />
+      <div style={{ pointerEvents: 'none', position: 'absolute', right: '-8%', top: '45%', width: 560, height: 560, borderRadius: '50%', background: 'rgba(122,60,255,0.08)', filter: 'blur(130px)' }} />
 
-      {/* background */}
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.022)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.022)_1px,transparent_1px)] bg-[size:72px_72px]" />
-      <div className="pointer-events-none absolute left-0 top-24 h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-cyan-400/10 blur-[120px]" />
-      <div className="pointer-events-none absolute right-0 top-[50%] h-[520px] w-[520px] translate-x-1/2 rounded-full bg-violet-500/10 blur-[130px]" />
+      {/* ── SINGLE CENTRED WRAPPER ── */}
+      <div style={{
+        position: 'relative',
+        width: '100%',
+        maxWidth: 1280,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        paddingLeft: 'clamp(20px, 5vw, 80px)',
+        paddingRight: 'clamp(20px, 5vw, 80px)',
+        boxSizing: 'border-box',
+      }}>
 
-      {/* single centred wrapper */}
-      <div className="relative mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-
-        {/* features header */}
+        {/* ── FEATURES HEADER ── */}
         <motion.div
           variants={fadeUp} initial="hidden" whileInView="visible"
           transition={{ duration: 0.65 }} viewport={{ once: true, amount: 0.3 }}
-          className="mx-auto mb-24 max-w-3xl text-center"
+          style={{ maxWidth: 680, marginLeft: 'auto', marginRight: 'auto', marginBottom: 96, textAlign: 'center' }}
         >
-          <span className="inline-flex rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-1.5 text-sm font-bold text-cyan-300">
+          <span style={{ display: 'inline-flex', alignItems: 'center', borderRadius: 999, border: '1px solid rgba(47,230,255,0.25)', background: 'rgba(47,230,255,0.08)', padding: '6px 16px', fontSize: 13, fontWeight: 700, color: '#67e8f9', marginBottom: 20 }}>
             What FinHealth360 Includes
           </span>
-          <h2 className="mt-5 text-5xl font-black leading-[1.08] tracking-tight lg:text-6xl">
+          <h2 style={{ fontSize: 'clamp(2.4rem, 5vw, 3.8rem)', fontWeight: 900, lineHeight: 1.08, letterSpacing: '-0.04em', margin: 0, color: '#f1f5f9' }}>
             Real product screens.
-            <span className="block bg-gradient-to-r from-cyan-300 via-sky-400 to-violet-400 bg-clip-text text-transparent">
+            <span style={{ display: 'block', background: 'linear-gradient(135deg,#67e8f9 0%,#38bdf8 50%,#a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               Real financial intelligence.
             </span>
           </h2>
-          <p className="mt-5 text-lg leading-8 text-slate-300">
+          <p style={{ marginTop: 20, fontSize: 18, lineHeight: 1.75, color: '#94a3b8', maxWidth: 520, marginLeft: 'auto', marginRight: 'auto' }}>
             A quick look at the workflows, tools, and AI-powered modules already inside the platform.
           </p>
         </motion.div>
 
-        {/* alternating feature rows */}
-        <div className="flex flex-col gap-32 lg:gap-44">
+        {/* ── ALTERNATING FEATURE ROWS ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 120 }}>
           {sections.map((s, i) => {
             const Icon = s.icon
             const flip = i % 2 === 1
@@ -121,24 +143,34 @@ export default function FeaturesGrid() {
               <motion.div
                 key={s.title}
                 variants={fadeUp} initial="hidden" whileInView="visible"
-                transition={{ duration: 0.65 }} viewport={{ once: true, amount: 0.15 }}
-                className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-20"
+                transition={{ duration: 0.65 }} viewport={{ once: true, amount: 0.12 }}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2,1fr)',
+                  gap: 64,
+                  alignItems: 'center',
+                }}
               >
-                {/* text side */}
-                <div className={`flex flex-col items-start ${flip ? 'lg:order-2' : 'lg:order-1'}`}>
-                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10 shadow-lg shadow-cyan-400/10">
-                    <Icon className="h-8 w-8 text-cyan-300" />
+                {/* text */}
+                <div style={{ order: flip ? 2 : 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <div style={{ width: 60, height: 60, borderRadius: 16, border: '1px solid rgba(103,232,249,0.2)', background: 'rgba(103,232,249,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, boxShadow: '0 8px 24px rgba(47,230,255,0.08)' }}>
+                    <Icon size={28} color="#67e8f9" />
                   </div>
-                  <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-cyan-300/70">{s.eyebrow}</p>
-                  <h3 className="text-4xl font-black leading-[1.1] tracking-tight sm:text-5xl">{s.title}</h3>
-                  <p className="mt-5 max-w-sm text-lg leading-8 text-slate-300">{s.description}</p>
-                  <a href="#" className="mt-8 inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-5 py-2.5 text-sm font-bold text-cyan-300 transition hover:bg-cyan-300/20">
-                    Included in platform <ArrowRight className="h-4 w-4" />
+                  <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(103,232,249,0.65)', marginBottom: 8, margin: '0 0 8px' }}>{s.eyebrow}</p>
+                  <h3 style={{ fontSize: 'clamp(1.9rem, 3.2vw, 2.8rem)', fontWeight: 900, lineHeight: 1.1, letterSpacing: '-0.03em', color: '#f1f5f9', margin: 0 }}>{s.title}</h3>
+                  <p style={{ marginTop: 18, fontSize: 17, lineHeight: 1.75, color: '#94a3b8', maxWidth: 400 }}>{s.description}</p>
+                  <a
+                    href="#"
+                    style={{ marginTop: 28, display: 'inline-flex', alignItems: 'center', gap: 8, borderRadius: 999, border: '1px solid rgba(103,232,249,0.25)', background: 'rgba(103,232,249,0.08)', padding: '10px 20px', fontSize: 13, fontWeight: 700, color: '#67e8f9', textDecoration: 'none', transition: 'background 0.2s' }}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(103,232,249,0.18)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'rgba(103,232,249,0.08)')}
+                  >
+                    Included in platform <ArrowRight size={14} />
                   </a>
                 </div>
 
-                {/* screen side */}
-                <div className={flip ? 'lg:order-1' : 'lg:order-2'}>
+                {/* screen */}
+                <div style={{ order: flip ? 1 : 2 }}>
                   <ScreenPreview src={s.image} alt={s.title} />
                 </div>
               </motion.div>
@@ -146,51 +178,50 @@ export default function FeaturesGrid() {
           })}
         </div>
 
-        {/* TOOLS HUB */}
-        <div className="mt-44">
+        {/* ══════════════════════════════════════
+            TOOLS HUB
+        ══════════════════════════════════════ */}
+        <div style={{ marginTop: 160 }}>
 
-          {/* tools header */}
+          {/* tools header — CENTRED */}
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="visible"
             transition={{ duration: 0.65 }} viewport={{ once: true, amount: 0.2 }}
-            className="mx-auto mb-16 max-w-3xl text-center"
+            style={{ maxWidth: 680, marginLeft: 'auto', marginRight: 'auto', marginBottom: 64, textAlign: 'center' }}
           >
-            <span className="inline-flex items-center gap-2 rounded-full border border-violet-300/25 bg-violet-300/10 px-4 py-1.5 text-sm font-bold text-violet-300">
-              <Landmark className="h-4 w-4" /> Financial Toolkit
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, borderRadius: 999, border: '1px solid rgba(167,139,250,0.25)', background: 'rgba(167,139,250,0.08)', padding: '6px 16px', fontSize: 13, fontWeight: 700, color: '#c4b5fd', marginBottom: 20 }}>
+              <Landmark size={14} /> Financial Toolkit
             </span>
-            <h2 className="mt-5 text-5xl font-black leading-[1.08] tracking-tight lg:text-6xl">
+            <h2 style={{ fontSize: 'clamp(2.4rem, 5vw, 3.8rem)', fontWeight: 900, lineHeight: 1.08, letterSpacing: '-0.04em', margin: 0, color: '#f1f5f9' }}>
               Every tool you need.
-              <span className="block bg-gradient-to-r from-violet-300 via-sky-400 to-cyan-300 bg-clip-text text-transparent">
+              <span style={{ display: 'block', background: 'linear-gradient(135deg,#c4b5fd 0%,#38bdf8 50%,#67e8f9 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 All in one place.
               </span>
             </h2>
-            <p className="mt-5 text-lg leading-8 text-slate-300">
+            <p style={{ marginTop: 20, fontSize: 18, lineHeight: 1.75, color: '#94a3b8', maxWidth: 520, marginLeft: 'auto', marginRight: 'auto' }}>
               20+ AI-powered calculators, analyzers, and planners — organized by category, personalized to your profile.
             </p>
           </motion.div>
 
-          {/* tool cards */}
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {/* tool cards grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 20 }}>
             {toolCategories.map((cat, ci) => {
-              const p = palette[cat.color]
+              const p = palette[cat.color as PaletteKey]
               return (
                 <motion.div
                   key={cat.category}
                   variants={fadeUp} initial="hidden" whileInView="visible"
-                  transition={{ duration: 0.5, delay: ci * 0.08 }} viewport={{ once: true, amount: 0.08 }}
-                  className={`group relative overflow-hidden rounded-2xl border bg-white/[0.025] p-7 shadow-lg transition-all duration-300 hover:shadow-xl hover:bg-white/[0.045] ${p.card}`}
+                  transition={{ duration: 0.5, delay: ci * 0.07 }} viewport={{ once: true, amount: 0.06 }}
+                  className={`group relative overflow-hidden rounded-2xl border bg-white/[0.025] p-7 shadow-lg transition-all duration-300 hover:shadow-xl hover:bg-white/[0.04] ${p.card}`}
                 >
-                  {/* glow blob */}
-                  <div className={`pointer-events-none absolute -right-6 -top-6 h-32 w-32 rounded-full ${p.glow} opacity-0 blur-3xl transition duration-500 group-hover:opacity-20`} />
+                  <div className={`pointer-events-none absolute -right-6 -top-6 h-36 w-36 rounded-full ${p.glow} opacity-0 blur-3xl transition duration-500 group-hover:opacity-[0.18]`} />
 
-                  {/* category badge */}
-                  <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-widest ${p.badge}`}>
+                  <span className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-widest ${p.badge}`}>
                     {cat.category}
                   </span>
-                  <p className="mb-6 mt-2.5 text-sm leading-relaxed text-slate-400">{cat.description}</p>
+                  <p style={{ marginTop: 10, marginBottom: 24, fontSize: 13, lineHeight: 1.6, color: '#64748b' }}>{cat.description}</p>
 
-                  {/* tool rows */}
-                  <div className="flex flex-col gap-2.5">
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {cat.tools.map((t) => {
                       const TIcon = t.icon
                       return (
@@ -198,15 +229,16 @@ export default function FeaturesGrid() {
                           key={t.name}
                           href="/app/tools"
                           className={`group/row flex items-center gap-4 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-4 transition duration-200 ${p.row}`}
+                          style={{ textDecoration: 'none' }}
                         >
                           <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${p.icon}`}>
-                            <TIcon className="h-5 w-5" />
+                            <TIcon size={20} />
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-[0.925rem] font-semibold leading-snug text-white">{t.name}</p>
-                            <p className="mt-0.5 text-xs leading-relaxed text-slate-400">{t.desc}</p>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.3, color: '#f1f5f9', margin: 0 }}>{t.name}</p>
+                            <p style={{ fontSize: 12, lineHeight: 1.55, color: '#64748b', margin: '3px 0 0' }}>{t.desc}</p>
                           </div>
-                          <ArrowRight className={`h-4 w-4 shrink-0 opacity-0 transition group-hover/row:translate-x-0.5 group-hover/row:opacity-100 ${p.arrow}`} />
+                          <ArrowRight className={`h-4 w-4 shrink-0 opacity-0 transition group-hover/row:translate-x-0.5 group-hover/row:opacity-100 ${p.arrow}`} size={14} />
                         </a>
                       )
                     })}
@@ -224,30 +256,32 @@ export default function FeaturesGrid() {
 function ScreenPreview({ src, alt }: { src: string; alt: string }) {
   return (
     <motion.div
-      whileHover={{ y: -10, scale: 1.018 }}
-      transition={{ duration: 0.35, ease: 'easeOut' }}
-      className="group relative w-full"
+      whileHover={{ y: -8, scale: 1.016 }}
+      transition={{ duration: 0.32, ease: 'easeOut' }}
+      style={{ position: 'relative', width: '100%' }}
+      className="group"
     >
-      {/* ambient glow */}
-      <div className="absolute -inset-4 rounded-[32px] bg-gradient-to-br from-cyan-400/15 via-transparent to-violet-400/10 opacity-60 blur-2xl transition duration-500 group-hover:opacity-100" />
+      <div style={{ position: 'absolute', inset: -16, borderRadius: 32, background: 'linear-gradient(135deg,rgba(47,230,255,0.12),transparent,rgba(122,60,255,0.08))', filter: 'blur(24px)', opacity: 0.6, pointerEvents: 'none', transition: 'opacity 0.5s' }}
+        className="group-hover:opacity-100" />
 
-      {/* browser chrome */}
-      <div className="relative overflow-hidden rounded-[18px] border border-white/[0.09] bg-[#080f22] shadow-[0_40px_100px_rgba(0,0,0,0.6)]">
-        <div className="flex h-10 items-center gap-2 border-b border-white/[0.06] bg-white/[0.025] px-4">
-          <span className="h-3 w-3 rounded-full bg-red-400/80" />
-          <span className="h-3 w-3 rounded-full bg-yellow-400/80" />
-          <span className="h-3 w-3 rounded-full bg-green-400/80" />
-          <span className="ml-3 h-3 w-40 rounded-full bg-white/[0.07]" />
+      <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 18, border: '1px solid rgba(255,255,255,0.08)', background: '#080f22', boxShadow: '0 40px 100px rgba(0,0,0,0.55)' }}>
+        {/* browser chrome */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 7, height: 40, padding: '0 16px', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
+          <span style={{ width: 12, height: 12, borderRadius: '50%', background: 'rgba(255,95,87,0.8)', display: 'block' }} />
+          <span style={{ width: 12, height: 12, borderRadius: '50%', background: 'rgba(255,189,46,0.8)', display: 'block' }} />
+          <span style={{ width: 12, height: 12, borderRadius: '50%', background: 'rgba(40,202,66,0.8)', display: 'block' }} />
+          <span style={{ marginLeft: 10, width: 160, height: 12, borderRadius: 6, background: 'rgba(255,255,255,0.06)', display: 'block' }} />
         </div>
-        <div className="overflow-hidden">
+        <div style={{ overflow: 'hidden' }}>
           <Image
             src={src}
             alt={alt}
             width={1440}
             height={900}
             quality={100}
-            sizes="(min-width: 1280px) 650px, (min-width: 1024px) 50vw, 100vw"
-            className="block aspect-[16/10] w-full object-cover object-top transition duration-700 ease-out will-change-transform group-hover:scale-[1.07] group-hover:object-[center_20%]"
+            sizes="(min-width: 1280px) 600px, (min-width: 768px) 50vw, 100vw"
+            style={{ display: 'block', width: '100%', aspectRatio: '16/10', objectFit: 'cover', objectPosition: 'top', transition: 'transform 0.7s ease, object-position 0.7s ease', willChange: 'transform' }}
+            className="group-hover:scale-[1.06] group-hover:[object-position:center_20%]"
           />
         </div>
       </div>
