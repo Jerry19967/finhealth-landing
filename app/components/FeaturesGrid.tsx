@@ -10,221 +10,187 @@ import {
   Target,
   Calculator,
   Wallet,
+  CheckCircle2,
 } from 'lucide-react'
 
 const sections = [
   {
     title: 'AI Financial Dashboard',
     description:
-      'Monitor savings, expenses, investments and financial health in one unified workspace powered by AI.',
+      'Monitor savings, expenses, investments, and financial health in one unified AI-powered workspace.',
     icon: Wallet,
     image: '/screens/dashboard.png',
-    color: 'from-cyan-500/10 to-blue-500/5',
   },
   {
     title: 'Autonomous AI Alerts',
     description:
-      'Your AI agent continuously detects financial risks, missing SIPs, emergency fund gaps and opportunities.',
+      'Your AI agent detects financial risks, missed SIPs, emergency fund gaps, and opportunities automatically.',
     icon: Bot,
     image: '/screens/alerts.png',
-    color: 'from-red-500/10 to-pink-500/5',
   },
   {
     title: 'Investment Intelligence',
     description:
-      'Visualize long-term wealth growth, SIP projections and portfolio optimization insights.',
+      'Visualize SIP projections, long-term wealth growth, and portfolio optimization insights.',
     icon: TrendingUp,
     image: '/screens/investments.png',
-    color: 'from-emerald-500/10 to-cyan-500/5',
   },
   {
     title: 'Insurance Analysis',
     description:
-      'Analyze policy IRR, hidden charges, coverage gaps and insurance efficiency instantly.',
+      'Analyze policy IRR, hidden charges, coverage gaps, and insurance efficiency instantly.',
     icon: Shield,
     image: '/screens/insurance.png',
-    color: 'from-purple-500/10 to-blue-500/5',
   },
   {
     title: 'Goal & Retirement Planning',
     description:
-      'Plan retirement, child education, wealth goals and long-term financial freedom.',
+      'Plan retirement, child education, wealth goals, and long-term financial freedom with clarity.',
     icon: Target,
     image: '/screens/planning.png',
-    color: 'from-amber-500/10 to-orange-500/5',
   },
   {
     title: 'Tax Optimization',
     description:
-      'Compare tax regimes, optimize deductions and improve post-tax wealth creation.',
+      'Compare tax regimes, optimize deductions, and improve post-tax wealth creation.',
     icon: Calculator,
     image: '/screens/tax.png',
-    color: 'from-blue-500/10 to-purple-500/5',
   },
 ]
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0 },
+}
+
 export default function FeaturesGrid() {
   return (
-    <section className="relative overflow-hidden bg-[#050816] py-28">
-      {/* Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(47,230,255,0.08),transparent_35%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(122,60,255,0.08),transparent_35%)]" />
+    <section className="relative overflow-hidden bg-[#050816] py-20 text-white sm:py-24 lg:py-28">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.12),transparent_32%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.12),transparent_34%)]" />
 
-      <div className="relative mx-auto max-w-7xl px-6">
-        {/* Hero */}
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          viewport={{ once: true }}
-          className="mb-28 grid items-center gap-20 lg:grid-cols-2"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          viewport={{ once: true, amount: 0.25 }}
+          className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16"
         >
-          {/* Left */}
-          <div>
-            <div className="mb-6 inline-flex items-center rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-sm font-medium text-cyan-400">
-              ⚡ Live AI Financial Platform
+          <div className="max-w-2xl">
+            <div className="mb-5 inline-flex items-center rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-300">
+              Live AI Financial Platform
             </div>
 
-            <h1 className="mb-8 text-5xl font-black leading-tight tracking-tight text-white md:text-7xl">
+            <h1 className="text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
               Your AI Financial
-              <span className="block bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-cyan-300 via-sky-400 to-violet-400 bg-clip-text text-transparent">
                 Operating System
               </span>
             </h1>
 
-            <p className="mb-10 max-w-xl text-xl leading-9 text-slate-400">
+            <p className="mt-6 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">
               Real-time financial intelligence for investments, insurance,
-              taxes, retirement and wealth planning — powered by autonomous AI
-              built for India.
+              taxes, retirement, and wealth planning, built for India.
             </p>
 
-            <div className="flex flex-wrap gap-4">
-              <button className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-500 px-7 py-4 font-semibold text-black transition-transform hover:scale-105">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <button className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-cyan-300 to-violet-500 px-6 font-bold text-[#050816] transition hover:opacity-90">
                 Start Free
-                <ArrowRight size={18} />
+                <ArrowRight className="h-4 w-4" />
               </button>
 
-              <button className="rounded-2xl border border-white/10 bg-white/5 px-7 py-4 font-semibold text-white backdrop-blur-xl transition-all hover:border-cyan-500/30">
+              <button className="inline-flex h-12 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] px-6 font-semibold text-white transition hover:border-cyan-300/40 hover:bg-white/[0.07]">
                 Explore Platform
               </button>
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-6 text-sm text-slate-500">
-              <div>✔ No bank login required</div>
-              <div>✔ Built for India</div>
-              <div>✔ AI-powered analysis</div>
+            <div className="mt-7 grid gap-3 text-sm text-slate-400 sm:grid-cols-3">
+              {['No bank login required', 'Built for India', 'AI-powered analysis'].map(
+                item => (
+                  <div key={item} className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-cyan-300" />
+                    <span>{item}</span>
+                  </div>
+                )
+              )}
             </div>
           </div>
 
-          {/* Right */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7 }}
-            viewport={{ once: true }}
-            className="relative"
-          >
-            <div className="absolute inset-0 rounded-[32px] bg-gradient-to-r from-cyan-500/20 to-purple-500/20 blur-3xl" />
-
-            <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#0B1020]/80 shadow-2xl">
-              <Image
-                src="/screens/dashboard.png"
-                alt="FinHealth360 Dashboard"
-                width={1600}
-                height={1000}
-                className="h-auto w-full"
-              />
-            </div>
-          </motion.div>
+          <DashboardImage
+            src="/screens/dashboard.png"
+            alt="FinHealth360 dashboard"
+            priority
+          />
         </motion.div>
 
-        {/* Product Sections */}
-        <div className="space-y-32">
+        <div className="mt-24 space-y-24 lg:mt-32 lg:space-y-32">
           {sections.map((section, index) => {
             const Icon = section.icon
+            const reverse = index % 2 === 1
 
             return (
               <motion.div
                 key={section.title}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7 }}
-                viewport={{ once: true }}
-                className={`grid items-center gap-16 lg:grid-cols-2 ${
-                  index % 2 !== 0 ? 'lg:[&>*:first-child]:order-2' : ''
-                }`}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+                viewport={{ once: true, amount: 0.2 }}
+                className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16"
               >
-                {/* Content */}
-                <div>
-                  <div
-                    className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-b ${section.color}`}
-                  >
-                    <Icon className="h-7 w-7 text-cyan-400" />
+                <div className={reverse ? 'lg:order-2' : undefined}>
+                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-lg border border-cyan-300/20 bg-cyan-300/10">
+                    <Icon className="h-6 w-6 text-cyan-300" />
                   </div>
 
-                  <h2 className="mb-6 text-4xl font-black text-white md:text-5xl">
+                  <h2 className="max-w-xl text-3xl font-black leading-tight tracking-tight sm:text-4xl">
                     {section.title}
                   </h2>
 
-                  <p className="mb-8 text-lg leading-8 text-slate-400">
+                  <p className="mt-5 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">
                     {section.description}
                   </p>
 
-                  <div className="flex items-center gap-2 text-cyan-400">
-                    <ArrowRight size={18} />
-                    <span className="font-medium">
-                      Powered by AI intelligence
-                    </span>
+                  <div className="mt-6 inline-flex items-center gap-2 font-semibold text-cyan-300">
+                    <span>Powered by AI intelligence</span>
+                    <ArrowRight className="h-4 w-4" />
                   </div>
                 </div>
 
-                {/* Screenshot */}
-                <motion.div
-                  whileHover={{ y: -6 }}
-                  transition={{ duration: 0.3 }}
-                  className="relative"
-                >
-                  <div className="absolute inset-0 rounded-[32px] bg-gradient-to-r from-cyan-500/10 to-purple-500/10 blur-2xl" />
-
-                  <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#0B1020]/80 shadow-2xl">
-                    <Image
-                      src={section.image}
-                      alt={section.title}
-                      width={1600}
-                      height={1000}
-                      className="h-auto w-full"
-                    />
-                  </div>
-                </motion.div>
+                <div className={reverse ? 'lg:order-1' : undefined}>
+                  <DashboardImage src={section.image} alt={section.title} />
+                </div>
               </motion.div>
             )
           })}
         </div>
 
-        {/* Final CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          viewport={{ once: true }}
-          className="mt-36 overflow-hidden rounded-[40px] border border-cyan-500/20 bg-gradient-to-r from-cyan-500/[0.08] to-purple-500/[0.08] p-12 md:p-16"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          viewport={{ once: true, amount: 0.25 }}
+          className="mt-24 rounded-xl border border-cyan-300/20 bg-gradient-to-r from-cyan-300/[0.08] to-violet-500/[0.08] p-8 sm:p-10 lg:mt-32 lg:p-12"
         >
-          <div className="max-w-4xl">
-            <div className="mb-6 text-5xl font-black leading-tight text-white">
-              Your finances should not depend on spreadsheets, memory or luck.
-            </div>
+          <div className="max-w-3xl">
+            <h2 className="text-3xl font-black leading-tight tracking-tight sm:text-4xl">
+              Your finances should not depend on spreadsheets, memory, or luck.
+            </h2>
 
-            <p className="mb-10 text-xl leading-9 text-slate-400">
+            <p className="mt-5 text-base leading-8 text-slate-300 sm:text-lg">
               FinHealth360 continuously monitors your financial life, detects
-              risks early and guides your next financial move with AI.
+              risks early, and guides your next financial move with AI.
             </p>
 
-            <div className="flex flex-wrap gap-5">
-              <button className="rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-500 px-8 py-4 font-semibold text-black transition-transform hover:scale-105">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <button className="inline-flex h-12 items-center justify-center rounded-lg bg-gradient-to-r from-cyan-300 to-violet-500 px-6 font-bold text-[#050816] transition hover:opacity-90">
                 Start Free
               </button>
 
-              <button className="rounded-2xl border border-white/10 bg-white/5 px-8 py-4 font-semibold text-white backdrop-blur-xl transition-all hover:border-cyan-500/30">
+              <button className="inline-flex h-12 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] px-6 font-semibold text-white transition hover:border-cyan-300/40 hover:bg-white/[0.07]">
                 View Dashboard
               </button>
             </div>
@@ -232,5 +198,37 @@ export default function FeaturesGrid() {
         </motion.div>
       </div>
     </section>
+  )
+}
+
+function DashboardImage({
+  src,
+  alt,
+  priority = false,
+}: {
+  src: string
+  alt: string
+  priority?: boolean
+}) {
+  return (
+    <motion.div
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.25 }}
+      className="relative"
+    >
+      <div className="absolute -inset-4 rounded-2xl bg-cyan-400/10 blur-2xl" />
+
+      <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0b1020] shadow-2xl shadow-black/40">
+        <Image
+          src={src}
+          alt={alt}
+          width={1600}
+          height={1000}
+          priority={priority}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          className="aspect-[16/10] w-full object-cover object-top"
+        />
+      </div>
+    </motion.div>
   )
 }
