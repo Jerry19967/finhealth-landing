@@ -150,17 +150,89 @@ const toolCategories = [
   },
 ]
 
-const colorMap: Record<string, { border: string; bg: string; text: string; badge: string; badgeBg: string }> = {
-  cyan:    { border: 'border-cyan-300/20',   bg: 'bg-cyan-300/8',   text: 'text-cyan-300',   badge: 'text-cyan-300',   badgeBg: 'bg-cyan-300/10 border-cyan-300/20' },
-  violet:  { border: 'border-violet-300/20', bg: 'bg-violet-300/8', text: 'text-violet-300', badge: 'text-violet-300', badgeBg: 'bg-violet-300/10 border-violet-300/20' },
-  sky:     { border: 'border-sky-300/20',    bg: 'bg-sky-300/8',    text: 'text-sky-300',    badge: 'text-sky-300',    badgeBg: 'bg-sky-300/10 border-sky-300/20' },
-  emerald: { border: 'border-emerald-300/20',bg: 'bg-emerald-300/8',text: 'text-emerald-300',badge: 'text-emerald-300',badgeBg: 'bg-emerald-300/10 border-emerald-300/20' },
-  amber:   { border: 'border-amber-300/20',  bg: 'bg-amber-300/8',  text: 'text-amber-300',  badge: 'text-amber-300',  badgeBg: 'bg-amber-300/10 border-amber-300/20' },
-  rose:    { border: 'border-rose-300/20',   bg: 'bg-rose-300/8',   text: 'text-rose-300',   badge: 'text-rose-300',   badgeBg: 'bg-rose-300/10 border-rose-300/20' },
+type ColorKey = 'cyan' | 'violet' | 'sky' | 'emerald' | 'amber' | 'rose'
+
+const colorMap: Record<ColorKey, {
+  border: string
+  iconBg: string
+  iconText: string
+  badgeBg: string
+  badgeText: string
+  badgeBorder: string
+  toolBg: string
+  toolHover: string
+  arrowText: string
+}> = {
+  cyan: {
+    border: 'border-cyan-400/20',
+    iconBg: 'bg-cyan-400/15',
+    iconText: 'text-cyan-300',
+    badgeBg: 'bg-cyan-400/10',
+    badgeText: 'text-cyan-300',
+    badgeBorder: 'border-cyan-400/25',
+    toolBg: 'bg-white/[0.03]',
+    toolHover: 'hover:bg-cyan-400/10 hover:border-cyan-400/30',
+    arrowText: 'text-cyan-400',
+  },
+  violet: {
+    border: 'border-violet-400/20',
+    iconBg: 'bg-violet-400/15',
+    iconText: 'text-violet-300',
+    badgeBg: 'bg-violet-400/10',
+    badgeText: 'text-violet-300',
+    badgeBorder: 'border-violet-400/25',
+    toolBg: 'bg-white/[0.03]',
+    toolHover: 'hover:bg-violet-400/10 hover:border-violet-400/30',
+    arrowText: 'text-violet-400',
+  },
+  sky: {
+    border: 'border-sky-400/20',
+    iconBg: 'bg-sky-400/15',
+    iconText: 'text-sky-300',
+    badgeBg: 'bg-sky-400/10',
+    badgeText: 'text-sky-300',
+    badgeBorder: 'border-sky-400/25',
+    toolBg: 'bg-white/[0.03]',
+    toolHover: 'hover:bg-sky-400/10 hover:border-sky-400/30',
+    arrowText: 'text-sky-400',
+  },
+  emerald: {
+    border: 'border-emerald-400/20',
+    iconBg: 'bg-emerald-400/15',
+    iconText: 'text-emerald-300',
+    badgeBg: 'bg-emerald-400/10',
+    badgeText: 'text-emerald-300',
+    badgeBorder: 'border-emerald-400/25',
+    toolBg: 'bg-white/[0.03]',
+    toolHover: 'hover:bg-emerald-400/10 hover:border-emerald-400/30',
+    arrowText: 'text-emerald-400',
+  },
+  amber: {
+    border: 'border-amber-400/20',
+    iconBg: 'bg-amber-400/15',
+    iconText: 'text-amber-300',
+    badgeBg: 'bg-amber-400/10',
+    badgeText: 'text-amber-300',
+    badgeBorder: 'border-amber-400/25',
+    toolBg: 'bg-white/[0.03]',
+    toolHover: 'hover:bg-amber-400/10 hover:border-amber-400/30',
+    arrowText: 'text-amber-400',
+  },
+  rose: {
+    border: 'border-rose-400/20',
+    iconBg: 'bg-rose-400/15',
+    iconText: 'text-rose-300',
+    badgeBg: 'bg-rose-400/10',
+    badgeText: 'text-rose-300',
+    badgeBorder: 'border-rose-400/25',
+    toolBg: 'bg-white/[0.03]',
+    toolHover: 'hover:bg-rose-400/10 hover:border-rose-400/30',
+    arrowText: 'text-rose-400',
+  },
 }
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 36 },
+  hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0 },
 }
 
@@ -168,161 +240,156 @@ export default function FeaturesGrid() {
   return (
     <section
       id="features"
-      className="relative z-[2] w-full overflow-hidden bg-[#050816] px-5 py-24 text-white sm:px-8 lg:px-16 lg:py-32"
+      className="relative z-[2] w-full overflow-hidden bg-[#050816] py-24 text-white lg:py-32"
     >
-      {/* Grid background */}
+      {/* Background grid */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:72px_72px]" />
       <div className="absolute left-[-12%] top-16 h-[520px] w-[520px] rounded-full bg-cyan-400/10 blur-[140px]" />
       <div className="absolute right-[-12%] top-[42%] h-[560px] w-[560px] rounded-full bg-violet-500/10 blur-[150px]" />
 
-      <div className="relative mx-auto max-w-[1400px]">
+      {/* ── Section header ── */}
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+        viewport={{ once: true, amount: 0.25 }}
+        className="relative mx-auto mb-24 max-w-3xl px-6 text-center"
+      >
+        <div className="mb-5 inline-flex rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-sm font-bold text-cyan-300">
+          What FinHealth360 Includes
+        </div>
+        <h2 className="text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+          Real product screens.
+          <span className="block bg-gradient-to-r from-cyan-300 via-sky-400 to-violet-400 bg-clip-text text-transparent">
+            Real financial intelligence.
+          </span>
+        </h2>
+        <p className="mt-6 text-lg leading-8 text-slate-300">
+          A quick look at the workflows, tools, and AI-powered modules already inside the platform.
+        </p>
+      </motion.div>
 
-        {/* ── Section header ── */}
+      {/* ── Feature rows — full bleed with internal padding ── */}
+      <div className="relative space-y-32 lg:space-y-44">
+        {sections.map((section, index) => {
+          const Icon = section.icon
+          const reverse = index % 2 === 1
+
+          return (
+            <motion.div
+              key={section.title}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              transition={{ duration: 0.7, ease: 'easeOut' }}
+              viewport={{ once: true, amount: 0.15 }}
+              className="mx-auto grid w-full max-w-[1400px] items-center gap-12 px-6 sm:px-10 lg:grid-cols-2 lg:gap-20 lg:px-16"
+            >
+              {/* Text column */}
+              <div className={`flex flex-col items-start ${reverse ? 'lg:order-2' : 'lg:order-1'}`}>
+                <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10 shadow-lg shadow-cyan-400/10">
+                  <Icon className="h-8 w-8 text-cyan-300" />
+                </div>
+                <div className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-cyan-300/70">
+                  {section.eyebrow}
+                </div>
+                <h3 className="text-3xl font-black leading-[1.1] tracking-tight sm:text-4xl xl:text-5xl">
+                  {section.title}
+                </h3>
+                <p className="mt-5 max-w-md text-lg leading-8 text-slate-300">
+                  {section.description}
+                </p>
+                <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-5 py-2.5 text-sm font-bold text-cyan-300 transition hover:bg-cyan-300/20">
+                  Included in platform
+                  <ArrowRight className="h-4 w-4" />
+                </div>
+              </div>
+
+              {/* Screen column */}
+              <div className={reverse ? 'lg:order-1' : 'lg:order-2'}>
+                <FloatingPreview src={section.image} alt={section.title} />
+              </div>
+            </motion.div>
+          )
+        })}
+      </div>
+
+      {/* ── Tools Hub ── */}
+      <div className="relative mx-auto mt-44 max-w-[1400px] px-6 sm:px-10 lg:px-16">
+        {/* Tools header */}
         <motion.div
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           transition={{ duration: 0.7, ease: 'easeOut' }}
-          viewport={{ once: true, amount: 0.25 }}
-          className="mb-20 text-center"
+          viewport={{ once: true, amount: 0.2 }}
+          className="mb-16 text-center"
         >
-          <div className="mb-5 inline-flex rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-sm font-bold text-cyan-300">
-            What FinHealth360 Includes
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-violet-300/25 bg-violet-300/10 px-4 py-2 text-sm font-bold text-violet-300">
+            <Landmark className="h-4 w-4" />
+            Financial Toolkit
           </div>
           <h2 className="text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-            Real product screens.
-            <span className="block bg-gradient-to-r from-cyan-300 via-sky-400 to-violet-400 bg-clip-text text-transparent">
-              Real financial intelligence.
+            Every tool you need.
+            <span className="block bg-gradient-to-r from-violet-300 via-sky-400 to-cyan-300 bg-clip-text text-transparent">
+              All in one place.
             </span>
           </h2>
           <p className="mt-6 text-lg leading-8 text-slate-300">
-            A quick look at the workflows, tools, and AI-powered modules already inside the platform.
+            20+ AI-powered calculators, analyzers, and planners — organized by category, personalized to your profile.
           </p>
         </motion.div>
 
-        {/* ── Feature rows ── */}
-        <div className="space-y-28 lg:space-y-40">
-          {sections.map((section, index) => {
-            const Icon = section.icon
-            const reverse = index % 2 === 1
-
+        {/* Tool category grid */}
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {toolCategories.map((cat, ci) => {
+            const c = colorMap[cat.color as ColorKey]
             return (
               <motion.div
-                key={section.title}
+                key={cat.category}
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
-                transition={{ duration: 0.7, ease: 'easeOut' }}
-                viewport={{ once: true, amount: 0.18 }}
-                className={`grid items-center gap-12 lg:grid-cols-2 lg:gap-16 ${
-                  reverse ? 'lg:[&>*:first-child]:order-2 lg:[&>*:last-child]:order-1' : ''
-                }`}
+                transition={{ duration: 0.55, delay: ci * 0.08, ease: 'easeOut' }}
+                viewport={{ once: true, amount: 0.1 }}
+                className={`group relative overflow-hidden rounded-2xl border ${c.border} bg-white/[0.025] p-7 backdrop-blur-sm transition hover:bg-white/[0.04]`}
               >
-                {/* Text column — always genuinely on its side */}
-                <div className="flex flex-col items-start">
-                  <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl border border-cyan-300/25 bg-cyan-300/10">
-                    <Icon className="h-7 w-7 text-cyan-300" />
-                  </div>
-                  <div className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-cyan-300/80">
-                    {section.eyebrow}
-                  </div>
-                  <h3 className="text-3xl font-black leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-                    {section.title}
-                  </h3>
-                  <p className="mt-5 text-lg leading-8 text-slate-300">
-                    {section.description}
-                  </p>
-                  <div className="mt-7 inline-flex items-center gap-2 font-bold text-cyan-300">
-                    Included in platform
-                    <ArrowRight className="h-4 w-4" />
-                  </div>
-                </div>
+                {/* Glow blob on hover */}
+                <div className={`pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full ${c.iconBg} opacity-0 blur-3xl transition duration-500 group-hover:opacity-60`} />
 
-                {/* Screen preview column */}
-                <div>
-                  <FloatingPreview src={section.image} alt={section.title} />
+                {/* Category badge */}
+                <div className={`mb-2 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-widest ${c.badgeBg} ${c.badgeText} ${c.badgeBorder}`}>
+                  {cat.category}
+                </div>
+                <p className="mb-6 mt-2 text-sm leading-relaxed text-slate-400">{cat.description}</p>
+
+                {/* Tools list */}
+                <div className="space-y-3">
+                  {cat.tools.map((tool) => {
+                    const TIcon = tool.icon
+                    return (
+                      <a
+                        key={tool.name}
+                        href={tool.href}
+                        className={`group/tool flex items-center gap-4 rounded-xl border ${c.border} ${c.toolBg} p-4 transition duration-200 ${c.toolHover}`}
+                      >
+                        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${c.iconBg}`}>
+                          <TIcon className={`h-5 w-5 ${c.iconText}`} />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-white">{tool.name}</p>
+                          <p className="mt-0.5 text-xs leading-relaxed text-slate-400">{tool.desc}</p>
+                        </div>
+                        <ArrowRight className={`h-4 w-4 shrink-0 ${c.arrowText} opacity-0 transition group-hover/tool:translate-x-0.5 group-hover/tool:opacity-100`} />
+                      </a>
+                    )
+                  })}
                 </div>
               </motion.div>
             )
           })}
         </div>
-
-        {/* ── Tools Hub section ── */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          transition={{ duration: 0.7, ease: 'easeOut' }}
-          viewport={{ once: true, amount: 0.1 }}
-          className="mt-40"
-        >
-          {/* Tools header */}
-          <div className="mb-16 text-center">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-violet-300/25 bg-violet-300/10 px-4 py-2 text-sm font-bold text-violet-300">
-              <Landmark className="h-4 w-4" />
-              Financial Toolkit
-            </div>
-            <h2 className="text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-              Every tool you need.
-              <span className="block bg-gradient-to-r from-violet-300 via-sky-400 to-cyan-300 bg-clip-text text-transparent">
-                All in one place.
-              </span>
-            </h2>
-            <p className="mt-6 text-lg leading-8 text-slate-300">
-              20+ AI-powered calculators, analyzers, and planners — organized by category, personalized to your profile.
-            </p>
-          </div>
-
-          {/* Tool category grid */}
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {toolCategories.map((cat, ci) => {
-              const c = colorMap[cat.color]
-              return (
-                <motion.div
-                  key={cat.category}
-                  variants={fadeUp}
-                  initial="hidden"
-                  whileInView="visible"
-                  transition={{ duration: 0.5, delay: ci * 0.07, ease: 'easeOut' }}
-                  viewport={{ once: true, amount: 0.1 }}
-                  className={`rounded-2xl border ${c.border} bg-white/[0.03] p-6 backdrop-blur-sm`}
-                >
-                  {/* Category header */}
-                  <div className={`mb-1 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-widest ${c.badgeBg} ${c.badge}`}>
-                    {cat.category}
-                  </div>
-                  <p className="mb-5 mt-2 text-sm text-slate-400">{cat.description}</p>
-
-                  {/* Tools list */}
-                  <div className="space-y-3">
-                    {cat.tools.map((tool) => {
-                      const TIcon = tool.icon
-                      return (
-                        <a
-                          key={tool.name}
-                          href={tool.href}
-                          className={`group flex items-start gap-3 rounded-xl border ${c.border} bg-white/[0.025] p-3.5 transition hover:bg-white/[0.05]`}
-                        >
-                          <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${c.bg}`}>
-                            <TIcon className={`h-4 w-4 ${c.text}`} />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-semibold text-white">{tool.name}</span>
-                              <ArrowRight className={`h-3 w-3 ${c.text} opacity-0 transition group-hover:opacity-100 group-hover:translate-x-0.5`} />
-                            </div>
-                            <p className="mt-0.5 text-xs leading-relaxed text-slate-400">{tool.desc}</p>
-                          </div>
-                        </a>
-                      )
-                    })}
-                  </div>
-                </motion.div>
-              )
-            })}
-          </div>
-        </motion.div>
-
       </div>
     </section>
   )
@@ -331,30 +398,31 @@ export default function FeaturesGrid() {
 function FloatingPreview({ src, alt }: { src: string; alt: string }) {
   return (
     <motion.div
-      whileHover={{ y: -8, scale: 1.012 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
+      whileHover={{ y: -10, scale: 1.015 }}
+      transition={{ duration: 0.35, ease: 'easeOut' }}
       className="group relative w-full"
     >
-      <div className="absolute -inset-6 rounded-[28px] bg-cyan-400/10 opacity-80 blur-3xl transition group-hover:bg-violet-400/15" />
+      {/* Glow */}
+      <div className="absolute -inset-4 rounded-[32px] bg-gradient-to-br from-cyan-400/15 via-transparent to-violet-400/10 opacity-80 blur-2xl transition duration-500 group-hover:from-cyan-400/20 group-hover:to-violet-400/20" />
 
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0b1020] shadow-2xl shadow-black/60">
-        {/* Fake browser bar */}
-        <div className="flex h-10 items-center gap-2 border-b border-white/10 bg-white/[0.035] px-4">
-          <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
-          <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
-          <span className="h-2.5 w-2.5 rounded-full bg-green-400" />
-          <span className="ml-4 h-3 w-36 rounded-full bg-white/10" />
+      {/* Browser chrome */}
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0b1020] shadow-[0_32px_80px_rgba(0,0,0,0.6)]">
+        <div className="flex h-10 items-center gap-2 border-b border-white/[0.07] bg-white/[0.03] px-4">
+          <span className="h-3 w-3 rounded-full bg-red-400/80" />
+          <span className="h-3 w-3 rounded-full bg-yellow-400/80" />
+          <span className="h-3 w-3 rounded-full bg-green-400/80" />
+          <span className="ml-3 h-3 w-40 rounded-full bg-white/[0.08]" />
         </div>
 
-        {/* Zoom wrapper */}
+        {/* Screen image with zoom */}
         <div className="overflow-hidden">
           <Image
             src={src}
             alt={alt}
             width={1920}
             height={1080}
-            sizes="(min-width: 1280px) 700px, (min-width: 1024px) 50vw, 100vw"
-            className="aspect-[16/9] w-full object-cover object-top transition duration-500 group-hover:scale-[1.06] group-hover:object-center"
+            sizes="(min-width: 1280px) 680px, (min-width: 1024px) 50vw, 100vw"
+            className="aspect-[16/9] w-full object-cover object-top transition duration-700 ease-out group-hover:scale-[1.07] group-hover:object-center"
           />
         </div>
       </div>
