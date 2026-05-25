@@ -8,8 +8,8 @@ import {
   TrendingUp,
   Bot,
   Target,
-  Calculator,
   Wallet,
+  HeartPulse,
   CheckCircle2,
 } from 'lucide-react'
 
@@ -17,16 +17,23 @@ const sections = [
   {
     title: 'AI Financial Dashboard',
     description:
-      'Monitor savings, expenses, investments, and financial health in one unified AI-powered workspace.',
+      'Monitor savings, expenses, investments, alerts, and financial health in one unified AI-powered workspace.',
     icon: Wallet,
     image: '/screens/dashboard.png',
   },
   {
     title: 'Autonomous AI Alerts',
     description:
-      'Your AI agent detects financial risks, missed SIPs, emergency fund gaps, and opportunities automatically.',
+      'Your AI agent detects emergency fund gaps, missed SIPs, portfolio risks, and opportunities automatically.',
     icon: Bot,
     image: '/screens/alerts.png',
+  },
+  {
+    title: 'Financial Health Analysis',
+    description:
+      'Understand strengths, red flags, action plans, and your overall money position with clear AI insights.',
+    icon: HeartPulse,
+    image: '/screens/financial-health.png',
   },
   {
     title: 'Investment Intelligence',
@@ -50,11 +57,11 @@ const sections = [
     image: '/screens/planning.png',
   },
   {
-    title: 'Tax Optimization',
+    title: 'AI Financial Agent',
     description:
-      'Compare tax regimes, optimize deductions, and improve post-tax wealth creation.',
-    icon: Calculator,
-    image: '/screens/tax.png',
+      'Ask your personal AI agent questions about savings, tax, SIPs, insurance, risks, and next actions.',
+    icon: Bot,
+    image: '/screens/agent.png',
   },
 ]
 
@@ -107,18 +114,20 @@ export default function FeaturesGrid() {
             </div>
 
             <div className="mt-7 grid gap-3 text-sm text-slate-400 sm:grid-cols-3">
-              {['No bank login required', 'Built for India', 'AI-powered analysis'].map(
-                item => (
-                  <div key={item} className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-cyan-300" />
-                    <span>{item}</span>
-                  </div>
-                )
-              )}
+              {[
+                'No bank login required',
+                'Built for India',
+                'AI-powered analysis',
+              ].map(item => (
+                <div key={item} className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-cyan-300" />
+                  <span>{item}</span>
+                </div>
+              ))}
             </div>
           </div>
 
-          <DashboardImage
+          <ProductScreenshot
             src="/screens/dashboard.png"
             alt="FinHealth360 dashboard"
             priority
@@ -160,7 +169,10 @@ export default function FeaturesGrid() {
                 </div>
 
                 <div className={reverse ? 'lg:order-1' : undefined}>
-                  <DashboardImage src={section.image} alt={section.title} />
+                  <ProductScreenshot
+                    src={section.image}
+                    alt={section.title}
+                  />
                 </div>
               </motion.div>
             )
@@ -201,7 +213,7 @@ export default function FeaturesGrid() {
   )
 }
 
-function DashboardImage({
+function ProductScreenshot({
   src,
   alt,
   priority = false,
@@ -222,11 +234,11 @@ function DashboardImage({
         <Image
           src={src}
           alt={alt}
-          width={1600}
-          height={1000}
+          width={1920}
+          height={1080}
           priority={priority}
           sizes="(min-width: 1024px) 50vw, 100vw"
-          className="aspect-[16/10] w-full object-cover object-top"
+          className="aspect-[16/9] w-full object-cover object-top"
         />
       </div>
     </motion.div>
