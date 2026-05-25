@@ -1,281 +1,231 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import {
-  Bot,
-  TrendingUp,
+  ArrowRight,
   Shield,
+  TrendingUp,
+  Bot,
   Target,
-  Wallet,
   Calculator,
-  AlertTriangle,
-  CheckCircle2,
+  Wallet,
 } from 'lucide-react'
 
-const features = [
+const sections = [
   {
-    icon: TrendingUp,
+    title: 'AI Financial Dashboard',
+    description:
+      'Monitor savings, expenses, investments and financial health in one unified workspace powered by AI.',
+    icon: Wallet,
+    image: '/screens/dashboard.png',
+    color: 'from-cyan-500/10 to-blue-500/5',
+  },
+  {
+    title: 'Autonomous AI Alerts',
+    description:
+      'Your AI agent continuously detects financial risks, missing SIPs, emergency fund gaps and opportunities.',
+    icon: Bot,
+    image: '/screens/alerts.png',
+    color: 'from-red-500/10 to-pink-500/5',
+  },
+  {
     title: 'Investment Intelligence',
     description:
-      'Track SIPs, portfolio growth, compounding projections and hidden investment leaks.',
-    color: 'from-cyan-500/20 to-cyan-500/5',
-    border: 'border-cyan-500/20',
-    iconColor: 'text-cyan-400',
+      'Visualize long-term wealth growth, SIP projections and portfolio optimization insights.',
+    icon: TrendingUp,
+    image: '/screens/investments.png',
+    color: 'from-emerald-500/10 to-cyan-500/5',
   },
   {
+    title: 'Insurance Analysis',
+    description:
+      'Analyze policy IRR, hidden charges, coverage gaps and insurance efficiency instantly.',
     icon: Shield,
-    title: 'Insurance Analyzer',
-    description:
-      'Detect poor IRR policies, hidden charges and inadequate coverage instantly.',
-    color: 'from-emerald-500/20 to-emerald-500/5',
-    border: 'border-emerald-500/20',
-    iconColor: 'text-emerald-400',
+    image: '/screens/insurance.png',
+    color: 'from-purple-500/10 to-blue-500/5',
   },
   {
-    icon: Wallet,
-    title: 'Financial Health',
+    title: 'Goal & Retirement Planning',
     description:
-      'AI continuously monitors your savings, emergency fund and financial score.',
-    color: 'from-red-500/20 to-red-500/5',
-    border: 'border-red-500/20',
-    iconColor: 'text-red-400',
+      'Plan retirement, child education, wealth goals and long-term financial freedom.',
+    icon: Target,
+    image: '/screens/planning.png',
+    color: 'from-amber-500/10 to-orange-500/5',
   },
   {
-    icon: Calculator,
     title: 'Tax Optimization',
     description:
-      'Compare regimes, discover deductions and optimize tax savings automatically.',
-    color: 'from-amber-500/20 to-amber-500/5',
-    border: 'border-amber-500/20',
-    iconColor: 'text-amber-400',
-  },
-  {
-    icon: Target,
-    title: 'Goal Planning',
-    description:
-      'Retirement, child education, wealth goals and long-term financial planning.',
-    color: 'from-blue-500/20 to-blue-500/5',
-    border: 'border-blue-500/20',
-    iconColor: 'text-blue-400',
-  },
-  {
-    icon: Bot,
-    title: 'AI Financial Agent',
-    description:
-      'An AI assistant that already knows your numbers and guides your next move.',
-    color: 'from-purple-500/20 to-purple-500/5',
-    border: 'border-purple-500/20',
-    iconColor: 'text-purple-400',
-  },
-]
-
-const alerts = [
-  {
-    title: 'Emergency Fund Critical',
-    description: 'You are ₹1,80,000 short of your emergency reserve.',
-    color: 'border-red-500/20 bg-red-500/[0.04]',
-    badge: 'CRITICAL',
-  },
-  {
-    title: 'No SIP Detected',
-    description:
-      'Starting ₹10K/month today could grow into ₹1.6Cr over 20 years.',
-    color: 'border-cyan-500/20 bg-cyan-500/[0.04]',
-    badge: 'ACTION',
-  },
-  {
-    title: 'Tax Opportunity Found',
-    description: 'Additional ₹18,000 deductions available this year.',
-    color: 'border-amber-500/20 bg-amber-500/[0.04]',
-    badge: 'SAVE',
+      'Compare tax regimes, optimize deductions and improve post-tax wealth creation.',
+    icon: Calculator,
+    image: '/screens/tax.png',
+    color: 'from-blue-500/10 to-purple-500/5',
   },
 ]
 
 export default function FeaturesGrid() {
   return (
-    <section className="relative overflow-hidden bg-[#050816] py-24">
+    <section className="relative overflow-hidden bg-[#050816] py-28">
       {/* Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(47,230,255,0.10),transparent_35%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(122,60,255,0.10),transparent_35%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(47,230,255,0.08),transparent_35%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(122,60,255,0.08),transparent_35%)]" />
 
       <div className="relative mx-auto max-w-7xl px-6">
-        {/* Header */}
+        {/* Hero */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
           viewport={{ once: true }}
-          className="mx-auto mb-16 max-w-3xl text-center"
+          className="mb-28 grid items-center gap-20 lg:grid-cols-2"
         >
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-sm font-medium text-cyan-400">
-            ⚡ Live Product
+          {/* Left */}
+          <div>
+            <div className="mb-6 inline-flex items-center rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-sm font-medium text-cyan-400">
+              ⚡ Live AI Financial Platform
+            </div>
+
+            <h1 className="mb-8 text-5xl font-black leading-tight tracking-tight text-white md:text-7xl">
+              Your AI Financial
+              <span className="block bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                Operating System
+              </span>
+            </h1>
+
+            <p className="mb-10 max-w-xl text-xl leading-9 text-slate-400">
+              Real-time financial intelligence for investments, insurance,
+              taxes, retirement and wealth planning — powered by autonomous AI
+              built for India.
+            </p>
+
+            <div className="flex flex-wrap gap-4">
+              <button className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-500 px-7 py-4 font-semibold text-black transition-transform hover:scale-105">
+                Start Free
+                <ArrowRight size={18} />
+              </button>
+
+              <button className="rounded-2xl border border-white/10 bg-white/5 px-7 py-4 font-semibold text-white backdrop-blur-xl transition-all hover:border-cyan-500/30">
+                Explore Platform
+              </button>
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-6 text-sm text-slate-500">
+              <div>✔ No bank login required</div>
+              <div>✔ Built for India</div>
+              <div>✔ AI-powered analysis</div>
+            </div>
           </div>
 
-          <h2 className="mb-6 text-4xl font-black tracking-tight text-white md:text-6xl">
-            Built Like a
-            <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-              {' '}
-              Real Financial OS
-            </span>
-          </h2>
+          {/* Right */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <div className="absolute inset-0 rounded-[32px] bg-gradient-to-r from-cyan-500/20 to-purple-500/20 blur-3xl" />
 
-          <p className="text-lg leading-8 text-slate-400">
-            Real dashboards. Real AI alerts. Real financial workflows.
-            FinHealth360 is designed as a complete financial operating system —
-            not just another calculator website.
-          </p>
+            <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#0B1020]/80 shadow-2xl">
+              <Image
+                src="/screens/dashboard.png"
+                alt="FinHealth360 Dashboard"
+                width={1600}
+                height={1000}
+                className="h-auto w-full"
+              />
+            </div>
+          </motion.div>
         </motion.div>
 
-        {/* Real Dashboard Preview */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7 }}
-          viewport={{ once: true }}
-          className="mb-20 overflow-hidden rounded-3xl border border-white/10 bg-[#09101f]/80 shadow-2xl backdrop-blur-xl"
-        >
-          {/* Top */}
-          <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
-            <div>
-              <div className="text-xl font-bold text-white">
-                FinHealth360 Dashboard
-              </div>
-
-              <div className="text-sm text-slate-500">
-                Autonomous AI Financial Workspace
-              </div>
-            </div>
-
-            <div className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-xs font-semibold text-emerald-400">
-              ⚡ AI Agent Active
-            </div>
-          </div>
-
-          {/* Metrics */}
-          <div className="grid gap-5 p-6 md:grid-cols-4">
-            {[
-              ['Net Worth', '₹3,00,000', 'text-emerald-400'],
-              ['Monthly Savings', '₹20,000', 'text-cyan-400'],
-              ['Monthly Expenses', '₹30,000', 'text-amber-400'],
-              ['Investments', '₹0', 'text-purple-400'],
-            ].map(([title, value, color]) => (
-              <div
-                key={title}
-                className="rounded-2xl border border-white/10 bg-[#0B1020]/80 p-5"
-              >
-                <div className="mb-2 text-xs uppercase tracking-widest text-slate-500">
-                  {title}
-                </div>
-
-                <div className="mb-2 text-3xl font-black text-white">
-                  {value}
-                </div>
-
-                <div className={`text-sm ${color}`}>
-                  Live financial intelligence
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* AI Alerts */}
-          <div className="p-6 pt-0">
-            <div className="mb-5 flex items-center gap-2 text-sm font-semibold tracking-wide text-slate-400">
-              <AlertTriangle size={16} className="text-red-400" />
-              AI ALERTS
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-3">
-              {alerts.map((alert) => (
-                <div
-                  key={alert.title}
-                  className={`rounded-2xl border p-5 ${alert.color}`}
-                >
-                  <div className="mb-3 flex items-center justify-between">
-                    <div className="text-lg font-bold text-white">
-                      {alert.title}
-                    </div>
-
-                    <div className="rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold tracking-wider text-white">
-                      {alert.badge}
-                    </div>
-                  </div>
-
-                  <p className="text-sm leading-6 text-slate-300">
-                    {alert.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Features */}
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {features.map((feature, index) => {
-            const Icon = feature.icon
+        {/* Product Sections */}
+        <div className="space-y-32">
+          {sections.map((section, index) => {
+            const Icon = section.icon
 
             return (
               <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 25 }}
+                key={section.title}
+                initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.5,
-                  delay: index * 0.08,
-                }}
+                transition={{ duration: 0.7 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -4 }}
-                className={`group rounded-3xl border bg-gradient-to-b ${feature.color} ${feature.border} p-7 transition-all duration-300 hover:border-cyan-500/30`}
+                className={`grid items-center gap-16 lg:grid-cols-2 ${
+                  index % 2 !== 0 ? 'lg:[&>*:first-child]:order-2' : ''
+                }`}
               >
-                <div
-                  className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-black/20 ${feature.iconColor}`}
+                {/* Content */}
+                <div>
+                  <div
+                    className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-b ${section.color}`}
+                  >
+                    <Icon className="h-7 w-7 text-cyan-400" />
+                  </div>
+
+                  <h2 className="mb-6 text-4xl font-black text-white md:text-5xl">
+                    {section.title}
+                  </h2>
+
+                  <p className="mb-8 text-lg leading-8 text-slate-400">
+                    {section.description}
+                  </p>
+
+                  <div className="flex items-center gap-2 text-cyan-400">
+                    <ArrowRight size={18} />
+                    <span className="font-medium">
+                      Powered by AI intelligence
+                    </span>
+                  </div>
+                </div>
+
+                {/* Screenshot */}
+                <motion.div
+                  whileHover={{ y: -6 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative"
                 >
-                  <Icon size={28} />
-                </div>
+                  <div className="absolute inset-0 rounded-[32px] bg-gradient-to-r from-cyan-500/10 to-purple-500/10 blur-2xl" />
 
-                <h3 className="mb-3 text-2xl font-bold text-white">
-                  {feature.title}
-                </h3>
-
-                <p className="leading-7 text-slate-400">
-                  {feature.description}
-                </p>
-
-                <div className="mt-5 flex items-center gap-2 text-sm font-medium text-cyan-400">
-                  <CheckCircle2 size={16} />
-                  Connected to your financial profile
-                </div>
+                  <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#0B1020]/80 shadow-2xl">
+                    <Image
+                      src={section.image}
+                      alt={section.title}
+                      width={1600}
+                      height={1000}
+                      className="h-auto w-full"
+                    />
+                  </div>
+                </motion.div>
               </motion.div>
             )
           })}
         </div>
 
-        {/* Bottom Banner */}
+        {/* Final CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.7 }}
           viewport={{ once: true }}
-          className="mt-20 overflow-hidden rounded-3xl border border-cyan-500/20 bg-gradient-to-r from-cyan-500/[0.08] to-purple-500/[0.08] p-10"
+          className="mt-36 overflow-hidden rounded-[40px] border border-cyan-500/20 bg-gradient-to-r from-cyan-500/[0.08] to-purple-500/[0.08] p-12 md:p-16"
         >
-          <div className="max-w-3xl">
-            <div className="mb-4 text-4xl font-black text-white">
-              Your finances should not depend on memory, spreadsheets or luck.
+          <div className="max-w-4xl">
+            <div className="mb-6 text-5xl font-black leading-tight text-white">
+              Your finances should not depend on spreadsheets, memory or luck.
             </div>
 
-            <p className="mb-8 text-lg leading-8 text-slate-400">
+            <p className="mb-10 text-xl leading-9 text-slate-400">
               FinHealth360 continuously monitors your financial life, detects
-              risks early and helps you make smarter money decisions with AI.
+              risks early and guides your next financial move with AI.
             </p>
 
-            <div className="flex flex-wrap gap-4">
-              <button className="rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-500 px-7 py-4 font-semibold text-black transition-transform hover:scale-105">
+            <div className="flex flex-wrap gap-5">
+              <button className="rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-500 px-8 py-4 font-semibold text-black transition-transform hover:scale-105">
                 Start Free
               </button>
 
-              <button className="rounded-2xl border border-white/10 bg-white/5 px-7 py-4 font-semibold text-white backdrop-blur-xl transition-all hover:border-cyan-500/30">
-                Explore Platform
+              <button className="rounded-2xl border border-white/10 bg-white/5 px-8 py-4 font-semibold text-white backdrop-blur-xl transition-all hover:border-cyan-500/30">
+                View Dashboard
               </button>
             </div>
           </div>
