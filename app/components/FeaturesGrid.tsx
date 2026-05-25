@@ -162,7 +162,7 @@ export default function FeaturesGrid() {
                   <h3 style={{ fontSize: 'clamp(1.9rem, 3vw, 2.75rem)', fontWeight: 900, lineHeight: 1.08, letterSpacing: '-0.035em', color: '#f1f5f9', margin: 0 }}>{s.title}</h3>
                   <p style={{ marginTop: 16, fontSize: 16.5, lineHeight: 1.8, color: '#94a3b8', maxWidth: 380 }}>{s.description}</p>
                   <a
-                    href="#"
+                    href="/signup"
                     style={{ marginTop: 28, display: 'inline-flex', alignItems: 'center', gap: 8, borderRadius: 999, border: '1px solid rgba(103,232,249,0.25)', background: 'rgba(103,232,249,0.08)', padding: '10px 20px', fontSize: 13, fontWeight: 700, color: '#67e8f9', textDecoration: 'none', transition: 'background 0.2s, transform 0.2s' }}
                     onMouseEnter={e => { e.currentTarget.style.background = 'rgba(103,232,249,0.18)'; e.currentTarget.style.transform = 'translateY(-1px)' }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'rgba(103,232,249,0.08)'; e.currentTarget.style.transform = 'translateY(0)' }}
@@ -202,7 +202,7 @@ export default function FeaturesGrid() {
             </p>
           </motion.div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0,1fr))', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, width: '100%' }}>
             {toolCategories.map((cat, ci) => {
               const p = palette[cat.color as PaletteKey]
               return (
@@ -211,6 +211,7 @@ export default function FeaturesGrid() {
                   variants={fadeUp} initial="hidden" whileInView="visible"
                   transition={{ duration: 0.5, delay: ci * 0.07 }} viewport={{ once: true, amount: 0.06 }}
                   className={`group relative overflow-hidden rounded-2xl border bg-white/[0.025] p-7 shadow-lg transition-all duration-300 hover:shadow-2xl hover:bg-white/[0.04] ${p.card}`}
+                  style={{ width: '100%', boxSizing: 'border-box' }}
                 >
                   <div className={`pointer-events-none absolute -right-8 -top-8 h-44 w-44 rounded-full ${p.glow} opacity-0 blur-3xl transition duration-500 group-hover:opacity-[0.18]`} />
 
@@ -227,9 +228,9 @@ export default function FeaturesGrid() {
                       return (
                         <a
                           key={t.name}
-                          href="/app/tools"
+                          href="/signup"
                           className={`group/row flex items-center gap-4 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-[14px] transition duration-200 ${p.row}`}
-                          style={{ textDecoration: 'none' }}
+                          style={{ textDecoration: 'none', cursor: 'pointer' }}
                         >
                           <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${p.icon}`}>
                             <TIcon size={20} />
